@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>跑馬燈示例</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			.marquee-container {
+				width: 100%;
+				/* height: 480px; */
+				background-color: #f0f0f0;
+				margin: 20px 0;
+				overflow: hidden;
+			}
+
+			.marquee-item {
+				color: #333;
+				font-size: 16px;
+				display: inline-block;
+				margin-right: 5px;
+			}
+			.marquee-item__text {
+				font-weight: 600;
+				font-size: clamp(90px, 4.86vw + 31.6px, 125px);
+				font-family: Oswald, sans-serif;
+				line-height: 1;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<button @click="updateItems">更新marquee0</button>
+			<div id="marquee0" class="marquee-container"></div>
+		</div>
+
+		<!-- 引入跑馬燈類 -->
+		<script src="./跑馬燈.js"></script>
+		<!-- 控制腳本 -->
+		<script>
+			let app = Vue.createApp({
+				setup() {
+					let data = Vue.ref([
+						{
+							text: "【橘子支付買點數】最高享12%回饋7-11零用金",
+							style: "color: #ff6600; font-size: 120px;"
+						},
+						{
+							text: "守護者結伴計畫熱烈開跑，邀請朋友結伴參戰，海量紅利等你拿，立即參加別錯過！",
+							style: "color: #0066cc; font-size: 100px;"
+						}
+					]);
+					let marquee0 = Vue.ref(null);
+
+					const updateItems = () => {
+						let item = {
+							text: "1213",
+							style: "color: #ff0000; font-size: 110px;"
+						};
+						if (marquee0.value) {
+							// 將數據轉換為 HTML 字符串
+							const items = `<div class="marquee-item__text" style="${item.style}">${item.text}</div>`;
+							marquee0.value.updateItems(items);
+						}
+					};
+
+					Vue.onMounted(() => {
+						// 初始化時也使用 HTML 字符串
+						const items = data.value.map((item) => `<div class="marquee-item__text" style="${item.style}">${item.text}</div>`);
+						marquee0.value = new Marquee("#marquee0", {
+							items: items,
+							speed: 200
+						});
+					});
+
+					return {
+						data,
+						updateItems
+					};
+				}
+			});
+			app.mount("#app");
+		</script>
+	</body>
+</html>

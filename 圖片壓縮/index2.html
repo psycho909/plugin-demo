@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script type="text/javascript" src="./js/browser-image-compression.js"></script>
+		<script type="text/javascript" src="./js/jszip.min.js"></script>
+	</head>
+	<body>
+		<div id="drop-area" style="border: 2px dashed #ccc; padding: 20px; text-align: center">Drag images here or <input type="file" accept="image/*" multiple onchange="handleImageUpload(event);" /></div>
+		<p id="main-thread-log"></p>
+		<div id="progress"></div>
+		<script>
+			let logDom = document.querySelector("#main-thread-log");
+			let progressDom = document.querySelector("#progress");
+			let dropArea = document.getElementById("drop-area");
+			let initialQuality = 0.5;
+			// 防止瀏覽器默認行為
+			["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+				dropArea.addEventListener(eventName, preventDefaults, false);
+			});
+
+			function preventDefaults(e) {
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+			// 高亮拖曳區域
+			["dragenter", "dragover"].forEach((eventName) => {
+				dropArea.addEventListener(eventName, highlight, false);
+			});
+
+			["dragleave", "drop"].forEach((eventName) => {
+				dropArea.addEventListener(eventName, unhighlight, false);
+			});
+
+			function highlight(e) {
+				dropArea.style.backgroundColor = "#f0f0f0";
+			}
+
+			function unhighlight(e) {
+				dropArea.style.backgroundColor = "";
+			}
+
+			// 處理拖曳的文件
+			dropArea.addEventListener("drop", handleDrop, false);
+
+			function handleDrop(e) {
+				let dt = e.dataTransfer;
+				let files = dt.files;
+
+				handleImageUploadFiles(files);
+			}
+			function uploadToServer() {}
+			async function handleImageUploadFiles(files) {
+				const zip = new JSZip();
+				let processedFiles = 0;
+				progressDom.innerHTML = `Processing ${files.length} files...`;
+
+				for (const file of files) {
+					logDom.innerHTML += `<br/>Processing "${file.name}":${(file.size / 1024 / 1024).toFixed(2)}mb ...`;
+
+					const options = {
+						useWebWorker: true,
+						initialQuality
+					};
+
+					try {
+						const output = await imageCompression(file, options);
+						zip.file(file.name, output);
+						logDom.innerHTML += ` Finished "${file.name}". ${(output.size / 1024 / 1024).toFixed(2)}mb`;
+						processedFiles++;
+						progressDom.innerHTML = `Processed ${processedFiles} of ${files.length} files.`;
+					} catch (error) {
+						alert(error.message);
+					}
+				}
+
+				if (processedFiles > 0) {
+					zip.generateAsync({ type: "blob" }).then(function (content) {
+						const downloadLink = URL.createObjectURL(content);
+						logDom.innerHTML += `<br/>All files processed. <a href="${downloadLink}" download="compressed_images.zip">Download ZIP</a>`;
+					});
+				} else {
+					progressDom.innerHTML = "No files processed.";
+				}
+			}
+
+			async function handleImageUpload(event) {
+				handleImageUploadFiles(event.target.files);
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 開發用 -->
+    <script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+    <!-- 正式用 -->
+    <script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
+    <style>
+        .pagination-numbers__symbol,
+        .pagination-numbers__item {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .pagination-numbers__symbol{
+            color:#000;
+        }
+        .pagination-numbers__symbol.disabled {
+            pointer-events: none;
+            color: gray;
+        }
+        .pagination-numbers__item.active {
+            font-weight: bold;
+            color: blue;
+        }
+        .pagination-numbers__item{
+            color:#000;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <pagination-component :total-page="totalPage" :page-number-limit="pageNumberLimit" @update:current-page="handlePageUpdate"></pagination-component>
+    </div> 
+    <script type="module">
+        import PaginationCore from './js/PaginationCore.js';
+        let pagination ={
+                name: 'PaginationComponent',
+                props: {
+                    totalPage: {
+                        type: Number,
+                        required: true,
+                    },
+                    pageNumberLimit: {
+                        type: Number,
+                        default: 10,
+                    }
+            },
+            emits: ['update:currentPage'],
+            setup(props, { emit }) {
+                const pagination = Vue.reactive(new PaginationCore({ totalPage: props.totalPage, pageNumberLimit: props.pageNumberLimit }));
+
+                // 当页码变化时触发更新
+                const setPage = (page) => {
+                    pagination.setPage(page);
+                    emit('update:currentPage', pagination.currentPage);
+                };
+
+                // 在组件初始化时同步状态
+                Vue.onMounted(() => {
+                });
+
+                return {
+                    ...Vue.toRefs(pagination),
+                    setPage,
+                    getVisiblePages: pagination.getVisiblePages.bind(pagination), // 绑定逻辑方法
+                }
+            },
+            template:`
+                <div class="pagination-content">
+                    <ul class="pagination-numbers" style="display: flex; list-style: none; color: #fff;">
+                        <li class="pagination-numbers__symbol" :class="{ disabled: currentPage === 1 }" @click="setPage(1)">
+                            First
+                        </li>
+                        <li class="pagination-numbers__symbol" :class="{ disabled: currentPage === 1 }" @click="setPage(currentPage - 1)">
+                            Prev
+                        </li>
+                        <li
+                            v-for="page in getVisiblePages()"
+                            :key="page"
+                            class="pagination-numbers__item"
+                            :class="{ active: page === currentPage }"
+                            @click="setPage(page)"
+                        >
+                            {{ page }}
+                        </li>
+                        <li
+                            class="pagination-numbers__symbol"
+                            :class="{ disabled: currentPage === totalPage }"
+                            @click="setPage(currentPage + 1)"
+                        >
+                            Next
+                        </li>
+                        <li
+                            class="pagination-numbers__symbol"
+                            :class="{ disabled: currentPage === totalPage }"
+                            @click="setPage(totalPage)"
+                        >
+                            Last
+                        </li>
+                    </ul>
+                </div>
+            `
+        }
+
+        let app = Vue.createApp({
+            components:{
+                'pagination-component':pagination
+            },
+            data() {
+                return {
+                    totalPage: 50,
+                    pageNumberLimit:10,
+                    currentPage: 1,
+                }
+            },
+            methods: {
+                handlePageUpdate(page) {
+                    console.log(page)
+                    this.currentPage = page;
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>

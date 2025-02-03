@@ -1,0 +1,15 @@
+{
+	"string": "test",
+	"backgroundImage": "./images/share-logo-lineage-free.png",
+	"img": "./assets/css/images/week-1st.png?20250127_1",
+	"object": [
+		{
+			"name": "object1"
+		},
+		{
+			"name": "object2"
+		}
+	],
+	"array": ["array1", "array2"],
+	"HTML": "<div>THIS IS HTML asdasdasdsadsadasdasdsadassada</div>"
+}

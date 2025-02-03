@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script type="text/javascript" src="./js/browser-image-compression.js"></script>
+		<script type="text/javascript" src="./js/jszip.min.js"></script>
+	</head>
+	<body>
+		<input type="file" accept="image/*" multiple onchange="handleImageUpload(event);" />
+		<p id="main-thread-log"></p>
+		<script>
+			let logDom = document.querySelector("#main-thread-log");
+			function uploadToServer() {}
+			async function handleImageUpload(event) {
+				const files = event.target.files;
+				const zip = new JSZip();
+				let logMessage = "Processed images: ";
+
+				for (const file of files) {
+					console.log("originalFile instanceof Blob", file instanceof Blob); // true
+					console.log(`originalFile size ${file.size / 1024 / 1024} MB`);
+					logMessage += "<br/>" + file.name + ": " + (file.size / 1024 / 1024).toFixed(2) + "mb";
+
+					const options = {
+						useWebWorker: true,
+						initialQuality: 0.6
+					};
+
+					try {
+						const output = await imageCompression(file, options);
+						zip.file(file.name, output);
+						logMessage += ", output size:" + (output.size / 1024 / 1024).toFixed(2) + "mb";
+					} catch (error) {
+						alert(error.message);
+					}
+				}
+
+				zip.generateAsync({ type: "blob" }).then(function (content) {
+					const downloadLink = URL.createObjectURL(content);
+					logDom.innerHTML = logMessage + '&nbsp;<a href="' + downloadLink + '" download="compressed_images.zip">Download ZIP</a>';
+				});
+			}
+		</script>
+	</body>
+</html>

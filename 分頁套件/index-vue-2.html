@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
+		<style>
+			.pagination-numbers__symbol,
+			.pagination-numbers__item {
+				margin: 0 5px;
+				cursor: pointer;
+			}
+			.pagination-numbers__symbol {
+				color: #000;
+			}
+			.pagination-numbers__symbol.disabled {
+				pointer-events: none;
+				color: gray;
+			}
+			.pagination-numbers__item.active {
+				font-weight: bold;
+				color: blue;
+			}
+			.pagination-numbers__item {
+				color: #000;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div id="pagination-container"></div>
+		</div>
+		<script type="module">
+			import PaginationCore from "./js/PaginationCore.js";
+			let app = Vue.createApp({
+				data() {
+					return {
+						totalPage: 50,
+						pageNumberLimit: 10,
+						currentPage: 1,
+						pagination: null
+					};
+				},
+				mounted() {
+					const paginationContainer = document.querySelector("#pagination-container");
+					this.pagination = new PaginationCore({
+						container: paginationContainer,
+						totalPage: this.totalPage,
+						pageNumberLimit: this.pageNumberLimit,
+						onPageChange: this.handlePageUpdate
+					});
+					this.pagination.on("init", function (page) {
+						console.log(`普通分頁模式 - 初始化完成，當前頁碼：${page}`);
+					});
+					this.pagination.on("pageChange", function (page) {
+						console.log(`普通分頁模式 - 當前頁碼：${page}`);
+					});
+				}
+			}).mount("#app");
+		</script>
+	</body>
+</html>

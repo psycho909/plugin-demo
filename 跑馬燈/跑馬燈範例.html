@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>跑馬燈元件展示</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+
+			.demo-section {
+				margin-bottom: 40px;
+				padding: 20px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+			}
+
+			.demo-title {
+				margin-bottom: 15px;
+				color: #333;
+			}
+
+			.marquee-container {
+				background: #f5f5f5;
+				padding: 15px;
+				margin-bottom: 15px;
+				border-radius: 4px;
+				height: 50px;
+			}
+
+			.vertical-marquee {
+				height: 200px !important;
+			}
+			.marquee-item {
+				padding: 10px;
+				background: white;
+				border-radius: 4px;
+				margin: 0 10px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			.control-panel {
+				margin-top: 10px;
+				display: flex;
+				gap: 10px;
+				flex-wrap: wrap;
+			}
+
+			button {
+				padding: 8px 16px;
+				border: none;
+				border-radius: 4px;
+				background: #007bff;
+				color: white;
+				cursor: pointer;
+				transition: background 0.3s;
+			}
+
+			button:hover {
+				background: #0056b3;
+			}
+
+			.product-marquee .marquee-item {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 5px 15px;
+			}
+
+			.product-marquee img {
+				width: 40px;
+				height: 40px;
+				object-fit: cover;
+				border-radius: 4px;
+			}
+
+			.news-marquee .marquee-item {
+				color: #333;
+				font-weight: 500;
+			}
+
+			.highlight {
+				color: #ff6b6b;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>跑馬燈元件展示</h1>
+
+		<!-- 基本水平跑馬燈 -->
+		<section class="demo-section">
+			<h2 class="demo-title">基本水平跑馬燈</h2>
+			<div id="basic-marquee" class="marquee-container">
+				<div class="marquee-item">這是第一則訊息</div>
+				<div class="marquee-item">這是第二則訊息</div>
+				<div class="marquee-item">這是第三則訊息</div>
+			</div>
+			<div class="control-panel">
+				<button onclick="basicMarquee.setDirection('left')">向左移動</button>
+				<button onclick="basicMarquee.setDirection('right')">向右移動</button>
+				<button onclick="basicMarquee.togglePause()">暫停/播放</button>
+				<button onclick="basicMarquee.setSpeed(100)">加速</button>
+				<button onclick="basicMarquee.setSpeed(30)">減速</button>
+			</div>
+		</section>
+
+		<!-- 垂直跑馬燈 -->
+		<section class="demo-section">
+			<h2 class="demo-title">垂直跑馬燈</h2>
+			<div id="vertical-marquee" class="marquee-container vertical-marquee">
+				<div class="marquee-item">向上移動的內容 1</div>
+				<div class="marquee-item">向上移動的內容 2</div>
+				<div class="marquee-item">向上移動的內容 3</div>
+			</div>
+			<div class="control-panel">
+				<button onclick="verticalMarquee.setDirection('up')">向上移動</button>
+				<button onclick="verticalMarquee.setDirection('down')">向下移動</button>
+				<button onclick="verticalMarquee.togglePause()">暫停/播放</button>
+			</div>
+		</section>
+
+		<!-- 單項目模式 -->
+		<section class="demo-section">
+			<h2 class="demo-title">單項目模式</h2>
+			<div id="single-marquee" class="marquee-container"></div>
+			<div class="control-panel">
+				<button onclick="singleMarquee.setDirection('left')">向左移動</button>
+				<button onclick="singleMarquee.setDirection('right')">向右移動</button>
+				<button onclick="singleMarquee.togglePause()">暫停/播放</button>
+			</div>
+		</section>
+
+		<!-- 群組模式 -->
+		<section class="demo-section">
+			<h2 class="demo-title">群組模式</h2>
+			<div id="group-marquee" class="marquee-container"></div>
+			<div class="control-panel">
+				<button onclick="groupMarquee.setDirection('left')">向左移動</button>
+				<button onclick="groupMarquee.setDirection('right')">向右移動</button>
+				<button onclick="groupMarquee.togglePause()">暫停/播放</button>
+			</div>
+		</section>
+
+		<!-- 產品展示跑馬燈 -->
+		<section class="demo-section">
+			<h2 class="demo-title">產品展示跑馬燈</h2>
+			<div id="product-marquee" class="marquee-container product-marquee"></div>
+			<div class="control-panel">
+				<button onclick="productMarquee.setPauseOnHover(true)">啟用滑鼠暫停</button>
+				<button onclick="productMarquee.setPauseOnHover(false)">禁用滑鼠暫停</button>
+				<button onclick="productMarquee.togglePause()">暫停/播放</button>
+			</div>
+		</section>
+
+		<!-- 新聞跑馬燈 -->
+		<section class="demo-section">
+			<h2 class="demo-title">新聞跑馬燈</h2>
+			<div id="news-marquee" class="marquee-container news-marquee"></div>
+			<div class="control-panel">
+				<button onclick="updateNews()">更新新聞</button>
+				<button onclick="newsMarquee.togglePause()">暫停/播放</button>
+				<button onclick="changeNewsMode()">切換模式</button>
+			</div>
+		</section>
+
+		<script src="跑馬燈.js"></script>
+		<script>
+			// 基本水平跑馬燈
+			const basicMarquee = new Marquee("#basic-marquee", {
+				direction: "left",
+				speed: 200,
+				pauseOnHover: true
+			});
+
+			// 垂直跑馬燈
+			const verticalMarquee = new Marquee("#vertical-marquee", {
+				direction: "down",
+				speed: 100
+			});
+
+			// 單項目模式
+			const singleMarquee = new Marquee("#single-marquee", {
+				items: ["單項目 1", "單項目 2", "單項目 3"],
+				mode: "single",
+				direction: "left",
+				restartDelay: 1000
+			});
+
+			// 群組模式
+			const groupMarquee = new Marquee("#group-marquee", {
+				items: ["群組項目 1", "群組項目 2", "群組項目 3"],
+				mode: "group",
+				direction: "left"
+			});
+
+			// 產品展示跑馬燈
+			const productItems = ['<div class="marquee-item"><img src="https://picsum.photos/40/40?random=1" alt="產品1"><span>產品名稱 1</span></div>', '<div class="marquee-item"><img src="https://picsum.photos/40/40?random=2" alt="產品2"><span>產品名稱 2</span></div>', '<div class="marquee-item"><img src="https://picsum.photos/40/40?random=3" alt="產品3"><span>產品名稱 3</span></div>'];
+
+			const productMarquee = new Marquee("#product-marquee", {
+				items: productItems,
+				direction: "left",
+				speed: 60,
+				pauseOnHover: true
+			});
+
+			// 新聞跑馬燈
+			const newsItems = ['<div class="marquee-item"><span class="highlight">【最新】</span>重大新聞標題 1</div>', '<div class="marquee-item"><span class="highlight">【熱門】</span>重大新聞標題 2</div>', '<div class="marquee-item"><span class="highlight">【快訊】</span>重大新聞標題 3</div>'];
+
+			const newsMarquee = new Marquee("#news-marquee", {
+				items: newsItems,
+				direction: "left",
+				speed: 70
+			});
+
+			// 更新新聞函數
+			function updateNews() {
+				const newNews = ['<div class="marquee-item"><span class="highlight">【更新】</span>新的新聞標題 1</div>', '<div class="marquee-item"><span class="highlight">【更新】</span>新的新聞標題 2</div>'];
+				newsMarquee.updateItems(newNews);
+			}
+
+			// 切換新聞模式
+			let isGroupMode = false;
+			function changeNewsMode() {
+				isGroupMode = !isGroupMode;
+				newsMarquee.reInit({
+					mode: isGroupMode ? "group" : "",
+					direction: "left"
+				});
+			}
+		</script>
+	</body>
+</html>

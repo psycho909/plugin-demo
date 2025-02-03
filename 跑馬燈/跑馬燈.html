@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>跑馬燈示例</title>
+		<link href="https://fonts.gstatic.com" crossorigin rel="preconnect" />
+		<link href="https://fonts.googleapis.com" crossorigin rel="preconnect" />
+		<link rel="stylesheet" id="generate-google-fonts-css" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP%3A500%2C700%2C900%7CAnton%3Aregular%7COswald%3A600%2C700&#038;display=auto&#038;ver=3.4.0" media="all" />
+		<!-- 開發用 -->
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			.marquee-container {
+				width: 100%;
+				/* height: 480px; */
+				background-color: #f0f0f0;
+				margin: 20px 0;
+				overflow: hidden;
+			}
+
+			.marquee-item {
+				color: #333;
+				font-size: 16px;
+				display: inline-block;
+				margin-right: 5px;
+			}
+			.marquee-item__content {
+				/* height: 480px; */
+				background-size: 100%;
+				display: inline-block;
+			}
+			[data-type="1"] {
+				width: 450px;
+				height: 480px;
+				background-image: url("https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/top_slide01.jpg");
+			}
+			[data-type="2"] {
+				width: 450px;
+				height: 480px;
+				background-image: url("https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/top_slide02.jpg");
+			}
+			[data-type="3"] {
+				width: 450px;
+				background-image: url("https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/top_slide03.jpg");
+			}
+			[data-type="4"] {
+				width: 380px;
+				background-image: url("https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/top_slide04.jpg");
+			}
+			[data-type="5"] {
+				width: 600px;
+				background-image: url("https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/top_slide05.jpg");
+			}
+			[data-type="6"] {
+				width: 600px;
+				background-image: url("https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/top_slide06.jpg");
+			}
+			.marquee-item__text {
+				font-weight: 600;
+				font-size: clamp(90px, 4.86vw + 31.6px, 125px);
+				font-family: Oswald, sans-serif;
+				line-height: 1;
+			}
+			#marquee4,
+			#marquee5 {
+				height: 124px;
+				overflow: hidden;
+			}
+			#marquee6 {
+				width: 800px;
+				/* height: 100px; */
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div id="marquee1" class="marquee-container" style="width: 100%; background-color: #f0f0f0">
+				<div class="marquee-wrapper">
+					<div class="marquee-content">
+						<div class="marquee-item a">
+							<div class="marquee-item__text">RECRUIT 2024</div>
+						</div>
+						<div class="marquee-item b">
+							<div class="marquee-item__text">RECRUIT 2025</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="marquee2" class="marquee-container" style="width: 100%; background-color: #f0f0f0">
+				<div class="marquee-wrapper">
+					<div class="marquee-content">
+						<div class="marquee-item">
+							<div class="marquee-item__content" data-type="1"></div>
+						</div>
+						<div class="marquee-item">
+							<div class="marquee-item__content" data-type="2"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="marquee3" class="marquee-container" style="width: 100%; background-color: #fff">
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2025</div>
+				</div>
+				<div class="marquee-item">
+					<img class="marquee-item__img" src="https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/promo_slidetxt_img@2x.jpg" alt="" title="" />
+				</div>
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2025</div>
+				</div>
+				<div class="marquee-item">
+					<img class="marquee-item__img" src="https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/promo_slidetxt_img@2x.jpg" alt="" title="" />
+				</div>
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2025</div>
+				</div>
+				<div class="marquee-item">
+					<img class="marquee-item__img" src="https://recruit.kyushokuou.com/wordpress/wp-content/uploads/2024/06/promo_slidetxt_img@2x.jpg" alt="" title="" />
+				</div>
+			</div>
+
+			<div id="marquee4" class="marquee-container">
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2024</div>
+				</div>
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2025</div>
+				</div>
+			</div>
+			<div id="marquee5" class="marquee-container">
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2025</div>
+				</div>
+			</div>
+			<div id="marquee6" class="marquee-container">
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2026</div>
+				</div>
+			</div>
+			<div id="marquee7" class="marquee-container">
+				<div class="marquee-item">
+					<div data-type="1"></div>
+				</div>
+				<div class="marquee-item">
+					<div data-type="2"></div>
+				</div>
+			</div>
+			<div id="marquee8" class="marquee-container">
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2024</div>
+				</div>
+				<div class="marquee-item">
+					<div class="marquee-item__text">RECRUIT 2025</div>
+				</div>
+			</div>
+			<div id="marquee9" class="marquee-container">
+				<div class="marquee-item">
+					<div data-type="1"></div>
+				</div>
+				<div class="marquee-item">
+					<div data-type="2"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 引入跑馬燈類 -->
+		<script src="./跑馬燈.js"></script>
+		<!-- 控制腳本 -->
+		<script>
+			let marquee2 = new Marquee("#marquee2", {
+				direction: "left",
+				speed: 100
+			});
+			let marquee3 = new Marquee("#marquee3", {
+				direction: "right",
+				speed: 100,
+				pauseOnHover: false
+			});
+			let marquee4 = new Marquee("#marquee4", {
+				direction: "down",
+				speed: 100,
+				pauseOnHover: false
+			});
+			let marquee5 = new Marquee("#marquee5", {
+				direction: "up",
+				speed: 100,
+				pauseOnHover: false
+			});
+			let marquee6 = new Marquee("#marquee6", {
+				direction: "left",
+				speed: 100,
+				pauseOnHover: false,
+				mode: "single" // 啟用單項目模式
+			});
+			let marquee7 = new Marquee("#marquee7", {
+				direction: "left",
+				speed: 100,
+				pauseOnHover: false,
+				restartDelay: 3000,
+				mode: "single" // 啟用單項目模式
+			});
+			let marquee8 = new Marquee("#marquee8", {
+				direction: "left",
+				speed: 1000,
+				pauseOnHover: false,
+				mode: "group" // 啟用新的非無限滾動模式
+			});
+			let marquee9 = new Marquee("#marquee9", {
+				direction: "right",
+				speed: 100,
+				pauseOnHover: false,
+				restartDelay: 3000,
+				mode: "group" // 啟用新的非無限滾動模式
+			});
+		</script>
+	</body>
+</html>

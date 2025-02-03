@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .pagination-numbers__symbol,
+        .pagination-numbers__item {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .pagination-numbers__symbol{
+            color:#000;
+        }
+        .pagination-numbers__symbol.disabled {
+            pointer-events: none;
+            color: gray;
+        }
+        .pagination-numbers__item.active {
+            font-weight: bold;
+            color: blue;
+        }
+        .pagination-numbers__item{
+            color:#000;
+        }
+    </style>
+</head>
+<body>
+    <div id="pagination-container"></div>
+    <script type="module">
+        import PaginationCore from './js/PaginationCore.js';
+       // Vanilla JS example
+       const paginationContainer = document.querySelector('#pagination-container');
+        
+        const pagination = new PaginationCore({
+            container: paginationContainer,
+            totalPage: 50,
+            pageNumberLimit: 5,
+            onPageChange: (page) => {
+                console.log(`Current page updated to2: ${page}`);
+            }
+        });
+        // pagination.onPageChange((page) => {
+        //     console.log(`Current page updated to1: ${page}`);
+        // })
+    </script>
+</body>
+</html>

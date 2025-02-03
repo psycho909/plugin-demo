@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			html,
+			body {
+				width: 100%;
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<h1>Hello World</h1>
+		</div>
+		<script>
+			function ZoomAdapter({ baseWidth = 1920, elementSelector = "#app", debounceDelay = 100 } = {}) {
+				function adjustZoom() {
+					const windowWidth = window.innerWidth;
+					const appElement = document.querySelector(elementSelector);
+
+					if (appElement) {
+						appElement.style.zoom = windowWidth < baseWidth ? windowWidth / baseWidth : 1;
+					}
+				}
+
+				function debounce(func, delay) {
+					let timeout;
+					return () => {
+						clearTimeout(timeout);
+						timeout = setTimeout(func, delay);
+					};
+				}
+
+				// 初始化縮放
+				adjustZoom();
+
+				// 監聽視窗大小變化
+				window.addEventListener(
+					"resize",
+					debounce(() => adjustZoom(), debounceDelay)
+				);
+			}
+
+			// 直接使用
+			ZoomAdapter({ baseWidth: 1600, elementSelector: "body" });
+		</script>
+	</body>
+</html>

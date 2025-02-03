@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Multi Video Alpha Canvas</title>
+		<style>
+			canvas {
+				display: block;
+				margin: 0 auto;
+			}
+			video {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="outputCanvas" width="1200" height="600"></canvas>
+
+		<script>
+			class AlphaVideoPlayer {
+				static DEFAULT_CONFIG = {
+					width: 1200,
+					height: 600,
+					fps: 60,
+					preloadTime: 0.5,
+					transitionTime: 0.1,
+					loop: false,
+					muted: true,
+					crossOrigin: "anonymous"
+				};
+
+				constructor(videoConfigs, options = {}) {
+					this.options = { ...AlphaVideoPlayer.DEFAULT_CONFIG, ...options };
+
+					// 初始化畫布
+					this.canvas = document.getElementById("outputCanvas");
+					this.canvas.width = this.options.width;
+					this.canvas.height = this.options.height;
+					this.ctx = this.canvas.getContext("2d");
+
+					// 初始化狀態
+					this.videos = [];
+					this.currentIndex = 0;
+					this.isTransitioning = false;
+					this.currentInterval = null;
+					this.isPlaying = false;
+
+					this.initializeVideos(videoConfigs);
+				}
+
+				initializeVideos(videoConfigs) {
+					videoConfigs.forEach((config, index) => {
+						// 合併默認配置和用戶配置
+						const videoConfig = {
+							preloadTime: this.options.preloadTime,
+							transitionTime: this.options.transitionTime,
+							loop: this.options.loop,
+							transitionTo: index + 1,
+							...config
+						};
+
+						const video = document.createElement("video");
+						video.width = this.options.width;
+						video.height = this.options.height;
+						video.crossOrigin = this.options.crossOrigin;
+						video.muted = this.options.muted;
+
+						const source = document.createElement("source");
+						source.src = config.src;
+						source.type = "video/mp4";
+
+						video.appendChild(source);
+						document.body.appendChild(video);
+
+						this.videos.push({
+							element: video,
+							...videoConfig
+						});
+					});
+				}
+
+				drawAlphaVideo(video) {
+					const { width, height } = this.options;
+					this.ctx.clearRect(0, 0, width, height);
+
+					// Original video part
+					this.ctx.drawImage(video, 0, 0, width, height, 0, 0, width, height);
+
+					// Alpha channel part
+					const alphaCanvas = document.createElement("canvas");
+					alphaCanvas.width = width;
+					alphaCanvas.height = height;
+					const alphaCtx = alphaCanvas.getContext("2d");
+					alphaCtx.drawImage(video, 0, height, width, height, 0, 0, width, height);
+
+					const originalFrame = this.ctx.getImageData(0, 0, width, height);
+					const alphaFrame = alphaCtx.getImageData(0, 0, width, height);
+					const originalData = originalFrame.data;
+					const alphaData = alphaFrame.data;
+
+					for (let i = 0; i < originalData.length; i += 4) {
+						originalData[i + 3] = alphaData[i];
+					}
+
+					this.ctx.putImageData(originalFrame, 0, 0);
+				}
+
+				preloadVideos(callback) {
+					let loadedCount = 0;
+					this.videos.forEach(({ element }) => {
+						element.load();
+						element.oncanplaythrough = () => {
+							loadedCount++;
+							if (loadedCount === this.videos.length) {
+								callback();
+							}
+						};
+					});
+				}
+
+				playVideo(index) {
+					if (index >= this.videos.length) {
+						index = 0;
+					}
+
+					const currentVideo = this.videos[index];
+					const video = currentVideo.element;
+					const nextIndex = currentVideo.transitionTo;
+
+					if (this.currentInterval) {
+						clearInterval(this.currentInterval);
+					}
+
+					this.isPlaying = true;
+					video.play();
+
+					this.currentInterval = setInterval(() => {
+						if (!video.paused && !video.ended && this.isPlaying) {
+							this.drawAlphaVideo(video);
+
+							// Prepare next video
+							if (!this.isTransitioning && !currentVideo.loop && video.currentTime >= video.duration - currentVideo.preloadTime) {
+								this.isTransitioning = true;
+
+								// 檢查是否有下一個視頻
+								if (this.videos[nextIndex]) {
+									const nextVideo = this.videos[nextIndex].element;
+									nextVideo.currentTime = 0;
+									nextVideo.play().then(() => nextVideo.pause());
+								}
+							}
+
+							// Transition to next video
+							if (!currentVideo.loop && video.currentTime >= video.duration - currentVideo.transitionTime) {
+								this.isTransitioning = false;
+								this.currentIndex = nextIndex;
+
+								// 檢查是否有下一個視頻
+								if (this.videos[nextIndex]) {
+									this.playVideo(nextIndex);
+								} else {
+									this.stop();
+								}
+							}
+						}
+
+						// Handle loop
+						if (video.ended && currentVideo.loop) {
+							video.currentTime = 0;
+							video.play();
+						}
+					}, 1000 / this.options.fps);
+				}
+
+				start() {
+					this.preloadVideos(() => {
+						this.videos[0].element.currentTime = 0;
+						this.playVideo(0);
+					});
+				}
+
+				pause() {
+					this.isPlaying = false;
+					this.videos[this.currentIndex].element.pause();
+				}
+
+				resume() {
+					if (!this.isPlaying) {
+						this.isPlaying = true;
+						this.videos[this.currentIndex].element.play();
+					}
+				}
+
+				stop() {
+					this.isPlaying = false;
+					if (this.currentInterval) {
+						clearInterval(this.currentInterval);
+					}
+					this.videos.forEach(({ element }) => {
+						element.pause();
+						element.currentTime = 0;
+					});
+				}
+			}
+
+			// 使用示例：
+			const videoConfigs = [
+				{
+					src: "./video/title_in.mp4",
+					loop: false // 覆蓋默認循環設置
+				},
+				{
+					src: "./video/title_loop.mp4",
+					loop: true // 這個視頻循環播放
+				}
+			];
+
+			// 全局播放器配置
+			const playerOptions = {
+				width: 1200, // 畫布寬度
+				height: 600, // 畫布高度
+				fps: 60 // 幀率
+			};
+
+			const player = new AlphaVideoPlayer(videoConfigs, playerOptions);
+			player.start();
+
+			// 控制示例：
+			// player.pause();    // 暫停播放
+			// player.resume();   // 繼續播放
+			// player.stop();     // 停止播放
+		</script>
+	</body>
+</html>

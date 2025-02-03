@@ -1,0 +1,6 @@
+.logo {
+  width: 195px;
+  height: 90px;
+  background-image: var(--background-image);
+  background-size: 100%;
+}

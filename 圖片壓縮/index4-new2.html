@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>圖片壓縮</title>
+		<script type="text/javascript" src="./js/browser-image-compression.js"></script>
+		<script type="text/javascript" src="./js/jszip.min.js"></script>
+		<script src="./js/pako.min.js"></script>
+		<script src="./js/UPNG.min.js"></script>
+	</head>
+	<body>
+		<div id="drop-area" style="border: 2px dashed #ccc; padding: 20px; text-align: center">Drag images here or <input type="file" accept="image/*" multiple onchange="handleImageUpload(event);" /></div>
+		<div>
+			<div>
+				<label>
+					<input type="checkbox" id="useDefaultQuality" checked />
+					JPG 壓縮率預設(0.8)(0.1 ~ 1) 數字越小壓縮率越高
+				</label>
+			</div>
+			<div id="customQualityControl" style="display: none">
+				<label> Custom Compression Quality: <span id="qualityValue">0.5</span> </label>
+				<input type="range" id="customQuality" min="0.1" max="1" step="0.1" value="0.8" />
+			</div>
+		</div>
+		<div>
+			<div>
+				<label>
+					<input type="checkbox" id="useDefaultPNGQuality" checked />
+					PNG 壓縮率預設(0.8)(0.1 ~ 1) 數字越小壓縮率越高
+				</label>
+			</div>
+			<div id="customPNGQualityControl" style="display: none">
+				<label> Custom Compression Quality: <span id="pngQualityValue">0.5</span> </label>
+				<input type="range" id="customPNGQuality" min="0.1" max="1" step="0.1" value="0.8" />
+			</div>
+		</div>
+		<p id="main-thread-log"></p>
+		<div id="progress"></div>
+		<script>
+			let logDom = document.querySelector("#main-thread-log");
+			let progressDom = document.querySelector("#progress");
+			let dropArea = document.getElementById("drop-area");
+			let initialJPGQuality = 0.8;
+			let initialPNGQuality = 0.8;
+			// 防止瀏覽器默認行為
+			["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+				dropArea.addEventListener(eventName, preventDefaults, false);
+			});
+
+			function preventDefaults(e) {
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+			// 高亮拖曳區域
+			["dragenter", "dragover"].forEach((eventName) => {
+				dropArea.addEventListener(eventName, highlight, false);
+			});
+
+			["dragleave", "drop"].forEach((eventName) => {
+				dropArea.addEventListener(eventName, unhighlight, false);
+			});
+
+			function highlight(e) {
+				dropArea.style.backgroundColor = "#f0f0f0";
+			}
+
+			function unhighlight(e) {
+				dropArea.style.backgroundColor = "";
+			}
+
+			// 處理拖曳的文件
+			dropArea.addEventListener("drop", handleDrop, false);
+
+			function handleDrop(e) {
+				let dt = e.dataTransfer;
+				let files = dt.files;
+
+				handleImageUploadFiles(files);
+			}
+
+			// PNG 壓縮
+			async function compressPNGImage(file, ops = {}) {
+				const { quality = initialPNGQuality, noCompressIfLarger = true } = ops;
+				let { width, height } = ops;
+				const arrayBuffer = await file.arrayBuffer();
+				const decoded = UPNG.decode(arrayBuffer);
+				const rgba8 = UPNG.toRGBA8(decoded);
+
+				// If only width or height is specified, scale proportionally
+				if (width && !height) {
+					height = Math.round(decoded.height * (width / decoded.width));
+				} else if (!width && height) {
+					width = Math.round(decoded.width * (height / decoded.height));
+				}
+
+				// TODO: Resize dimensions using canvas
+
+				width = width || decoded.width;
+				height = height || decoded.height;
+
+				const compressed = UPNG.encode(rgba8, width, height, 256 * quality);
+
+				const newFile = new File([compressed], file.name || `${Date.now()}.png`, { type: "image/png" });
+
+				if (!noCompressIfLarger) {
+					return newFile;
+				}
+
+				return file.size > newFile.size ? newFile : file;
+			}
+
+			// 處理上傳的圖片
+			async function handleImageUploadFiles(files) {
+				const zip = new JSZip();
+				let output;
+				let imageGroup = [];
+				let fileSizeGroup = [];
+				let finishSizeGroup = [];
+				let fileSizeGroupSize = 0;
+				let finishSizeGroupSize = 0;
+				let processedFiles = 0;
+				let fileSize = 0;
+				let finishSize = 0;
+				progressDom.innerHTML = `Processing ${files.length} files...`;
+				for (const file of files) {
+					if (file.size / 1024 > 1024) {
+						fileSize = (file.size / 1024 / 1024).toFixed(2) + "mb";
+					} else {
+						fileSize = (file.size / 1024).toFixed(2) + "kb";
+					}
+					fileSizeGroup.push(file.size / 1024);
+					logDom.innerHTML += `<br/>Processing "${file.name}": ${fileSize} ...`;
+					const options = {
+						useWebWorker: true,
+						initialQuality: initialJPGQuality
+					};
+					try {
+						if (file.type === "image/png") {
+							output = await compressPNGImage(file, options);
+						} else {
+							output = await imageCompression(file, options);
+						}
+						if (output.size / 1024 > 1024) {
+							finishSize = (output.size / 1024 / 1024).toFixed(2) + "mb";
+						} else {
+							finishSize = (output.size / 1024).toFixed(2) + "kb";
+						}
+						// output產出Blob
+						finishSizeGroup.push(output.size / 1024);
+						imageGroup.push(output);
+						zip.file(file.name, output);
+						logDom.innerHTML += ` Finished "${file.name}". ${finishSize} ... -${parseInt(((file.size - output.size) / file.size) * 100)}%`;
+
+						fileSizeGroupSize = fileSizeGroup.reduce((a, b) => a + b, 0);
+						finishSizeGroupSize = finishSizeGroup.reduce((a, b) => a + b, 0);
+
+						processedFiles++;
+						progressDom.innerHTML = `Processed ${processedFiles} of ${files.length} files... ${parseInt(((fileSizeGroupSize - finishSizeGroupSize) / fileSizeGroupSize) * 100)}%`;
+					} catch (error) {
+						alert(error.message);
+					}
+				}
+
+				if (processedFiles > 0) {
+					console.log(imageGroup);
+					zip.generateAsync({ type: "blob" }).then(function (content) {
+						const downloadLink = URL.createObjectURL(content);
+						logDom.innerHTML += `<br/>All files processed. <a href="${downloadLink}" download="compressed_images.zip">Download ZIP</a>`;
+					});
+				} else {
+					progressDom.innerHTML = "No files processed.";
+				}
+			}
+
+			async function handleImageUpload(event) {
+				handleImageUploadFiles(event.target.files);
+			}
+
+			// 控制JPG壓縮率開關
+			document.getElementById("useDefaultQuality").addEventListener("change", function (e) {
+				const isDefault = e.target.checked;
+				const customQualityControl = document.getElementById("customQualityControl");
+				const customQualitySlider = document.getElementById("customQuality");
+
+				if (isDefault) {
+					initialJPGQuality = 0.5; // 使用默认的压缩率
+					customQualityControl.style.display = "none"; // 隐藏滑动条
+				} else {
+					customQualityControl.style.display = "block"; // 显示滑动条
+					initialJPGQuality = parseFloat(customQualitySlider.value); // 使用滑动条的值作为压缩率
+				}
+				document.getElementById("qualityValue").textContent = initialJPGQuality.toString();
+			});
+
+			document.getElementById("customQuality").addEventListener("input", function (e) {
+				initialJPGQuality = parseFloat(e.target.value);
+				document.getElementById("qualityValue").textContent = initialJPGQuality.toString();
+			});
+
+			// 控制PNG壓縮率開關
+			document.getElementById("useDefaultPNGQuality").addEventListener("change", function (e) {
+				const isDefault = e.target.checked;
+				const customQualityControl = document.getElementById("customPNGQualityControl");
+				const customQualitySlider = document.getElementById("customPNGQuality");
+
+				if (isDefault) {
+					initialPNGQuality = 0.5;
+					customQualityControl.style.display = "none";
+				} else {
+					customQualityControl.style.display = "block";
+					initialPNGQuality = parseFloat(customQualitySlider.value);
+				}
+				document.getElementById("pngQualityValue").textContent = initialPNGQuality.toString();
+			});
+
+			document.getElementById("customPNGQuality").addEventListener("input", function (e) {
+				initialPNGQuality = parseFloat(e.target.value);
+				document.getElementById("pngQualityValue").textContent = initialPNGQuality.toString();
+			});
+
+			// 初始JPG&PNG使用默認壓縮率
+			const isDefault = document.getElementById("useDefaultQuality").checked;
+			const customQualityControl = document.getElementById("customQualityControl");
+			if (!isDefault) {
+				customQualityControl.style.display = "block";
+			}
+			const isPNGDefault = document.getElementById("useDefaultPNGQuality").checked;
+			const customPNGQualityControl = document.getElementById("customPNGQualityControl");
+			if (!isPNGDefault) {
+				customPNGQualityControl.style.display = "block";
+			}
+		</script>
+	</body>
+</html>

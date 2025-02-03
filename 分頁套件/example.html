@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>分頁套件使用範例</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
+				background-color: #f5f5f5;
+			}
+
+			.demo-section {
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				margin-bottom: 20px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			h2 {
+				color: #333;
+				margin-bottom: 15px;
+			}
+
+			.pagination-container {
+				margin: 20px 0;
+			}
+
+			/* 分頁基本樣式 */
+			.pagination-numbers {
+				padding: 0;
+				margin: 0;
+				gap: 5px;
+			}
+
+			.pagination-numbers__item,
+			.pagination-numbers__symbol {
+				padding: 8px 12px;
+				margin: 0 2px;
+				cursor: pointer;
+				border-radius: 4px;
+				background-color: #fff;
+				border: 1px solid #ddd;
+				color: #333;
+				list-style: none;
+				user-select: none;
+			}
+			.pagination-numbers__item.ellipsis:hover {
+				background-color: transparent !important;
+			}
+
+			/* 控制面板樣式 */
+			.control-panel {
+				margin-top: 10px;
+				padding: 10px;
+				background-color: #f8f9fa;
+				border-radius: 4px;
+			}
+
+			.control-panel button {
+				margin: 5px;
+				padding: 5px 10px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				background-color: #fff;
+				cursor: pointer;
+			}
+
+			.control-panel button:hover {
+				background-color: #e9ecef;
+			}
+
+			/* 代碼展示區域 */
+			pre {
+				background-color: #f8f9fa;
+				padding: 15px;
+				border-radius: 4px;
+				overflow-x: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>分頁套件使用範例</h1>
+
+		<!-- 普通分頁模式 -->
+		<section class="demo-section">
+			<h2>普通分頁模式</h2>
+			<div id="normalPagination" class="pagination-container"></div>
+			<div class="control-panel" data-type="normal">
+				<button data-action="backward">上2頁</button>
+				<button data-action="forward">下2頁</button>
+				<button data-action="reset">重置</button>
+				<button data-action="updateTotal">更新總頁數</button>
+			</div>
+		</section>
+
+		<!-- 置中分頁模式 -->
+		<section class="demo-section">
+			<h2>置中分頁模式</h2>
+			<div id="centerPagination" class="pagination-container"></div>
+			<div class="control-panel" data-type="center">
+				<button data-action="backward">上2頁</button>
+				<button data-action="forward">下2頁</button>
+				<button data-action="reset">重置</button>
+				<button data-action="updateTotal">更新總頁數</button>
+			</div>
+		</section>
+
+		<script type="module">
+			import PaginationCore from "./js/PaginationCore.js";
+
+			// 普通分頁實例
+			const normalPagination = new PaginationCore({
+				container: document.querySelector("#normalPagination"),
+				totalPage: 100,
+				pageNumberLimit: 5
+			});
+
+			normalPagination.on("init", (page) => {
+				console.log(`普通分頁模式 - 初始化完成，當前頁碼：${page}`);
+			});
+
+			normalPagination.on("pageChange", (page) => {
+				console.log(`普通分頁模式 - 當前頁碼：${page}`);
+			});
+
+			// 置中分頁實例
+			const centerPagination = new PaginationCore({
+				container: document.querySelector("#centerPagination"),
+				totalPage: 100,
+				pageNumberLimit: 5,
+				mode: "center",
+				styles: {
+					active: {
+						"background-color": "#28a745",
+						color: "white",
+						"border-color": "#28a745"
+					},
+					normal: {
+						transition: "all 0.3s ease"
+					},
+					hover: {
+						"background-color": "#e9ecef"
+					},
+					disabled: {
+						opacity: "0.5",
+						cursor: "not-allowed"
+					}
+				},
+				init: (page) => {
+					console.log(`置中分頁模式 - 初始化完成，當前頁碼：${page}`);
+				},
+				pageChange: (page) => {
+					console.log(`置中分頁模式 - 當前頁碼：${page}`);
+				}
+			});
+
+			// 更新總頁數功能
+			async function updateTotalPage(pagination, type) {
+				const newTotalPage = Math.floor(Math.random() * 30) + 10; // 隨機生成10-40的數字
+				try {
+					const result = await pagination.updateTotalPage(newTotalPage);
+					console.log(`${type}分頁更新成功 - 總頁數：${result.totalPage}，當前頁碼：${result.currentPage}`);
+				} catch (error) {
+					console.error("更新總頁數失敗：", error.message);
+				}
+			}
+
+			// 事件委派處理按鈕點擊
+			document.addEventListener("click", (event) => {
+				const button = event.target.closest("button");
+				if (!button) return;
+
+				const controlPanel = button.closest(".control-panel");
+				if (!controlPanel) return;
+
+				const type = controlPanel.dataset.type;
+				const action = button.dataset.action;
+				const pagination = type === "normal" ? normalPagination : centerPagination;
+
+				switch (action) {
+					case "backward":
+						pagination.goBackward(2);
+						break;
+					case "forward":
+						pagination.goForward(2);
+						break;
+					case "reset":
+						pagination.reset();
+						break;
+					case "updateTotal":
+						updateTotalPage(pagination, type);
+						break;
+				}
+			});
+		</script>
+	</body>
+</html>
