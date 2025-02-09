@@ -3,7 +3,8 @@ let page1 = {
 	setup(props) {
 		// Destructure props reactively
 		const { data } = Vue.toRefs(props);
-
+		let money = Vue.ref(100000);
+		let isJSReady = Vue.ref(false);
 		// Computed properties for safe access
 		const string = Vue.computed(() => data.value?.string);
 		// "backgroundImage": "./images/share-logo-lineage-free.png"
@@ -13,6 +14,12 @@ let page1 = {
 		const object = Vue.computed(() => data.value?.object);
 		const array = Vue.computed(() => data.value?.array);
 		const HTML = Vue.computed(() => data.value?.HTML);
+		let handleClick = () => {
+			Hello();
+		};
+		let toThousand = Vue.computed(() => {
+			return toThousands(money.value);
+		});
 
 		return {
 			string,
@@ -20,7 +27,10 @@ let page1 = {
 			img,
 			object,
 			array,
-			HTML
+			HTML,
+			handleClick,
+			money,
+			toThousand
 		};
 	},
 	template: `
@@ -39,6 +49,10 @@ let page1 = {
 		   <ul v-for="a in array"><span>{{a}}</span></ul>
 		   <hr />
 		   <div v-html="HTML"></div>
+		   <hr />
+			<a href="javascript:;" @click="handleClick">按鈕</a>
+			<br />
+			<div>{{toThousand}}</div>
 		</div>
 	  `
 };
