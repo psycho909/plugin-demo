@@ -18,7 +18,7 @@
 			<h1>Hello World</h1>
 		</div>
 		<script>
-			function ZoomAdapter({ baseWidth = 1920, elementSelector = "#app", debounceDelay = 100 } = {}) {
+			function ZoomAdapter({ baseWidth = 1920, elementSelector = "body", debounceDelay = 100 } = {}) {
 				function adjustZoom() {
 					const windowWidth = window.innerWidth;
 					const appElement = document.querySelector(elementSelector);
@@ -47,7 +47,7 @@
 			}
 
 			// 直接使用
-			ZoomAdapter({ baseWidth: 1600, elementSelector: "body" });
+			ZoomAdapter({ baseWidth: 1600 });
 		</script>
 	</body>
 </html>

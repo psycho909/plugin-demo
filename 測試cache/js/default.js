@@ -20,7 +20,22 @@ function fetchNonCachedJSON(url) {
 			console.error("獲取JSON時發生錯誤:", error);
 		});
 }
+// 動態載入 CSS 文件，避免快取
+function loadCSS(url) {
+	const timestamp = new Date().getTime(); // 生成唯一時間戳
+	const fullUrl = `${url}?_=${timestamp}`; // 加上時間戳參數
 
+	const link = document.createElement("link");
+	link.rel = "stylesheet";
+	link.href = fullUrl; // 動態設置 href
+
+	document.head.appendChild(link); // 加入到 <head> 中
+}
+
+// 在頁面載入時動態加載 CSS
+// document.addEventListener("DOMContentLoaded", () => {
+// 	loadCSS("styles.css"); // 將 'styles.css' 替換為你的 CSS 檔案路徑
+// });
 // 使用範例
 // fetchNonCachedJSON("data.json").then((data) => {
 // 	// 處理載入的資料

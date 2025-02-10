@@ -1,0 +1,9 @@
+.logo {
+	width: 195px;
+	height: 90px;
+	background-size: 100%;
+	background-image: url(./images/share-logo-lineage-m.png);
+	position: fixed;
+	bottom: 0;
+	right: 0;
+}
