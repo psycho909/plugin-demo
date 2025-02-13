@@ -47,7 +47,13 @@
 			}
 
 			// 直接使用
-			ZoomAdapter({ baseWidth: 1600 });
+			ZoomAdapter({ baseWidth: 1200 });
+			// 注意事項
+			/*
+			1.使用時不要使用VW
+			2.不要使用min-width控制頁面寬度
+			3.獲取區塊距離時不是使用offsetTop，而是使用getBoundingClientRect().top
+			*/
 		</script>
 	</body>
 </html>

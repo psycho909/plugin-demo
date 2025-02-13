@@ -3,10 +3,10 @@
 (function (exports) {
 	// Function to update sharing links
 	function updateShareLinks(container = document) {
-		const defaultUrl = window.location.origin + window.location.pathname;
+		const defaultUrl = window.location.href;
 		const defaultTitle = document.title;
 		const defaultDesc = document.querySelector('meta[name="description"]')?.getAttribute("content") || "";
-
+		const defaultCopyText = "連結已複製!";
 		// Update each share link
 		container.querySelectorAll(".g-share *").forEach((el) => {
 			// 找到當前元素的最近的 .g-share 父元素
@@ -15,6 +15,7 @@
 			const customTitle = el.getAttribute("data-title") || (parentShare ? parentShare.getAttribute("data-title") : null) || defaultTitle;
 			const customDesc = el.getAttribute("data-desc") || (parentShare ? parentShare.getAttribute("data-desc") : null) || defaultDesc;
 			const customHashtag = el.getAttribute("data-hashtag") || (parentShare ? parentShare.getAttribute("data-hashtag") : null);
+			const customCopyText = el.getAttribute("data-copy-text") || (parentShare ? parentShare.getAttribute("data-copy-text") : null) || defaultCopyText;
 			// Process hashtags
 			let twitterHashtags = "";
 			let facebookHashtags = "";
@@ -43,11 +44,10 @@
 					};
 					break;
 				case el.classList.contains("g-share-copy"):
-					連結以複製;
 					el.onclick = () => {
 						navigator.clipboard
 							.writeText(customUrl)
-							.then(() => alert("連結已複製!"))
+							.then(() => alert(customCopyText))
 							.catch((err) => console.error("Error in copying text: ", err));
 					};
 					break;

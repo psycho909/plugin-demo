@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>XSS 測試 & 防禦</title>
+	</head>
+	<body>
+		<h2>🚨 XSS 測試 & 防禦示範</h2>
+
+		<h3>❌ ⚠️ 不安全版本（容易遭受 XSS 攻擊）</h3>
+		<input type="text" id="unsafeInput" placeholder="輸入 XSS 測試內容..." />
+		<button onclick="unsafeSubmit()">提交</button>
+		<div id="unsafeOutput" style="border: 1px solid red; padding: 10px; margin-top: 10px"></div>
+
+		<h3>✅ 安全版本（防範 XSS）</h3>
+		<input type="text" id="safeInput" placeholder="輸入安全內容..." />
+		<button onclick="safeSubmit()">提交</button>
+		<div id="safeOutput" style="border: 1px solid green; padding: 10px; margin-top: 10px"></div>
+
+		<h3>🔥 快速 XSS 測試</h3>
+		<button onclick="injectXSS1()">🖼 `img onerror` 測試</button>
+		<button onclick="injectXSS2()">🔗 `javascript:` 連結測試</button>
+		<button onclick="injectXSS3()">⏳ `setTimeout` 延遲測試</button>
+
+		<script>
+			// ❌ 不安全的 XSS 版本
+			function unsafeSubmit() {
+				const userInput = document.getElementById("unsafeInput").value;
+				document.getElementById("unsafeOutput").innerHTML = userInput; // ⚠️ XSS 注入漏洞
+			}
+
+			// ✅ 安全的 XSS 防範方法
+			function safeSubmit() {
+				const userInput = document.getElementById("safeInput").value;
+				document.getElementById("safeOutput").innerHTML = escapeHTML(userInput); // ✅ 防止 XSS
+			}
+
+			// ✅ 轉義 HTML，防止 XSS 攻擊
+			function escapeHTML(str) {
+				return str.replace(
+					/[&<>"']/g,
+					(match) =>
+						({
+							"&": "&amp;",
+							"<": "&lt;",
+							">": "&gt;",
+							'"': "&quot;",
+							"'": "&#039;"
+						}[match])
+				);
+			}
+
+			// 🔥 快速 XSS 測試按鈕
+			function injectXSS1() {
+				document.getElementById("unsafeOutput").innerHTML = `<img src="x" onerror="alert('XSS')">`;
+				document.getElementById("safeOutput").innerHTML = escapeHTML(`<img src="x" onerror="alert('XSS')">`);
+			}
+
+			function injectXSS2() {
+				document.getElementById("unsafeOutput").innerHTML = `<a href="javascript:alert('XSS')">點我</a>`;
+				document.getElementById("safeOutput").innerHTML = escapeHTML(`<a href="javascript:alert('XSS')">點我</a>`);
+			}
+
+			function injectXSS3() {
+				document.getElementById("unsafeOutput").innerHTML = `<img src="x" onerror="setTimeout(()=>{alert('XSS')}, 2000)">`;
+				document.getElementById("safeOutput").innerHTML = escapeHTML(`<img src="x" onerror="setTimeout(()=>{alert('XSS')}, 2000)">`);
+			}
+		</script>
+	</body>
+</html>
