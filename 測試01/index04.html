@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div id="button">按鈕</div>
+		<script>
+			let url = "https://sse.dev/test";
+			async function listenToSSE(url) {
+				const response = await fetch(url, {
+					headers: {
+						Accept: "text/event-stream"
+					}
+				});
+
+				const reader = response.body.getReader();
+				const decoder = new TextDecoder();
+
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) {
+						console.log("數據流結束");
+						break;
+					}
+					const chunk = decoder.decode(value);
+					console.log("收到數據塊:", chunk);
+
+					// 手動解析 SSE 格式
+					const lines = chunk.split("\n");
+					lines.forEach((line) => {
+						if (line.startsWith("data:")) {
+							const data = line.slice(5).trim();
+							console.log("解析後的數據:", data);
+						}
+					});
+				}
+			}
+
+			// // 使用範例
+			// listenToSSE(url);
+
+			const parseChunk = (chunk, splitter = " \n\n") => {
+				const results = [];
+				const lines = chunk.split(splitter);
+
+				for (const line of lines) {
+					try {
+						// 跳過空行或無效數據
+						if (!line.trim()) continue;
+
+						// 檢查是否為完整 JSON
+						const json = JSON.parse(line);
+						results.push(json);
+					} catch (error) {
+						// 若 JSON 不完整，返回 null（需要主邏輯補全）
+						results.push(null);
+					}
+				}
+
+				return results.filter((result) => !!result);
+			};
+			const getChatCompletionStream = async (url) => {
+				const response = await fetch(url, {
+					headers: {
+						Accept: "text/event-stream" // 指定接受流式回應
+					}
+				});
+
+				if (response.status !== 200) {
+					const result = await response.json();
+					const { detail, msg } = result;
+					if (Array.isArray(detail) && detail.length > 0) {
+						const [{ msg: detailMsg }] = detail;
+						throw new Error(detailMsg || "Unexpected error");
+					}
+					throw new Error(detail || msg || "Unexpected error");
+				}
+
+				if (!response.body) throw new Error("Stream not supported by the server.");
+				const stream = response.body;
+				return stream;
+			};
+			// getChatCompletionStream(url);
+			const handleSubmit = async (url) => {
+				let generating = true;
+
+				try {
+					const stream = await getChatCompletionStream(url);
+
+					if (stream) {
+						if (stream.locked) {
+							throw new Error("Oops, the stream is locked right now. Please try again");
+						}
+						const reader = stream.getReader();
+						const decoder = new TextDecoder("utf-8");
+						let partial = ""; // 未完整解析的片段
+						let lastUpdateTimestamp = Date.now();
+						try {
+							while (generating) {
+								const { done, value } = await reader.read();
+
+								if (done) break;
+								// 解碼 chunk，拼接上未完成的部分
+								const decodedChunk = partial + decoder.decode(value, { stream: true });
+								// console.log(decodedChunk);
+								// 將最後一個不完整部分保存到 partial
+								// const lines = decodedChunk.split(" \n\n");
+								const lines = decodedChunk.split("\n");
+								partial = lines.pop() || ""; // 保留未完成的部分
+
+								// 使用 parseChunk 處理完整的資料
+								const parsedResults = parseChunk(decodedChunk, "\n");
+								// console.log(parsedResults);
+								for (const parsed of parsedResults) {
+									if ("message" in parsed) {
+										// 處理訊息類型的回應
+										const { message } = parsed;
+										// 可以在這裡處理收到的訊息
+										console.log("收到訊息:", message.content);
+									} else if (parsed.type === "relevant_documents") {
+										// 處理相關文件的回應
+										console.log("收到相關文件:", parsed);
+									}
+
+									// 限制日誌輸出頻率
+									if (Date.now() - lastUpdateTimestamp > 1000) {
+										lastUpdateTimestamp = Date.now();
+										console.log("處理中...");
+									}
+								}
+							}
+						} catch (error) {
+							console.error("Error during stream processing:", error);
+							throw new Error("Error during stream processing");
+						} finally {
+							try {
+								await reader.cancel("Stream handling finished.");
+								await stream.cancel();
+							} catch (e) {
+								console.warn("Stream cancellation failed:", e);
+							} finally {
+								reader.releaseLock();
+							}
+						}
+					}
+				} catch (e) {
+					console.error("錯誤:", e);
+				} finally {
+					generating = false;
+					console.log("串流處理完成");
+				}
+			};
+			handleSubmit(url)
+				.then(() => {
+					console.log("處理完成");
+				})
+				.catch((error) => {
+					console.error("發生錯誤:", error);
+				});
+		</script>
+	</body>
+</html>

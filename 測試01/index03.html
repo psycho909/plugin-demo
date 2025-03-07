@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Scroll to Bottom</title>
+		<style>
+			#chat-container {
+				height: 400px;
+				overflow-y: auto;
+				border: 1px solid #ccc;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="chat-container"></div>
+		<button onclick="addMessage()">新增訊息</button>
+
+		<script>
+			const container = document.getElementById("chat-container");
+
+			// 新增訊息並滾動到底部
+			function addMessage() {
+				const message = document.createElement("div");
+				message.textContent = `訊息 ${container.children.length + 1}`;
+				container.appendChild(message);
+
+				// 滾動到底部
+				container.scrollTop = container.scrollHeight;
+			}
+		</script>
+	</body>
+</html>
