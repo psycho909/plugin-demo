@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>響應式 Toast 通知示範</title>
+		<style>
+			body {
+				font-family: "Arial", sans-serif;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+				margin: 0;
+				background-color: #f5f5f5;
+			}
+
+			.toast-container {
+				position: fixed;
+				top: 20px;
+				left: 50%;
+				transform: translateX(-50%);
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				z-index: 1000;
+				pointer-events: none; /* 允許點擊穿透容器 */
+				width: 90%;
+				max-width: 500px;
+			}
+
+			.toast {
+				width: 100%;
+				padding: 15px 20px;
+				border-radius: 4px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				animation: slideDown 0.4s ease-out forwards;
+				cursor: pointer;
+				pointer-events: auto; /* 恢復 toast 的點擊事件 */
+				text-align: center;
+				box-sizing: border-box;
+			}
+
+			.toast-message {
+				flex: 1;
+				text-align: left;
+				word-break: break-word;
+			}
+
+			.toast.success {
+				background-color: #4caf50;
+				color: white;
+			}
+
+			.toast.error {
+				background-color: #f44336;
+				color: white;
+			}
+
+			.toast.info {
+				background-color: #2196f3;
+				color: white;
+			}
+
+			.toast.warning {
+				background-color: #ff9800;
+				color: white;
+			}
+
+			.toast-close {
+				font-size: 20px;
+				margin-left: 10px;
+				cursor: pointer;
+				flex-shrink: 0;
+			}
+
+			.button-container {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 10px;
+				margin-top: 20px;
+				position: relative;
+				z-index: 900;
+				padding: 0 15px;
+			}
+
+			button {
+				padding: 10px 15px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-weight: bold;
+			}
+
+			button.success {
+				background-color: #4caf50;
+				color: white;
+			}
+
+			button.error {
+				background-color: #f44336;
+				color: white;
+			}
+
+			button.info {
+				background-color: #2196f3;
+				color: white;
+			}
+
+			button.warning {
+				background-color: #ff9800;
+				color: white;
+			}
+
+			@keyframes slideDown {
+				from {
+					transform: translateY(-50px);
+					opacity: 0;
+				}
+				to {
+					transform: translateY(0);
+					opacity: 1;
+				}
+			}
+
+			@keyframes fadeUp {
+				from {
+					transform: translateY(0);
+					opacity: 1;
+				}
+				to {
+					transform: translateY(-50px);
+					opacity: 0;
+				}
+			}
+
+			.fade-out {
+				animation: fadeUp 0.3s ease-in forwards;
+			}
+
+			/* 響應式樣式 */
+			@media screen and (max-width: 600px) {
+				.toast-container {
+					width: 95%;
+					top: 10px;
+				}
+
+				.toast {
+					padding: 12px 15px;
+					font-size: 14px;
+				}
+
+				.toast-close {
+					font-size: 18px;
+				}
+
+				h1 {
+					font-size: 24px;
+				}
+
+				p {
+					font-size: 14px;
+				}
+
+				button {
+					padding: 8px 12px;
+					font-size: 14px;
+				}
+			}
+
+			@media screen and (max-width: 400px) {
+				.toast-container {
+					width: 98%;
+					top: 5px;
+				}
+
+				.toast {
+					padding: 10px 12px;
+					font-size: 13px;
+				}
+
+				h1 {
+					font-size: 20px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1>響應式 Toast 通知示範</h1>
+		<p>點擊下方按鈕來顯示不同類型的通知</p>
+
+		<div class="button-container">
+			<button class="success" onclick="showToast('這是一個成功訊息！操作已完成。', 'success')">成功</button>
+			<button class="error" onclick="showToast('發生錯誤！請稍後再試。', 'error')">錯誤</button>
+			<button class="info" onclick="showToast('這是一個資訊通知。請注意相關事項。', 'info')">資訊</button>
+			<button class="warning" onclick="showToast('警告！請確認您的操作是否正確。', 'warning')">警告</button>
+			<button onclick="showToast('這是一個很長的訊息範例，用來測試在各種螢幕尺寸下的顯示效果。這個訊息會自動換行並適應不同的裝置寬度。', 'info', 5000)">長訊息測試</button>
+		</div>
+
+		<div class="toast-container" id="toastContainer"></div>
+
+		<script>
+			// Toast 功能的主要 JavaScript 代碼
+			function showToast(message, type = "info", duration = 3000) {
+				// 創建 toast 容器（如果不存在）
+				const toastContainer = document.getElementById("toastContainer");
+
+				// 創建新的 toast 元素
+				const toast = document.createElement("div");
+				toast.className = `toast ${type}`;
+
+				// 添加訊息區域
+				const messageSpan = document.createElement("span");
+				messageSpan.className = "toast-message";
+				messageSpan.textContent = message;
+				toast.appendChild(messageSpan);
+
+				// 添加關閉按鈕
+				const closeBtn = document.createElement("span");
+				closeBtn.className = "toast-close";
+				closeBtn.innerHTML = "&times;";
+				closeBtn.onclick = function (e) {
+					e.stopPropagation(); // 防止事件冒泡
+					closeToast(toast);
+				};
+				toast.appendChild(closeBtn);
+
+				// 點擊 toast 也可以關閉它
+				toast.onclick = function () {
+					closeToast(toast);
+				};
+
+				// 添加到容器
+				toastContainer.appendChild(toast);
+
+				// 設置自動關閉計時器
+				setTimeout(() => {
+					if (document.body.contains(toast)) {
+						closeToast(toast);
+					}
+				}, duration);
+
+				// 返回 toast 元素，以便需要時可以進一步操作
+				return toast;
+			}
+
+			// 關閉 toast 的函數
+			function closeToast(toast) {
+				toast.classList.add("fade-out");
+				toast.addEventListener("animationend", function () {
+					if (document.body.contains(toast)) {
+						toast.remove();
+					}
+				});
+			}
+
+			// 用於檢測設備方向變化的事件監聽器
+			window.addEventListener("resize", function () {
+				// 響應視窗大小調整，可以在這裡添加額外的響應式邏輯
+				// 例如，在極小的視窗中隱藏某些元素等
+			});
+		</script>
+	</body>
+</html>
