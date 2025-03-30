@@ -81,13 +81,16 @@ export default defineConfig({
 				chunkFileNames: "assets/[name].[hash].js",
 				assetFileNames: (assetInfo) => {
 					// 依據資源類型使用不同的目錄和名稱格式
-					if (assetInfo.name.endsWith(".css")) {
+					const fileName = assetInfo.fileName || assetInfo.name || "";
+
+					// 檢查文件類型
+					if (fileName.endsWith(".css") || assetInfo.type === "css") {
 						return "assets/styles/[name].[hash].[ext]";
 					}
-					if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(assetInfo.name)) {
+					if (/\.(png|jpe?g|gif|svg|webp|ico)$/.test(fileName)) {
 						return "assets/images/[name].[hash].[ext]";
 					}
-					if (/\.(woff2?|eot|ttf|otf)$/.test(assetInfo.name)) {
+					if (/\.(woff2?|eot|ttf|otf)$/.test(fileName)) {
 						return "assets/fonts/[name].[hash].[ext]";
 					}
 					return "assets/[name].[hash].[ext]";
@@ -124,6 +127,17 @@ export default defineConfig({
 3. **字體文件**：會輸出到 `assets/fonts/` 目錄
 4. **其他資源**：會輸出到 `assets/` 目錄
 
+#### 版本相容性說明
+
+請注意，在 Vite 3.0 及更高版本中，`assetInfo.name` 已被棄用（deprecated）。雖然目前仍可使用，但未來版本可能會完全移除此屬性。因此，推薦使用 `assetInfo.fileName` 或檢查 `assetInfo.type` 來確定資源類型，如上面代碼中所示：
+
+```javascript
+const fileName = assetInfo.fileName || assetInfo.name || "";
+if (fileName.endsWith(".css") || assetInfo.type === "css") {
+	// CSS 文件處理
+}
+```
+
 這樣的組織結構讓靜態資源更加有條理，也便於管理和引用。
 
 ## .NET Core 配置
@@ -151,7 +165,7 @@ else
     <script type="module" src="~/@Model.MainJsPath"></script>
 }
 
-<input type="hidden" id="csrf-token" name="__RequestVerificationToken" value="@Model.CsrfToken" />
+<input type="hidden" id="csrf-token" name="__RequestVerificationToken" value="123123213213" />
 <div id="app"></div>
 ```
 
@@ -160,7 +174,6 @@ else
 ```csharp
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Cryptography;
 using System.Text.Json;
 using System.IO;
 using System.Collections.Generic;
@@ -182,29 +195,11 @@ namespace WebApplication2.Pages
 
 		public void OnGet()
 		{
-			// 生成隨機 token
-			CsrfToken = GenerateRandomToken();
-
-			// 設置 cookie
-			HttpContext.Response.Cookies.Append("XSRF-TOKEN",
-				CsrfToken,
-				new CookieOptions
-				{
-					HttpOnly = false,
-					Secure = true,
-					SameSite = SameSiteMode.Strict
-				});
-
 			// 如果不是開發環境，從manifest讀取資源路徑
 			if (!Environment.IsDevelopment())
 			{
 				LoadAssetsFromManifest();
 			}
-		}
-
-		private string GenerateRandomToken()
-		{
-			return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 		}
 
 		private void LoadAssetsFromManifest()
@@ -557,3 +552,269 @@ if (root.TryGetProperty("index.html", out JsonElement indexHtml))
     - 定期在生產模式下測試應用
     - 確保 manifest.json 解析正常
     - 檢查資源路徑是否正確加載
+
+## 方案二：將 Vite 資源整合到 Layout 中
+
+除了在每個頁面中單獨處理 Vite 資源外，還可以將資源引用整合到 \_Layout.cshtml 中，這樣能更好地集中管理所有頁面的資源引用。
+
+### 1. 創建 ManifestViewComponent
+
+```csharp
+// Components/ManifestViewComponent.cs
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.IO;
+
+namespace WebApplication2.Components
+{
+    public class ManifestViewComponent : ViewComponent
+    {
+        private readonly IWebHostEnvironment _environment;
+        private static Dictionary<string, string> _assetPaths = new Dictionary<string, string>();
+
+        public ManifestViewComponent(IWebHostEnvironment environment)
+        {
+            _environment = environment;
+        }
+
+        public IViewComponentResult Invoke()
+        {
+            if (!_environment.IsDevelopment())
+            {
+                LoadAssetsFromManifest();
+            }
+
+            return View(_assetPaths);
+        }
+
+        private void LoadAssetsFromManifest()
+        {
+            try
+            {
+                // 如果已經載入過，就不重複載入
+                if (_assetPaths.Count > 0)
+                {
+                    return;
+                }
+
+                string manifestPath = Path.Combine(_environment.WebRootPath, ".vite", "manifest.json");
+                if (System.IO.File.Exists(manifestPath))
+                {
+                    string manifestContent = System.IO.File.ReadAllText(manifestPath);
+                    using (JsonDocument doc = JsonDocument.Parse(manifestContent))
+                    {
+                        JsonElement root = doc.RootElement;
+                        if (root.TryGetProperty("index.html", out JsonElement indexHtml))
+                        {
+                            // 獲取 JS 路徑
+                            if (indexHtml.TryGetProperty("file", out JsonElement fileElement) &&
+                                fileElement.GetString() != null)
+                            {
+                                _assetPaths["MainJsPath"] = fileElement.GetString() ?? "assets/index.js";
+                            }
+                            else
+                            {
+                                _assetPaths["MainJsPath"] = "assets/index.js";
+                            }
+
+                            // 獲取 CSS 路徑
+                            if (indexHtml.TryGetProperty("css", out JsonElement cssArray) &&
+                                cssArray.GetArrayLength() > 0 &&
+                                cssArray[0].GetString() != null)
+                            {
+                                _assetPaths["CssPath"] = cssArray[0].GetString() ?? "assets/styles/index.css";
+                            }
+                            else
+                            {
+                                _assetPaths["CssPath"] = "assets/styles/index.css";
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // 找不到 manifest.json 時使用預設值
+                    _assetPaths["MainJsPath"] = "assets/index.js";
+                    _assetPaths["CssPath"] = "assets/styles/index.css";
+                }
+            }
+            catch
+            {
+                // 發生錯誤時使用預設值
+                _assetPaths["MainJsPath"] = "assets/index.js";
+                _assetPaths["CssPath"] = "assets/styles/index.css";
+            }
+        }
+    }
+}
+```
+
+### 2. 創建 ViewComponent 視圖
+
+在 `Pages/Shared/Components/Manifest` 目錄下創建 `Default.cshtml` 文件：
+
+```cshtml
+@model Dictionary<string, string>
+
+@if (Model.ContainsKey("CssPath") && !string.IsNullOrEmpty(Model["CssPath"]))
+{
+    <link rel="stylesheet" href="~/@Model["CssPath"]" />
+}
+
+@if (Model.ContainsKey("MainJsPath") && !string.IsNullOrEmpty(Model["MainJsPath"]))
+{
+    <script type="module" src="~/@Model["MainJsPath"]"></script>
+}
+```
+
+### 3. 修改 \_Layout.cshtml
+
+```cshtml
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@using Microsoft.Extensions.DependencyInjection
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebApplication2</title>
+
+    @if (ViewContext.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+    {
+        <!-- 開發環境：使用 Vite 開發服務器 -->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/WebApplication2.styles.css" asp-append-version="true" />
+
+        <!-- Vite 開發服務器 -->
+        <script type="module" src="http://localhost:5173/@@vite/client"></script>
+        <script type="module" src="http://localhost:5173/src/main.js"></script>
+    }
+    else
+    {
+        <!-- 生產環境：使用靜態文件 -->
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/WebApplication2.styles.css" asp-append-version="true" />
+
+        <!-- 從 manifest.json 讀取的 Vite 資源 -->
+        @await Component.InvokeAsync("Manifest")
+    }
+</head>
+<body>
+    <header>
+        <!-- ... existing header code ... -->
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <!-- ... existing footer code ... -->
+    </footer>
+
+    @if (ViewContext.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+    {
+        <!-- 開發環境 JS 文件 -->
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    }
+    else
+    {
+        <!-- 生產環境 JS 文件 -->
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+```
+
+### 4. 簡化 Index.cshtml
+
+```cshtml
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<input type="hidden" id="csrf-token" name="__RequestVerificationToken" value="123" />
+<div id="app"></div>
+```
+
+### 5. ViewComponent 路徑說明
+
+ASP.NET Core 有嚴格的 ViewComponent 命名和位置約定：
+
+1. **ViewComponent 類位置**：
+
+    - 通常放在 `Components` 目錄
+    - 名稱必須以 `ViewComponent` 結尾（如 `ManifestViewComponent`）
+
+2. **ViewComponent 視圖位置**：
+
+    - 必須放在以下位置之一：
+        - /Pages/Shared/Components/{ComponentName}/Default.cshtml
+        - /Views/Shared/Components/{ComponentName}/Default.cshtml
+    - 其中 {ComponentName} 是 ViewComponent 類名稱去掉 "ViewComponent" 後綴
+
+3. **目錄結構示例**：
+
+```
+WebApplication2/
+├── Components/
+│   └── ManifestViewComponent.cs
+├── Pages/
+│   ├── Shared/
+│   │   ├── Components/
+│   │   │   └── Manifest/
+│   │   │       └── Default.cshtml
+│   │   └── _Layout.cshtml
+```
+
+### 6. 優點
+
+1. **集中管理資源**：
+
+    - 所有頁面共享同一個 Layout
+    - 避免在每個頁面中重複處理環境判斷和資源引用
+
+2. **性能優化**：
+
+    - manifest.json 只需讀取一次（靜態字典）
+    - 適合大型應用與多頁面
+
+3. **更好的關注點分離**：
+
+    - 資源引用邏輯封裝在 ViewComponent 中
+    - 各頁面只關注內容，不需關心資源引用
+
+4. **維護性提升**：
+    - 修改資源引用只需修改一處代碼
+    - 新增頁面不需重複處理資源引用
+
+### 7. 注意事項
+
+1. **注意視圖位置**：
+
+    - ViewComponent 視圖必須放在正確的目錄下
+    - 錯誤的位置會導致「視圖未找到」錯誤
+
+2. **進程衝突處理**：
+
+    - 如遇到進程衝突問題，使用 `taskkill` 命令關閉佔用進程
+    - 使用 `dotnet clean` 清理項目後再構建
+
+3. **測試生產環境**：
+    - 使用命令或修改 launchSettings.json 切換環境
+    - 確保 ViewComponent 能正確讀取 manifest.json
