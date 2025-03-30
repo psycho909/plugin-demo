@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://tw.hicdn.beanfun.com/plugins/gsap/3.12.7/gsap.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/gsap/3.12.7/Draggable.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/gsap/3.12.7/InertiaPlugin.min.js"></script>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			body {
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				position: fixed;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+			}
+			#container {
+				width: 100%;
+				height: 100%;
+			}
+			.kit-transition {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 2560px;
+				height: 1440px;
+				margin-top: -720px;
+				margin-left: -1280px;
+				max-width: 2560px;
+				max-height: 1440px;
+			}
+			.section5 {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				overflow: hidden;
+				transform: translateZ(0);
+				background: #101617;
+			}
+			.section5__tit {
+				width: 678px;
+				height: 138px;
+				margin-top: -69px;
+				margin-left: -339px;
+				background: url(https://assets.playnccdn.com/res/lineage/update/2024/240821_update/2nd/pc/img/section5/f8788c780128dc0353b4b077ffe581266507625d.webp) no-repeat 50% 0;
+				margin-top: -371px;
+				font-size: 0;
+			}
+			.section5__txt {
+				width: 590px;
+				height: 27px;
+				margin-top: -14px;
+				margin-left: -295px;
+				background: url(https://assets.playnccdn.com/res/lineage/update/2024/240821_update/2nd/pc/img/section5/2a8292eec841a928efabbd6e2a7967a365ae14ea.webp) no-repeat 50% 0;
+				margin-top: -217px;
+			}
+			.section5__tit,
+			.section5__txt {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				z-index: 1;
+			}
+
+			.section5__map {
+				width: 2560px;
+				height: 1440px;
+				position: absolute;
+			}
+			.section5__map-video {
+				display: inline-block;
+				position: relative;
+				overflow: hidden;
+				background: #000;
+				width: 100%;
+				height: 100%;
+				max-width: 100%;
+				max-height: 100%;
+			}
+			.kit-video__screen {
+				object-fit: cover;
+				object-position: 50% 50%;
+				width: 100%;
+				height: 100%;
+			}
+			.section5__map-btn {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 200px;
+				height: 44px;
+				margin-top: -22px;
+				margin-left: -100px;
+				background: url(https://assets.playnccdn.com/res/lineage/update/2024/240821_update/2nd/pc/img/section5/4c4f7ad13d3ad4905eb4df7e26b771ce1d784e6b.webp) no-repeat 50% 0;
+				border: 0;
+				cursor: pointer;
+			}
+			.section5__map-btn:before {
+				position: absolute;
+				top: -70px;
+				left: 50%;
+				width: 76px;
+				height: 74px;
+				margin-left: -38px;
+				background: url(https://assets.playnccdn.com/res/lineage/update/2024/240821_update/2nd/pc/img/section5/65052a8e45ae677cbddc74268f2271d03c4cf5fb.webp) no-repeat 50% 0;
+				content: "";
+				transition: 0.4s;
+			}
+			.section5__map-btn:after {
+				position: absolute;
+				top: -70px;
+				left: 50%;
+				width: 76px;
+				height: 74px;
+				margin-left: -38px;
+				background: url(https://assets.playnccdn.com/res/lineage/update/2024/240821_update/2nd/pc/img/section5/65052a8e45ae677cbddc74268f2271d03c4cf5fb.webp) no-repeat 50% 0;
+				content: "";
+				transition: 0.4s;
+			}
+			.section5__map-btn:hover:before {
+				transform: rotate(-180deg);
+			}
+			.section5__map-btn:hover:after {
+				transform: rotate(180deg);
+			}
+			.section5__map-btn--1 {
+				margin: 208px 0 0 -455px;
+				background-position-y: -44px;
+			}
+			.section5__map-btn--2 {
+				margin: 130px 0 0 -665px;
+				background-position-y: 0;
+			}
+			.section5__map-btn--3 {
+				margin: 42px 0 0 -180px;
+				background-position-y: -132px;
+			}
+			.section5__map-btn--4 {
+				margin: -95px 0 0 84px;
+				background-position-y: -88px;
+			}
+			.section5__map-btn--5 {
+				margin: -144px 0 0 405px;
+				background-position-y: -176px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="the-section5" class="section5">
+				<div class="section5__map">
+					<h2 class="section5__tit">죽음을 넘어서는 용기, 헤오스에서 증명하라! 죽음의 세계 헤오스 2024. 9. 4. 정기점검 후 OPEN</h2>
+					<p class="section5__txt"></p>
+					<div class="section5__map-video" style="touch-action: none">
+						<video id="world_loop" class="kit-video__screen" muted loop playsinline="" poster="" style="touch-action: none"><source src="https://vod.plaync.com/lineage/update/240830/world_2560_loop.mp4" type="video/mp4" style="touch-action: none" /></video>
+					</div>
+					<button type="button" class="section5__map-btn section5__map-btn--1" style="touch-action: none"></button>
+					<button type="button" class="section5__map-btn section5__map-btn--2" style="touch-action: none"></button>
+					<button type="button" class="section5__map-btn section5__map-btn--3" style="touch-action: none"></button>
+					<button type="button" class="section5__map-btn section5__map-btn--4" style="touch-action: none"></button>
+					<button type="button" class="section5__map-btn section5__map-btn--5" style="touch-action: none"></button>
+				</div>
+			</div>
+			<div class="kit-transition kit-video">
+				<video id="world_in" class="kit-video__screen" playsinline="" muted><source src="https://vod.plaync.com/lineage/update/240830/world_2560_in.mp4" type="video/mp4" /></video>
+				<div class="kit-video__spinner"></div>
+			</div>
+		</div>
+
+		<script src="./js/VideoCOntroller.js"></script>
+		<script>
+			function centerMap() {
+				const container = document.querySelector("#the-section5");
+				const map = document.querySelector(".section5__map");
+
+				const containerWidth = container.clientWidth;
+				const containerHeight = container.clientHeight;
+
+				const mapWidth = map.clientWidth;
+				const mapHeight = map.clientHeight;
+
+				const centerX = (containerWidth - mapWidth) / 2;
+				const centerY = (containerHeight - mapHeight) / 2;
+
+				gsap.set(map, {
+					x: centerX,
+					y: centerY
+				});
+			}
+			centerMap();
+			gsap.registerPlugin(Draggable, InertiaPlugin);
+			Draggable.create(".section5__map", {
+				bounds: "#the-section5",
+				type: "x,y",
+				zIndexBoost: !1
+			});
+
+			const video1 = document.getElementById("world_in");
+			const video2 = document.getElementById("world_loop");
+			const video1Ctrl = new VideoController(video1);
+			const video2Ctrl = new VideoController(video2);
+
+			video1Ctrl.play();
+			video1Ctrl.onEnd(() => {
+				document.querySelector(".kit-transition").style.display = "none";
+				video2.play();
+				t5.play();
+			});
+
+			let t5 = gsap
+				.timeline({
+					paused: !0
+				})
+				.addLabel("start")
+				.from(
+					".section5__tit",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"start+=3.9"
+				)
+				.from(
+					".section5__txt",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"-=0.48"
+				)
+				.from(
+					".section5__map-btn--1",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"-=0.52"
+				)
+				.from(
+					".section5__map-btn--2",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"-=0.62"
+				)
+				.from(
+					".section5__map-btn--3",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"-=0.62"
+				)
+				.from(
+					".section5__map-btn--4",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"-=0.62"
+				)
+				.from(
+					".section5__map-btn--5",
+					{
+						duration: 0.68,
+						y: "+=120",
+						autoAlpha: 0,
+						ease: "power2.easeIn"
+					},
+					"-=0.62"
+				);
+		</script>
+	</body>
+</html>

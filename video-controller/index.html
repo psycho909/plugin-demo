@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>視頻控制器示例</title>
+		<style>
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+			.controls {
+				margin: 20px 0;
+			}
+			button {
+				padding: 10px 20px;
+				margin-right: 10px;
+				cursor: pointer;
+			}
+			#status {
+				margin-top: 20px;
+				padding: 10px;
+				background-color: #f0f0f0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>視頻控制器示例</h1>
+			<video id="myVideo" width="100%" controls>
+				<source src="sample.mp4" type="video/mp4" />
+				您的瀏覽器不支持 HTML5 視頻。
+			</video>
+			<div class="controls">
+				<button onclick="videoCtrl.play()">播放</button>
+				<button onclick="videoCtrl.pause()">暫停</button>
+			</div>
+			<div id="status">狀態：準備就緒</div>
+		</div>
+		<script src="VideoController.js"></script>
+		<script>
+			const video = document.getElementById("myVideo");
+			const status = document.getElementById("status");
+
+			const videoCtrl = new VideoController(video);
+
+			videoCtrl.onPlay(() => {
+				status.textContent = "狀態：正在播放";
+			});
+
+			videoCtrl.onPause(() => {
+				status.textContent = "狀態：已暫停";
+			});
+
+			videoCtrl.onComplete(() => {
+				status.textContent = "狀態：播放完成";
+			});
+
+			videoCtrl.onEnd(() => {
+				status.textContent = "狀態：影片結束";
+			});
+		</script>
+	</body>
+</html>

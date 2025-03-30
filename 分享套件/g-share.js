@@ -32,6 +32,9 @@
 				case el.classList.contains("g-share-fb"):
 					el.href = `https://www.facebook.com/sharer/sharer.php?u=${customUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
 					break;
+				case el.classList.contains("g-share-meta"):
+					el.href = `https://www.facebook.com/sharer/sharer.php?u=${customUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
+					break;
 				case el.classList.contains("g-share-twitter"):
 					el.href = `https://x.com/intent/tweet?text=${encodeURIComponent(customTitle)}&url=${customUrl}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : "");
 					break;

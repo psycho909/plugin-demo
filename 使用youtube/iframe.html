@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			// 靜音 自動播放
+			function LBVideo(yt) {
+				let HTMLContent;
+				HTMLContent = `<div class="lb-video__box">
+                    <iframe src="https://www.youtube.com/embed/${yt}?mute=1&autoplay=1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen="false">
+                    </iframe>
+                </div>`;
+
+				// 開啟彈窗
+				$.gbox.open(HTMLContent, {
+					addClass: "default lb-video",
+					hasCloseBtn: true,
+					hasActionBtn: false
+				});
+			}
+		</script>
+	</body>
+</html>

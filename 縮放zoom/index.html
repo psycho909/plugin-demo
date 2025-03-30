@@ -20,12 +20,31 @@
 		<script>
 			function ZoomAdapter({ baseWidth = 1920, elementSelector = "body", debounceDelay = 100 } = {}) {
 				function adjustZoom() {
-					const windowWidth = window.innerWidth;
-					const appElement = document.querySelector(elementSelector);
+					// 獲取要縮放的元素
+					const scaleElement = document.querySelector(elementSelector);
 
-					if (appElement) {
-						appElement.style.zoom = windowWidth < baseWidth ? windowWidth / baseWidth : 1;
+					// 獲取當前視窗寬度
+					const windowWidth = document.documentElement.clientWidth;
+
+					// 計算縮放比例（基於baseWidth的寬度）
+					const scaleFactor = windowWidth / baseWidth;
+
+					// 獲取文檔根元素的最小寬度
+					const rootElement = document.documentElement;
+					const rootStyles = window.getComputedStyle(rootElement);
+					const minWidth = parseFloat(rootStyles.getPropertyValue("min-width"));
+
+					// 根據條件應用縮放
+					if (windowWidth <= baseWidth) {
+						// 當視窗寬度小於等於baseWidth時，按比例縮放
+						// scaleElement.style.transform = `scale(${scaleFactor})`;
+						scaleElement.style.zoom = scaleFactor;
+					} else if (windowWidth > baseWidth && windowWidth > minWidth) {
+						// 當視窗寬度大於baseWidth且大於最小寬度時，不縮放（比例為1）
+						// scaleElement.style.transform = "scale(1)";
+						scaleElement.style.zoom = 1;
 					}
+					// 隱含的else：如果窗口寬度小於等於最小寬度，不做任何處理
 				}
 
 				function debounce(func, delay) {
@@ -47,7 +66,7 @@
 			}
 
 			// 直接使用
-			ZoomAdapter({ baseWidth: 1200 });
+			ZoomAdapter({ baseWidth: 1920, elementSelector: "scale" });
 			// 注意事項
 			/*
 			1.使用時不要使用VW

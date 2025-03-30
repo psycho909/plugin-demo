@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			.wrap {
+				height: 2000px;
+			}
+			.code-block {
+				border: 1px solid #000;
+				display: flex;
+				flex-direction: column;
+				position: relative;
+			}
+			.code-header {
+				background-color: #eee;
+				padding: 1rem;
+				display: flex;
+				position: sticky;
+				top: 0;
+			}
+			.btn {
+				margin-left: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="code-block">
+				<div class="code-header">
+					<button type="button" class="btn">按鈕</button>
+				</div>
+				<div class="code-content">
+					<pre>
+                        function countDown(targetTime) {
+                            const now = new Date().getTime();
+                            const targetDate = new Date(now + targetTime);
+                          
+                            setInterval(() => {
+                              const remainingTime = targetDate.getTime() - new Date().getTime();
+                              if (remainingTime <= 0) {
+                                alert("Time's up!");
+                                return;
+                              }
+                          
+                              const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+                              const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                              const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                              const seconds = Math.floor(remainingTime / 1000);
+                          
+                              alert(`${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds`);
+                            }, 1000);
+                          }
+                          
+                          countDown(60 * 60 * 1000); // This will start a countdown for 1 hour (3600 seconds)
+                    </pre>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

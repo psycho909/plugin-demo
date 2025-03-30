@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<youtube-player :video-id="videoId" element-id="A"></youtube-player>
+			<youtube-player :video-id="videoId" element-id="B"></youtube-player>
+			<youtube-player :video-id="videoId" element-id="C"></youtube-player>
+		</div>
+		<script>
+			const YouTubePlayer = {
+				template: `
+                    <div class="youtube-player" :id="elementId" :data-video-id="videoId"></div>
+                `,
+				props: {
+					videoId: {
+						type: String,
+						required: true
+					},
+					elementId: {
+						type: String,
+						required: true
+					},
+					loop: {
+						type: Boolean,
+						default: true
+					}
+				},
+				data() {
+					return {
+						player: null
+					};
+				},
+				mounted() {
+					this.loadYouTubeAPI();
+				},
+				methods: {
+					loadYouTubeAPI() {
+						// Check if the YouTube API script is already included in the document
+						if (!document.querySelector('script[src="https://www.youtube.com/player_api"]')) {
+							const tag = document.createElement("script");
+							tag.src = "https://www.youtube.com/player_api";
+							const firstScriptTag = document.getElementsByTagName("script")[0];
+							firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+							window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+						} else {
+							// If the API is already loaded, call the ready function directly
+							if (typeof YT !== "undefined" && YT.Player) {
+								this.onYouTubeIframeAPIReady();
+							} else {
+								// If the script is loaded but the API is not yet ready, set a timeout to retry
+								const checkYT = setInterval(() => {
+									if (typeof YT !== "undefined" && YT.Player) {
+										clearInterval(checkYT);
+										this.onYouTubeIframeAPIReady();
+									}
+								}, 100);
+							}
+						}
+					},
+					onYouTubeIframeAPIReady() {
+						this.player = new YT.Player(this.elementId, {
+							videoId: this.videoId,
+							playerVars: {
+								start: 1,
+								controls: 0,
+								modestbranding: 0,
+								rel: 0,
+								loop: 1,
+								fs: 0,
+								cc_load_policty: 0,
+								iv_load_policy: 3,
+								autohide: 0
+							},
+							events: {
+								onReady: this.onPlayerReady,
+								onStateChange: this.onPlayerStateChange
+							}
+						});
+					},
+					onPlayerReady(event) {
+						event.target.playVideo();
+						event.target.mute();
+					},
+					onPlayerStateChange(event) {
+						if (event.data === YT.PlayerState.ENDED && this.loop) {
+							event.target.playVideo();
+						}
+					}
+				}
+			};
+
+			const app = Vue.createApp({
+				components: {
+					"youtube-player": YouTubePlayer
+				},
+				data() {
+					return {
+						videoId: "M7lc1UVf-VE",
+						elementId: "youtube-player"
+					};
+				}
+			});
+			app.mount("#app");
+		</script>
+	</body>
+</html>
