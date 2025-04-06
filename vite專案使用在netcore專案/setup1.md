@@ -68,7 +68,6 @@ import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
-import { resolve } from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -77,11 +76,6 @@ export default defineConfig({
 		outDir: "../wwwroot", // 輸出到.NET Core的wwwroot目錄
 		emptyOutDir: false, // 避免清空整個wwwroot目錄
 		rollupOptions: {
-			input: {
-				main: resolve(__dirname, "src/main.js"),
-				about: resolve(__dirname, "src/pages/about.js"),
-				contact: resolve(__dirname, "src/pages/contact.js")
-			},
 			output: {
 				entryFileNames: "assets/[name].[hash].js",
 				chunkFileNames: "assets/[name].[hash].js",
@@ -123,31 +117,6 @@ export default defineConfig({
 	}
 });
 ```
-
-#### 多頁面配置說明
-
-1. **入口文件配置**：
-
-    - 在 `rollupOptions.input` 中定義多個入口點
-    - 每個頁面都有自己的入口文件（如 `main.js`、`about.js`、`contact.js`）
-    - 入口文件位於 `src/pages` 目錄下
-
-2. **頁面組件結構**：
-
-    - 每個頁面都有自己的 Vue 組件
-    - 組件位於 `src/pages/components` 目錄
-    - 組件命名遵循 PascalCase 命名規範
-
-3. **資源輸出配置**：
-
-    - 使用 `[name]` 佔位符確保每個頁面的資源有唯一名稱
-    - 資源按類型分類到不同目錄（styles、images、fonts）
-    - 所有資源都包含哈希值以確保緩存更新
-
-4. **開發環境配置**：
-    - 使用代理配置處理 API 請求
-    - 支援熱模組替換（HMR）
-    - 提供源碼映射（sourcemap）
 
 ### 自訂資源文件輸出路徑說明
 
@@ -849,88 +818,3 @@ WebApplication2/
 3. **測試生產環境**：
     - 使用命令或修改 launchSettings.json 切換環境
     - 確保 ViewComponent 能正確讀取 manifest.json
-
-### 8. 多頁面配置說明
-
-#### 8.1 頁面入口配置
-
-1. **Vite 配置**：
-
-    - 在 `vite.config.js` 的 `rollupOptions.input` 中定義多個入口點
-    - 每個頁面都有自己的入口文件（如 `main.js`、`about.js`、`contact.js`）
-    - 入口文件位於 `src/pages` 目錄下
-
-2. **頁面組件結構**：
-    - 每個頁面都有自己的 Vue 組件
-    - 組件位於 `src/pages/components` 目錄
-    - 組件命名遵循 PascalCase 命名規範
-
-#### 8.2 多頁面 Razor 配置
-
-1. **About.cshtml**：
-
-```cshtml
-@page
-@model AboutModel
-@{
-    ViewData["Title"] = "關於我們";
-}
-
-<div id="app"></div>
-```
-
-2. **Contact.cshtml**：
-
-```cshtml
-@page
-@model ContactModel
-@{
-    ViewData["Title"] = "聯絡我們";
-}
-
-<div id="app"></div>
-```
-
-#### 8.3 多頁面注意事項
-
-1. **頁面 ID 唯一性**：
-
-    - 每個頁面的 Vue 掛載點 ID 必須唯一
-    - 建議使用頁面名稱作為 ID 前綴，如 `id="about-app"`、`id="contact-app"`
-
-2. **入口文件對應**：
-
-    - 每個頁面必須有對應的入口文件
-    - 入口文件名稱應與頁面名稱一致
-    - 例如：`about.js` 對應 `About.cshtml`
-
-3. **資源引用**：
-
-    - 使用 ViewComponent 時，所有頁面共享同一套資源引用
-    - 不需要在每個頁面單獨引用 JS 和 CSS
-    - 資源引用統一在 `_Layout.cshtml` 中處理
-
-4. **路由配置**：
-
-    - 確保 Razor 頁面的路由與 Vue 路由不衝突
-    - 建議使用不同的路由前綴，如 `/pages/about`、`/pages/contact`
-
-5. **狀態管理**：
-
-    - 考慮使用 Vuex 或 Pinia 管理共享狀態
-    - 避免在頁面間直接共享狀態
-
-6. **性能優化**：
-
-    - 使用路由懶加載減少初始加載時間
-    - 考慮使用動態導入（Dynamic Import）優化資源加載
-
-7. **開發調試**：
-
-    - 使用 Vue DevTools 調試特定頁面的組件
-    - 確保熱重載在每個頁面都正常工作
-
-8. **生產部署**：
-    - 確保所有頁面的資源都被正確打包
-    - 檢查 manifest.json 是否包含所有頁面的入口文件
-    - 驗證每個頁面的資源路徑是否正確
