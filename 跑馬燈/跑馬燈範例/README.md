@@ -12,7 +12,7 @@
 ### 1. 引入 JS 文件
 
 ```html
-<script src="跑馬燈.js"></script>
+<script src="./marquee.js"></script>
 ```
 
 ### 2. HTML 結構
