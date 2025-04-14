@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>原生 JavaScript gbox 範例</title>
+		<style>
+			body {
+				font-family: "Microsoft JhengHei", Arial, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background-color: #f5f5f5;
+			}
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+				background-color: white;
+				padding: 20px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+				border-radius: 5px;
+			}
+			h1 {
+				color: #333;
+				text-align: center;
+				margin-bottom: 30px;
+			}
+			.demo-buttons {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				margin-bottom: 30px;
+			}
+			button {
+				padding: 10px 15px;
+				background-color: #4caf50;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+				transition: background-color 0.3s;
+			}
+			button:hover {
+				background-color: #45a049;
+			}
+			.code-block {
+				background-color: #f8f8f8;
+				border-left: 4px solid #4caf50;
+				padding: 15px;
+				margin: 20px 0;
+				font-family: monospace;
+				white-space: pre-wrap;
+				overflow-x: auto;
+			}
+
+			/* 自定義 gbox 主題 */
+			.dark-theme .gbox-wrap {
+				background-color: #333;
+				color: white;
+			}
+			.dark-theme .gbox-title {
+				background-color: #222;
+				color: #fff;
+			}
+			.dark-theme .gbox-action .gbox-btn {
+				background-color: #4caf50;
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>原生 JavaScript gbox 範例</h1>
+
+			<div class="demo-buttons">
+				<button id="basic-demo">基本彈窗</button>
+				<button id="title-demo">帶標題彈窗</button>
+				<button id="close-btn-demo">帶關閉按鈕</button>
+				<button id="multi-btn-demo">多按鈕</button>
+				<button id="theme-demo">自定義主題</button>
+				<button id="element-method-demo">元素方法調用</button>
+			</div>
+
+			<h2>使用方法</h2>
+			<div class="code-block">// 基本用法 gbox.open('這是一個簡單的彈窗內容', { // 選項配置 }); // 帶標題 gbox.open('彈窗內容', { titleBar: '標題文字' }); // 帶自定義按鈕 gbox.open('彈窗內容', { actionBtns: [ { text: '確定', click: function() { // 自定義點擊處理 gbox.close(); } }, { text: '取消', click: function() { gbox.close(); } } ] }); // 元素方法調用 document.getElementById('element-id').gbox('彈窗內容', { // 選項配置 });</div>
+		</div>
+
+		<!-- 引入 gbox.js 腳本 -->
+		<script src="gbox.js"></script>
+
+		<script>
+			function Notice() {
+				gbox.open(`<div class="box">這是Notice這是Notice</div>`, {
+					hasActionBtn: true,
+					actionBtns: [
+						{
+							text: "確定",
+							click: function () {
+								gbox.close();
+							}
+						}
+					]
+				});
+			}
+			// 基本彈窗
+			document.getElementById("basic-demo").addEventListener("click", function () {
+				gbox.open(`<div class="box">這是一個基本的彈窗內容</div>`, {
+					hasActionBtn: true,
+					actionBtns: [
+						{
+							text: "確定",
+							click: function () {
+								Notice();
+							}
+						}
+					]
+				});
+			});
+
+			// 帶標題彈窗
+			document.getElementById("title-demo").addEventListener("click", function () {
+				gbox.open("這是帶標題的彈窗內容", {
+					titleBar: "重要通知",
+					hasActionBtn: true,
+					actionBtns: [
+						{
+							text: "我知道了",
+							click: function () {
+								gbox.close();
+							}
+						}
+					]
+				});
+			});
+
+			// 帶關閉按鈕
+			document.getElementById("close-btn-demo").addEventListener("click", function () {
+				gbox.open("這是帶關閉按鈕的彈窗內容<br>您可以點擊右上角的 × 關閉", {
+					titleBar: "可關閉彈窗",
+					hasCloseBtn: true,
+					hasActionBtn: true,
+					actionBtns: [
+						{
+							text: "確定",
+							click: function () {
+								gbox.close();
+							}
+						}
+					]
+				});
+			});
+
+			// 多按鈕
+			document.getElementById("multi-btn-demo").addEventListener("click", function () {
+				gbox.open("這是帶多個按鈕的彈窗內容<br>您可以選擇不同的操作", {
+					titleBar: "多按鈕彈窗",
+					hasCloseBtn: true,
+					hasActionBtn: true,
+					actionBtns: [
+						{
+							text: "確定",
+							class: "primary-btn",
+							click: function () {
+								gbox.close();
+							}
+						},
+						{
+							text: "取消",
+							click: function () {
+								gbox.close();
+							}
+						},
+						{
+							text: "了解更多",
+							click: "https://github.com",
+							target: true,
+							targetClose: true
+						}
+					]
+				});
+			});
+
+			// 自定義主題
+			document.getElementById("theme-demo").addEventListener("click", function () {
+				gbox.open("這是使用自定義主題的彈窗內容<br>您可以使用CSS自定義外觀", {
+					titleBar: "自定義主題",
+					addClass: "dark-theme",
+					hasCloseBtn: true,
+					hasActionBtn: true,
+					actionBtns: [
+						{
+							text: "確定",
+							click: function () {
+								gbox.close();
+							}
+						}
+					]
+				});
+			});
+
+			// 元素方法調用示例
+			document.getElementById("element-method-demo").gbox("這是使用元素方法調用的彈窗<br>點擊按鈕即可觸發此彈窗", {
+				titleBar: "元素方法調用",
+				hasCloseBtn: true,
+				hasActionBtn: true,
+				actionBtns: [
+					{
+						text: "關閉",
+						click: function () {
+							gbox.close();
+						}
+					}
+				]
+			});
+		</script>
+	</body>
+</html>
