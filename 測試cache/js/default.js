@@ -35,6 +35,8 @@ function loadCSS(url) {
 // document.addEventListener("DOMContentLoaded", () => {
 // 	loadCSS("styles.css"); // 將 'styles.css' 替換為你的 CSS 檔案路徑
 // });
+
+// 動態獲取JS，避免快取
 function fetchNonCachedJS(url) {
 	// 使用時間戳動態產生唯一查詢參數
 	const nonCachedUrl = `${url}?_=${new Date().getTime()}`;
@@ -66,26 +68,49 @@ function fetchNonCachedJS(url) {
 // vue3
 
 async function initializeApp() {
-	// 先載入 JS
-	await fetchNonCachedJS("https://tw.hicdn.beanfun.com/beanfun/promo/Test/t/tools.js");
-	let app = Vue.createApp({
-		components: {
-			page1: page1
-		},
-		setup() {
-			let data = Vue.ref(null);
-			let fetchData = async () => {
-				data.value = await fetchNonCachedJSON("https://tw.hicdn.beanfun.com/beanfun/promo/Test/t/data.json");
-			};
-			Vue.onMounted(() => {
-				fetchData();
-			});
-			return {
-				data
-			};
-		}
-	});
-	app.mount("#app");
+	try {
+		// 先載入 JS
+		await fetchNonCachedJS("https://tw.hicdn.beanfun.com/beanfun/promo/Test/t/tools.js");
+
+		let app = Vue.createApp({
+			components: {
+				page1: page1
+			},
+			setup() {
+				let data = Vue.ref(null);
+				let loading = Vue.ref(true);
+				let error = Vue.ref(null);
+
+				let fetchData = async () => {
+					try {
+						loading.value = true;
+						data.value = await fetchNonCachedJSON("https://tw.hicdn.beanfun.com/beanfun/promo/Test/t/data.json");
+					} catch (err) {
+						error.value = "資料載入失敗";
+						console.error(err);
+					} finally {
+						loading.value = false;
+					}
+				};
+
+				Vue.onMounted(() => {
+					fetchData();
+				});
+
+				return {
+					data,
+					loading,
+					error
+				};
+			}
+		});
+
+		app.mount("#app");
+	} catch (err) {
+		console.error("初始化應用失敗:", err);
+		// 顯示一些友好的錯誤信息給用戶
+		document.getElementById("app").innerHTML = "應用載入失敗，請重新整理頁面";
+	}
 }
 
 initializeApp();
