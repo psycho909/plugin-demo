@@ -15,12 +15,7 @@ function fetchNonCachedJSON(url, options = {}) {
 
 		const fetchWithRetry = (retriesLeft) => {
 			fetch(nonCachedUrl, {
-				signal: controller.signal,
-				headers: {
-					"Cache-Control": "no-cache, no-store, must-revalidate",
-					Pragma: "no-cache",
-					Expires: "0"
-				}
+				signal: controller.signal
 			})
 				.then((response) => {
 					if (!response.ok) {
