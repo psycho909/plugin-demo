@@ -4,6 +4,10 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<script src="https://tw.hicdn.beanfun.com/plugins/axios/1.7.7/axios.min.js"></script>
+		<script src="https://frontend.beanfun.com/library/jquery/jquery-min.js"></script>
+		<script src="https://frontend.beanfun.com/library/jquery/jquery-migrate-min.js"></script>
+		<script src="./js/gbox.js"></script>
 		<style>
 			input[type="radio"] {
 				appearance: none;
@@ -11,7 +15,44 @@
 		</style>
 	</head>
 	<body>
+		<div id="box"></div>
 		<input type="radio" /> Option 1
+		<script>
+			const apiRequest = axios.create({
+				baseURL: "/api/"
+			});
+			let kind = new URLSearchParams(location.search).get("kind");
+			const GetPinBullentinList = ({ kind = 0 } = {}) => {
+				return apiRequest.get(`https://625935fa43fda1299a0a38fd.mockapi.io/GetCharacters`);
+			};
+			const getBullentinList = ({ kind = 0 } = {}) => {
+				// $(".loadingProgress").show();
+				GetPinBullentinList({ kind })
+					.then((res) => {
+						let txt = res.data[0].requestId;
+						let txt2 = `abc <br/> 321`;
+						function escapeHTML(str) {
+							return str.replace(/[&<>"']/g, function (match) {
+								return {
+									"&": "&amp;",
+									"<": "&lt;",
+									">": "&gt;",
+									'"': "&quot;",
+									"'": "&#39;"
+								}[match];
+							});
+						}
+						// document.querySelector("#box").innerHTML = txt2;
+						document.querySelector("#box").textContent = txt2;
+						// gbox.open(res.data[0].requestId);
+					})
+					.catch((error) => {
+						loading.value = false;
+						console.log(error);
+					});
+			};
+			getBullentinList({ kind });
+		</script>
 		<script type="text/javascript" src="https://alpha-frontend.beanfun.com/plugins/game-footer/game-footer.js" id="game-footer" prod="bf!遊戲" theme="dark"></script>
 	</body>
 </html>
