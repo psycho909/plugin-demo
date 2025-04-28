@@ -35,6 +35,7 @@ let page1 = {
 	},
 	template: `
 		<div>
+		2132121dssssssssssss
 		  {{ string }} <br>
 		   <hr />
 		   <img :src="img" alt="" />

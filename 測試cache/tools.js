@@ -1,5 +1,5 @@
 function Hello() {
-	console.log("Hello World");
+	alert("Hello World");
 }
 
 // 數字轉千位符

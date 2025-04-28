@@ -2,7 +2,7 @@ import page1 from "./components/page1.js";
 
 // 在頁面載入時動態加載 CSS
 document.addEventListener("DOMContentLoaded", () => {
-	loadCSS("styles.css"); // 將 'styles.css' 替換為你的 CSS 檔案路徑
+	loadCSS("https://tw.hicdn.beanfun.com/beanfun/promo/Test/t/assets/css/fix.css"); // 將 'styles.css' 替換為你的 CSS 檔案路徑
 });
 
 // 使用範例

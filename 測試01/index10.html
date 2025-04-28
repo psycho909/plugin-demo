@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
+		<style>
+			li {
+				color: gray;
+			}
+			li.open {
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<ul>
+				<li v-for="item in listStatus" :class="[item.status ? 'open':'close']">{{item.name}}</li>
+			</ul>
+		</div>
+		<script>
+			let app = Vue.createApp({
+				setup() {
+					let list = Vue.reactive([
+						{
+							name: "List1",
+							status: false,
+							seq: 1
+						},
+						{
+							name: "List2",
+							status: false,
+							seq: 2
+						},
+						{
+							name: "List2",
+							status: false,
+							seq: 3
+						}
+					]);
+					let controls = Vue.reactive([1, 3]);
+					let listStatus = Vue.computed(() => {
+						return list.map((item) => {
+							item.status = controls.includes(item.seq);
+							return item;
+						});
+					});
+					return {
+						listStatus
+					};
+				}
+			});
+			app.mount("#app");
+		</script>
+	</body>
+</html>
