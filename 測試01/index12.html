@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script>
+			// 阻止瀏覽器預設scroll
+			if (history.scrollRestoration) {
+				history.scrollRestoration = "manual";
+			}
+			function MessageLB(msg, url, callback) {
+				gbox.open(msg, {
+					addClass: "default",
+					hasCloseBtn: false,
+					hasActionBtn: true,
+					afterClose: function () {
+						if (url) window.location.href = url;
+					},
+					actionBtns: [
+						{
+							text: "確定",
+							class: "btn-confirm",
+							target: false,
+							click: function () {
+								if (url) window.location.href = url;
+								else {
+									gbox.close();
+									if (callback) {
+										callback();
+									}
+								}
+							}
+						}
+					]
+				});
+			}
+			function escapeHTML(str) {
+				if (str) {
+					return str.replace(/[&<>"']/g, function (match) {
+						return {
+							"&": "&amp;",
+							"<": "&lt;",
+							">": "&gt;",
+							'"': "&quot;",
+							"'": "&#39;"
+						}[match];
+					});
+				} else {
+					return "";
+				}
+			}
+			function getQueryParams() {
+				// 先將整個 URL 轉換為小寫
+				const lowercaseUrl = window.location.href.toLowerCase();
+				// 創建 URL 物件以取得 search 部分
+				const url = new URL(lowercaseUrl);
+				const urlParams = new URLSearchParams(url.search);
+
+				return {
+					server: escapeHTML(urlParams.get("server")) || "",
+					username: escapeHTML(urlParams.get("username")) || "",
+					session: escapeHTML(urlParams.get("session")) || "",
+					account: escapeHTML(urlParams.get("account")) || ""
+				};
+			}
+
+			const params = getQueryParams();
+			let apiData = {
+				server: params.server,
+				userName: params.username,
+				session: params.session,
+				account: params.account
+			};
+			console.log(apiData);
+		</script>
+	</body>
+</html>
