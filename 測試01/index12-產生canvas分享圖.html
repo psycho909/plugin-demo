@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="685" height="714"></canvas>
+		<br />
+		<button id="downloadBtn">下載圖片</button>
+		<button id="base64Btn">產出 Base64</button>
+
+		<script>
+			const canvas = document.getElementById("myCanvas");
+			const ctx = canvas.getContext("2d");
+
+			// 自訂義文字
+			const textSettings = {
+				text1: "角色IDIDID",
+				text2: "戰士戰士",
+				text3: "LV.999",
+				text4: "已經加入新楓之谷9999天"
+			};
+
+			// 畫圖的函式（包起來以便重新呼叫）
+			function drawCanvas() {
+				const bgImg = new Image();
+				const roleBgImg = new Image();
+				const logoImg = new Image(); // 新增 LOGO 圖片
+				bgImg.src = "./images/share/share-bg.png";
+				roleBgImg.src = "./images/share/share-role-bg.png";
+				logoImg.src = "./images/share/share-logo.png"; // LOGO 圖片路徑
+
+				bgImg.onload = () => {
+					ctx.drawImage(bgImg, 0, 0, 685, 714);
+
+					roleBgImg.onload = () => {
+						// 陰影
+						ctx.shadowColor = "rgba(112, 91, 74, 0.47)";
+						ctx.shadowOffsetX = 10;
+						ctx.shadowOffsetY = 10;
+						ctx.shadowBlur = 8;
+
+						ctx.drawImage(roleBgImg, 109, 86, 378, 362);
+
+						// 清除陰影
+						ctx.shadowColor = "transparent";
+						ctx.shadowOffsetX = 0;
+						ctx.shadowOffsetY = 0;
+						ctx.shadowBlur = 0;
+
+						// 四個區塊
+						drawRoundedRect(109, 453, 383, 49, 16); // 區塊一
+						drawRoundedRect(109, 507, 236, 49, 16); // 區塊二
+						drawRoundedRect(350, 507, 142, 49, 16); // 區塊三
+						drawRoundedRect(106, 562, 388, 51, 16); // 區塊四
+
+						// 畫文字
+						ctx.font = "bold 30px 微軟正黑體";
+						ctx.textAlign = "center";
+						ctx.textBaseline = "top";
+
+						ctx.fillStyle = "#532b0b";
+						ctx.fillText(textSettings.text1, 109 + 383 / 2, 453 + 6);
+						ctx.fillText(textSettings.text2, 109 + 236 / 2, 507 + 6);
+						ctx.fillText(textSettings.text3, 350 + 142 / 2, 507 + 6);
+
+						ctx.fillStyle = "#fff";
+						ctx.fillText(textSettings.text4, 106 + 388 / 2, 562 + 8);
+
+						// 畫 LOGO 圖片
+						logoImg.onload = () => {
+							ctx.drawImage(logoImg, 455, 233, 230, 185); // 在 (455, 233) 位置畫 LOGO，尺寸 230x185
+						};
+					};
+				};
+			}
+
+			// 畫圓角矩形
+			function drawRoundedRect(x, y, width, height, radius) {
+				ctx.beginPath();
+				ctx.moveTo(x + radius, y);
+				ctx.lineTo(x + width - radius, y);
+				ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+				ctx.lineTo(x + width, y + height - radius);
+				ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+				ctx.lineTo(x + radius, y + height);
+				ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+				ctx.lineTo(x, y + radius);
+				ctx.quadraticCurveTo(x, y, x + radius, y);
+				ctx.closePath();
+				ctx.strokeStyle = "transparent";
+				ctx.stroke();
+			}
+
+			// 初始畫圖
+			drawCanvas();
+
+			// 下載圖片按鈕
+			document.getElementById("downloadBtn").addEventListener("click", function () {
+				const link = document.createElement("a");
+				link.download = "canvas-image.png";
+				link.href = canvas.toDataURL("image/png");
+				link.click();
+			});
+
+			// 產出 Base64 按鈕
+			document.getElementById("base64Btn").addEventListener("click", function () {
+				const base64 = canvas.toDataURL("image/png");
+				console.log(base64);
+				alert("Base64 已經輸出到 console！");
+			});
+		</script>
+	</body>
+</html>

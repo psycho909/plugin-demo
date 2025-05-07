@@ -20,13 +20,13 @@
 	<body>
 		<div id="app">
 			<ul>
-				<li v-for="item in listStatus" :class="[item.status ? 'open':'close']">{{item.name}}</li>
+				<li v-for="item in eventListStatus" :class="[item.status ? 'open':'close']">{{item.name}}</li>
 			</ul>
 		</div>
 		<script>
 			let app = Vue.createApp({
 				setup() {
-					let list = Vue.reactive([
+					let eventList = Vue.reactive([
 						{
 							name: "List1",
 							status: false,
@@ -44,14 +44,14 @@
 						}
 					]);
 					let controls = Vue.reactive("1,2");
-					let listStatus = Vue.computed(() => {
-						return list.map((item) => {
+					let eventListStatus = Vue.computed(() => {
+						return eventList.map((item) => {
 							item.status = controls.includes(item.seq);
 							return item;
 						});
 					});
 					return {
-						listStatus
+						eventListStatus
 					};
 				}
 			});
