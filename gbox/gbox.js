@@ -92,7 +92,9 @@
 
 		// 新增外層Class - 轉換：jQuery的addClass()改為classList.add()
 		if (settings.addClass) {
-			$pubBox.classList.add(settings.addClass);
+			settings.addClass.split(" ").forEach((cls) => {
+				if (cls) $pubBox.classList.add(cls);
+			});
 		}
 
 		// 標題列 - 轉換：jQuery的prependTo改為insertBefore

@@ -14,13 +14,13 @@
 				margin: 0;
 				box-sizing: border-box;
 			}
-			.gbox-wrap {
+			.lb-share .gbox-wrap {
 				max-width: 685px;
 				width: 100%;
 				background: transparent;
 				padding: 0;
 			}
-			.gbox-close {
+			.lb-share .gbox-close {
 				width: 110px;
 				height: 121px;
 				background-size: cover;
@@ -29,7 +29,7 @@
 				right: 38px;
 				top: 50px;
 			}
-			.gbox-content {
+			.lb-share .gbox-content {
 				padding: 0;
 			}
 			.lb-share-content {
@@ -63,26 +63,54 @@
 	<body>
 		<script>
 			async function loadImageWithCors(src) {
+				const img = new Image();
+				img.crossOrigin = "anonymous";
+				img.src = src;
 				return new Promise((resolve, reject) => {
-					const img = new Image();
-					img.crossOrigin = "anonymous";
-					img.src = src;
 					img.onload = () => resolve(img);
-					img.onerror = (err) => reject(new Error(`載入圖片失敗: ${src}`));
+					img.onerror = () => reject(new Error(`❌ 圖片載入失敗: ${src}`));
 				});
+			}
+
+			function drawRoundedRect(ctx, x, y, width, height, radius) {
+				ctx.beginPath();
+				ctx.moveTo(x + radius, y);
+				ctx.lineTo(x + width - radius, y);
+				ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+				ctx.lineTo(x + width, y + height - radius);
+				ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+				ctx.lineTo(x + radius, y + height);
+				ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+				ctx.lineTo(x, y + radius);
+				ctx.quadraticCurveTo(x, y, x + radius, y);
+				ctx.closePath();
+				ctx.strokeStyle = "transparent";
+				ctx.stroke();
 			}
 
 			async function createCanvasImage(options = {}) {
 				const canvas = document.getElementById("myCanvas");
 				const ctx = canvas.getContext("2d");
 
-				const { text1 = "角色IDIDID", text2 = "戰士戰士", text3 = "LV.999", text4 = "已經加入新楓之谷9999天" } = options;
+				const canvasWidth = 685;
+				const canvasHeight = 714;
+
+				const {
+					text1 = "角色IDIDID",
+					text2 = "戰士戰士",
+					text3 = "已經加入新楓之谷9999天",
+					roleBgSrc = "./images/share/share-role-bg.png" // ✅ 可指定角色圖
+				} = options;
 
 				try {
-					const [bgImg, roleBgImg, logoImg] = await Promise.all([loadImageWithCors("./images/share/share-bg.png"), loadImageWithCors("./images/share/share-role-bg.png"), loadImageWithCors("./images/share/share-logo.png")]);
+					const [bgImg, roleBgImg, logoImg] = await Promise.all([
+						loadImageWithCors("./images/share/share-bg.png"),
+						loadImageWithCors(roleBgSrc), // ✅ 動態載入
+						loadImageWithCors("./images/share/share-logo.png")
+					]);
 
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					ctx.drawImage(bgImg, 0, 0, 685, 714);
+					ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+					ctx.drawImage(bgImg, 0, 0, canvasWidth, canvasHeight);
 
 					// 陰影
 					ctx.shadowColor = "rgba(112, 91, 74, 0.47)";
@@ -99,50 +127,34 @@
 					ctx.shadowBlur = 0;
 
 					// 區塊
-					drawRoundedRect(109, 453, 383, 49, 16);
-					drawRoundedRect(109, 507, 236, 49, 16);
-					drawRoundedRect(350, 507, 142, 49, 16);
-					drawRoundedRect(106, 562, 388, 51, 16);
+					drawRoundedRect(ctx, 109, 453, 383, 49, 16);
+					drawRoundedRect(ctx, 109, 507, 383, 49, 16);
+					drawRoundedRect(ctx, 106, 562, 388, 51, 16);
 
-					// 文字
+					// 文字樣式
 					ctx.font = "bold 30px 微軟正黑體";
 					ctx.textAlign = "center";
 					ctx.textBaseline = "top";
 
+					// 文字區塊
 					ctx.fillStyle = "#532b0b";
 					ctx.fillText(text1, 109 + 383 / 2, 453 + 6);
-					ctx.fillText(text2, 109 + 236 / 2, 507 + 6);
-					ctx.fillText(text3, 350 + 142 / 2, 507 + 6);
+					ctx.fillText(text2, 109 + 383 / 2, 507 + 6);
 
 					ctx.fillStyle = "#fff";
-					ctx.fillText(text4, 106 + 388 / 2, 562 + 8);
+					ctx.fillText(text3, 106 + 388 / 2, 562 + 8);
 
 					// LOGO
 					ctx.drawImage(logoImg, 455, 233, 230, 185);
-				} catch (err) {
-					console.error(err);
-					alert("圖片載入失敗，請檢查圖片路徑或 CORS 設定。");
-				}
-
-				function drawRoundedRect(x, y, width, height, radius) {
-					ctx.beginPath();
-					ctx.moveTo(x + radius, y);
-					ctx.lineTo(x + width - radius, y);
-					ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-					ctx.lineTo(x + width, y + height - radius);
-					ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-					ctx.lineTo(x + radius, y + height);
-					ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-					ctx.lineTo(x, y + radius);
-					ctx.quadraticCurveTo(x, y, x + radius, y);
-					ctx.closePath();
-					ctx.strokeStyle = "transparent";
-					ctx.stroke();
+				} catch (error) {
+					console.error(error);
+					alert("🚫 無法載入圖片，請檢查圖片路徑是否正確，或伺服器是否允許跨域存取。");
 				}
 			}
+
 			function ShareRole() {
 				var config = {
-					addClass: "default",
+					addClass: "default lb-share",
 					hasCloseBtn: true,
 					hasActionBtn: false,
 					afterClose: function () {
@@ -150,10 +162,9 @@
 					},
 					afterOpen: function () {
 						const textSettings = {
-							text1: "角色IDIDID",
-							text2: "戰士戰士",
-							text3: "LV.399",
-							text4: "已經加入新楓之谷9999天"
+							text1: "角色IDIDIDD",
+							text2: "戰士戰士士",
+							text3: "已經加入新楓之谷9997天"
 						};
 						createCanvasImage(textSettings);
 						// 下載按鈕
@@ -189,7 +200,7 @@
 								hashtags: ["Maple", "MD"]
 							};
 							let shareLink = generateSocialShareUrls(shareData);
-
+							console.log(base64);
 							// 判斷是否為 iOS 裝置
 							const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
