@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>CKEditor 5 Sample</title>
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+		<script src="https://tw.hicdn.beanfun.com/plugins/axios/0.21.1/axios.min.js"></script>
+	</head>
+	<body>
+		<div>
+			<div class="main-container">
+				<div class="editor-container editor-container_classic-editor" id="editor-container">
+					<div class="editor-container__editor"><div id="editor"></div></div>
+				</div>
+			</div>
+		</div>
+		<script type="importmap">
+			{
+				"imports": {
+					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+				}
+			}
+		</script>
+		<script type="module">
+			import { ClassicEditor, AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo } from "ckeditor5";
+
+			import translations from "ckeditor5/translations/zh.js";
+
+			class MyUploadAdapter {
+				constructor(loader) {
+					this.loader = loader;
+				}
+
+				upload() {
+					return this.loader.file.then(
+						(file) =>
+							new Promise((resolve, reject) => {
+								const formData = new FormData();
+								formData.append("file", file);
+								// document.querySelector("#loadingProgress").style.display = "block";
+								axios
+									.post(`api/ImageUpload/UploadImgCkeditor?OTP=1&CKEditorFuncNum=CommonPlatform-NoticeList`, formData)
+									.then((response) => {
+										resolve({
+											default: response.data.url
+										});
+									})
+									.catch((err) => {
+										console.error(err);
+										reject(err);
+									});
+							})
+					);
+				}
+
+				abort() {
+					// Abort the upload process
+				}
+			}
+
+			// 輔助函數：將 base64 轉換為 File 對象
+			function base64ToFile(base64String, filename = "pasted-image.png") {
+				const arr = base64String.split(",");
+				const mime = arr[0].match(/:(.*?);/)[1];
+				const bstr = atob(arr[1]);
+				let n = bstr.length;
+				const u8arr = new Uint8Array(n);
+				while (n--) {
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				return new File([u8arr], filename, { type: mime });
+			}
+
+			// Plugin function to integrate the custom upload adapter
+			function MyCustomUploadAdapterPlugin(editor) {
+				editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+					return new MyUploadAdapter(loader);
+				};
+			}
+
+			const editorConfig = {
+				toolbar: {
+					items: ["bold", "italic", "link"],
+					shouldNotGroupWhenFull: false
+				},
+				plugins: [AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo],
+				fontFamily: {
+					supportAllValues: true
+				},
+				image: {
+					upload: {
+						types: ["jpeg", "png", "gif", "bmp", "webp", "tiff"]
+					}
+				},
+				image: {
+					resizeUnit: "px"
+				},
+				initialData: '<h2>Congratulations on setting up CKEditor 5! 🎉</h2>\n<p>\n    You\'ve successfully created a CKEditor 5 project. This powerful text editor will enhance your application, enabling rich text editing\n    capabilities that are customizable and easy to use.\n</p>\n<h3>What\'s next?</h3>\n<ol>\n    <li>\n        <strong>Integrate into your app</strong>: time to bring the editing into your application. Take the code you created and add to your\n        application.\n    </li>\n    <li>\n        <strong>Explore features:</strong> Experiment with different plugins and toolbar options to discover what works best for your needs.\n    </li>\n    <li>\n        <strong>Customize your editor:</strong> Tailor the editor\'s configuration to match your application\'s style and requirements. Or even\n        write your plugin!\n    </li>\n</ol>\n<p>\n    Keep experimenting, and don\'t hesitate to push the boundaries of what you can achieve with CKEditor 5. Your feedback is invaluable to us\n    as we strive to improve and evolve. Happy editing!\n</p>\n<h3>Helpful resources</h3>\n<ul>\n    <li>📝 <a href="https://orders.ckeditor.com/trial/premium-features">Trial sign up</a>,</li>\n    <li>📕 <a href="https://ckeditor.com/docs/ckeditor5/latest/installation/index.html">Documentation</a>,</li>\n    <li>⭐️ <a href="https://github.com/ckeditor/ckeditor5">GitHub</a> (star us if you can!),</li>\n    <li>🏠 <a href="https://ckeditor.com">CKEditor Homepage</a>,</li>\n    <li>🧑‍💻 <a href="https://ckeditor.com/ckeditor-5/demo/">CKEditor 5 Demos</a>,</li>\n</ul>\n<h3>Need help?</h3>\n<p>\n    See this text, but the editor is not starting up? Check the browser\'s console for clues and guidance. It may be related to an incorrect\n    license key if you use premium features or another feature-related requirement. If you cannot make it work, file a GitHub issue, and we\n    will help as soon as possible!\n</p>\n',
+				language: "zh",
+				translations: [translations]
+			};
+			editorConfig.extraPlugins = [MyCustomUploadAdapterPlugin];
+
+			ClassicEditor.create(document.querySelector("#editor"), editorConfig)
+				.then((editor) => {
+					// 用來存儲需要上傳的圖片資訊
+					let pendingUploads = [];
+
+					// 監聽貼上事件
+					editor.editing.view.document.on("paste", async (evt, data) => {
+						const html = data.dataTransfer.getData("text/html");
+						if (!html) return;
+
+						const parser = new DOMParser();
+						const doc = parser.parseFromString(html, "text/html");
+
+						// 重置待上傳列表
+						pendingUploads = [];
+
+						// 處理所有 img
+						const imgs = Array.from(doc.querySelectorAll("img"));
+
+						for (let img of imgs) {
+							const src = img.getAttribute("src");
+							if (!src) continue;
+
+							// 判斷是否 googleusercontent.com 的圖
+							if (src.includes("googleusercontent.com")) {
+								try {
+									console.log("處理 Google 圖片:", src);
+									const response = await fetch(src);
+									const blob = await response.blob();
+
+									// 轉 base64
+									const base64 = await new Promise((resolve, reject) => {
+										const reader = new FileReader();
+										reader.onloadend = () => resolve(reader.result);
+										reader.onerror = reject;
+										reader.readAsDataURL(blob);
+									});
+
+									// 先設置 base64
+									img.setAttribute("src", base64);
+
+									// 記錄需要上傳的圖片
+									pendingUploads.push({
+										originalSrc: src,
+										base64: base64
+									});
+
+									console.log("Google 圖片轉換為 base64 成功");
+								} catch (err) {
+									console.log("載入 Google 圖片失敗：", src, err);
+								}
+							}
+							// 判斷是否已經是 base64
+							else if (src.startsWith("data:image/")) {
+								console.log("處理 base64 圖片");
+
+								// 記錄需要上傳的圖片
+								pendingUploads.push({
+									originalSrc: src,
+									base64: src
+								});
+							}
+						}
+
+						// 清理 style, class, id
+						function clean(node) {
+							if (node.nodeType === 1) {
+								node.removeAttribute("style");
+								node.removeAttribute("class");
+								node.removeAttribute("id");
+							}
+							if (node.tagName === "STYLE") {
+								node.remove();
+								return;
+							}
+							Array.from(node.childNodes).forEach(clean);
+						}
+
+						clean(doc.body);
+						const cleanHtml = doc.body.innerHTML;
+
+						// 阻止默認貼上行為
+						evt.stop();
+
+						// 設置清理後的 HTML
+						editor.setData(cleanHtml);
+
+						// 如果有需要上傳的圖片，處理上傳
+						if (pendingUploads.length > 0) {
+							// 等待編輯器更新完成
+							setTimeout(async () => {
+								console.log("開始處理", pendingUploads.length, "張圖片上傳");
+
+								for (let uploadInfo of pendingUploads) {
+									try {
+										console.log("開始上傳圖片...");
+
+										// 創建 File 對象
+										const file = base64ToFile(uploadInfo.base64);
+
+										// 創建一個臨時的 loader
+										const fileRepository = editor.plugins.get("FileRepository");
+										const loader = fileRepository.createLoader(file);
+
+										// 使用自定義上傳適配器
+										const uploadAdapter = new MyUploadAdapter(loader);
+										const result = await uploadAdapter.upload();
+
+										console.log("圖片上傳成功:", result.default);
+
+										// 獲取當前編輯器內容
+										let currentData = editor.getData();
+
+										// 替換對應的 base64 圖片為上傳後的 URL
+										currentData = currentData.replace(uploadInfo.base64, result.default);
+
+										// 更新編輯器內容
+										editor.setData(currentData);
+									} catch (error) {
+										console.error("圖片上傳失敗:", error);
+									}
+								}
+
+								// 清空待上傳列表
+								pendingUploads = [];
+							}, 0);
+						}
+					});
+				})
+				.catch((error) => {
+					console.error("編輯器初始化失敗:", error);
+				});
+		</script>
+	</body>
+</html>
