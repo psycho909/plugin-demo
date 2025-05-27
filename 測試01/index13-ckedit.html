@@ -217,7 +217,8 @@
 
 										// 替換對應的 base64 圖片為上傳後的 URL
 										currentData = currentData.replace(uploadInfo.base64, result.default);
-
+										console.log("替換 base64 圖片為上傳後的 URL");
+										console.log("替換後的內容:", currentData);
 										// 更新編輯器內容
 										editor.setData(currentData);
 									} catch (error) {

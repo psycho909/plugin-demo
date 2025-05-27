@@ -104,10 +104,10 @@
 			}
 			// 基本彈窗
 			document.getElementById("basic-demo").addEventListener("click", function () {
-				let kind = "<script>eval(String.fromCharCode(97,108,101,114,116,40,49,41))<\/script>";
-				console.log(kind);
+				let kind = "基本談窗內容<br>這是使用 gbox.open 方法打開的彈窗";
 				gbox.open(kind, {
 					hasActionBtn: true,
+					addClass: "gbox-basic",
 					actionBtns: [
 						{
 							text: "確定",
