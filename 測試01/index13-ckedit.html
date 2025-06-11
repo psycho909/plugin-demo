@@ -14,18 +14,10 @@
 				</div>
 			</div>
 		</div>
-		<script type="importmap">
-			{
-				"imports": {
-					"ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
-					"ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
-				}
-			}
-		</script>
 		<script type="module">
-			import { ClassicEditor, AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo } from "ckeditor5";
+			import { ClassicEditor, AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo } from "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js";
 
-			import translations from "ckeditor5/translations/zh.js";
+			import translations from "https://cdn.ckeditor.com/ckeditor5/43.0.0/translations/zh.js";
 
 			class MyUploadAdapter {
 				constructor(loader) {
