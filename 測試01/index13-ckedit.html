@@ -3,7 +3,8 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>CKEditor 5 Sample</title>
-		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+		<!-- <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" /> -->
+		<link rel="stylesheet" href="https://tw.hicdn.beanfun.com/plugins/ckeditor5/43.0.0/ckeditor5.css" />
 		<script src="https://tw.hicdn.beanfun.com/plugins/axios/0.21.1/axios.min.js"></script>
 	</head>
 	<body>
@@ -15,9 +16,11 @@
 			</div>
 		</div>
 		<script type="module">
-			import { ClassicEditor, AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo } from "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js";
+			// import { ClassicEditor, AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo } from "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js";
+			import { ClassicEditor, AccessibilityHelp, AutoImage, Autosave, Bold, CloudServices, Essentials, FontBackgroundColor, FontColor, FontFamily, FontSize, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageToolbar, ImageUpload, Italic, Link, List, ListProperties, Paragraph, PictureEditing, SelectAll, Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar, Undo } from "https://tw.hicdn.beanfun.com/plugins/ckeditor5/43.0.0/ckeditor5.js";
 
-			import translations from "https://cdn.ckeditor.com/ckeditor5/43.0.0/translations/zh.js";
+			// import translations from "https://cdn.ckeditor.com/ckeditor5/43.0.0/translations/zh.js";
+			import translations from "https://tw.hicdn.beanfun.com/plugins/ckeditor5/43.0.0/translations/zh.js";
 
 			class MyUploadAdapter {
 				constructor(loader) {
