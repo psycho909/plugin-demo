@@ -1,0 +1,47 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Staff.aspx.cs" Inherits="beanfunEvent_GCP.Event.E20230723.Staff" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head runat="server">
+		<title>新楓之谷</title>
+		<meta name="description" content="新楓之谷" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="open-default-browser" content="true" />
+
+		<!-- 外連檔案 -->
+		<!-- <link rel="stylesheet" type="text/css" href="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/MapleStory/Event/E20221223/assets/css/default.css"> -->
+		<link rel="stylesheet" type="text/css" href="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/beanfunEvent/E20230726/assets/css/default.css" />
+		<script src="https://tw.hicdn.beanfun.com/plugins/isMobile/isMobile.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/jquery/jquery.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/jquery/jquery-migrate.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/script/gbox/gbox.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/axios/0.21.1/axios.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/loadingProgress/loadingProgress.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/MapleStory/Event/E20221223/assets/js/qrcode.min.js"></script>
+		<script src="https://tw.beanfun.com/js/GA_CodeNew.js"></script>
+	</head>
+	<body>
+		<form id="form1" runat="server">
+			<asp:HiddenField ID="hid_gnn" runat="server" />
+			<asp:HiddenField ID="hid_StaffIndex" runat="server" />
+			<div class="container">
+				<h1>新楓之谷楓潮活動派獎</h1>
+				<p class="serial-status">
+					時間：<span class="time"></span><br />
+					序號流水碼：<span class="serial"></span>
+				</p>
+				<div id="qrcode_container"></div>
+				<p class="serial-total">可兌換份數：<span class="amount"></span></p>
+				<div class="action">
+					<a class="btn" href="javascript:;">更換QR CODE</a>
+				</div>
+			</div>
+			<script src="assets/script/default.js"></script>
+			<script src="assets/script/Common.js"></script>
+			<script src="assets/script/Staff.js"></script>
+		</form>
+	</body>
+</html>
