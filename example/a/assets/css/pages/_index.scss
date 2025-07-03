@@ -1,0 +1,183 @@
+:root {
+	--bg-color: #fff;
+	--safe-area-left: 0;
+	--safe-area-right: 0;
+	--safe-area-top: 0;
+	--safe-area-bottom: 0;
+	--scroll-width: 5px;
+	--scroll-height: 8px;
+	--scroll-bar-color: #ddd;
+	--scroll-bar-thumb: #000;
+}
+@supports (bottom: env(safe-area-inset-top)) {
+	:root {
+		--safe-area-left: env(safe-area-inset-left);
+		--safe-area-right: env(safe-area-inset-right);
+		--safe-area-top: env(safe-area-inset-top);
+		--safe-area-bottom: env(safe-area-inset-bottom);
+	}
+}
+#header {
+	padding-top: calc(1em + var(--safe-area-top));
+}
+#footer {
+	bottom: calc(1em + var(--safe-area-bottom));
+}
+// 一版到底
+// html {
+// 	font-size: 768px;
+// 	@include media {
+// 		font-size: 100vw;
+// 	}
+// }
+// .gbox {
+// 	font-size: rem(30);
+// }
+body {
+	background-color: var(--bg-color, #fff);
+	position: relative;
+	width: 100%;
+}
+.scroll-style {
+	&::-webkit-scrollbar {
+		width: var(--scroll-width, 5px);
+		height: var(--scroll-height, 8px);
+		background-color: var(--scroll-bar-color, #ddd);
+	}
+	&::-webkit-scrollbar-thumb {
+		background: var(--scroll-bar-thumb, #000);
+	}
+}
+
+#app {
+	width: 100%;
+	position: relative;
+	width: calc(var(--width) * 1px);
+}
+[v-cloak] {
+	display: none;
+}
+
+.slogan {
+	width: 656px;
+	height: 139px;
+	background-size: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	@include media {
+		width: vw(614);
+		height: vw(148);
+		background-image: url("./images/m-slogan.png");
+	}
+}
+.circle {
+	width: 305px;
+	height: 306px;
+	background-size: 100%;
+	background-image: url("./images/circle.png");
+	position: absolute;
+
+	@include media {
+		width: vw(182);
+		height: vw(183);
+		background-image: url("./images/m-circle.png");
+	}
+}
+.circle1 {
+	top: 0;
+	left: 0;
+}
+.circle2 {
+	top: 0;
+	left: 0;
+}
+.left {
+	&-item {
+		width: 570px;
+		height: 519px;
+		background-size: 100%;
+		background-image: url("./images/left.png");
+		position: absolute;
+		top: 0;
+		left: 0;
+		@include media {
+			width: vw(397);
+			height: vw(406);
+			background-image: url("./images/m-left.png");
+		}
+	}
+}
+.right {
+	&-item {
+		width: 380px;
+		height: 380px;
+		background-size: 100%;
+		background-image: url("./images/right-item.gif");
+		position: absolute;
+		top: 0;
+		left: 0;
+		@include media {
+			width: vw(280);
+			height: vw(280);
+		}
+	}
+	&-text {
+		width: 170px;
+		height: 102px;
+		background-size: 100%;
+		background-image: url("./images/right-text.png");
+		position: absolute;
+		top: 0;
+		left: 0;
+		@include media {
+			width: vw(164);
+			height: vw(96);
+			background-image: url("./images/m-right-text.png");
+		}
+	}
+}
+.btn-booking {
+	width: 568px;
+	height: 119px;
+	background-size: 100%;
+	background-image: url("./images/btn-booking.png");
+	position: absolute;
+	top: 0;
+	left: 0;
+	@include media {
+		width: vw(740);
+		height: vw(157);
+		background-image: url("./images/m-btn-booking.png");
+	}
+}
+.btn-group {
+}
+.btn-aos {
+	width: 246px;
+	height: 79px;
+	background-size: 100%;
+	background-image: url("./images/btn-aos.png");
+	position: absolute;
+	top: 0;
+	left: 0;
+	@include media {
+		width: vw(303);
+		height: vw(101);
+		background-image: url("./images/m-btn-aos.png");
+	}
+}
+.btn-ios {
+	width: 243px;
+	height: 78px;
+	background-size: 100%;
+	background-image: url("./images/btn-ios.png");
+	position: absolute;
+	top: 0;
+	left: 0;
+	@include media {
+		width: vw(297);
+		height: vw(109);
+		background-image: url("./images/m-btn-ios.png");
+	}
+}

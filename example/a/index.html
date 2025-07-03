@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=1200" />
+		<!-- <meta name="viewport" content="width=750,user-scalable=0"> -->
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta http-equiv="PRAGMA" content="NO-CACHE" />
+		<meta http-equiv="EXPIRES" content="0" />
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+		<meta name="description" content="{{description}}" />
+		<!-- 除了H5活動頁以外都要加上 -->
+		<meta name="open-default-browser" content="true" />
+
+		<!-- fb meta -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="{{title}}" />
+		<meta property="og:description" content="{{description}}" />
+		<!-- Safari 數字過常會變成可撥打電話 -->
+		<meta name="format-detection" content="telephone=no" />
+		<!-- 1200x628 -->
+		<meta property="og:image" content="{{url}}/assets/images/og-image.jpg" />
+
+		<title>{{title}}</title>
+		<!-- CSS -->
+		<link rel="stylesheet" href="./assets/css/default.css" />
+
+		<!-- JS -->
+		<!-- jQuery -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/isMobile/isMobile.min.js"></script>
+		<!-- 如果有載入topBar.js則不需要，因為topBar.js已自帶GA_CodeNew.js -->
+		<script language="javascript" src="https://tw.beanfun.com/js/GA_CodeNew.js"></script>
+	</head>
+
+	<body>
+		<!-- 內容開始 -->
+		<div id="loadingProgress" class="loadingProgress" style="display: none"></div>
+		<div id="app">
+			<div class="logo"></div>
+			<div class="slogan"></div>
+			<div class="left-group">
+				<div class="circle circle1"></div>
+				<div class="left-item"></div>
+			</div>
+			<div class="right-group">
+				<div class="circle circle2"></div>
+				<div class="right-item"></div>
+				<div class="right-text"></div>
+			</div>
+			<a href="javascript:;" class="btn-booking"></a>
+			<div class="btn-group">
+				<a href="javascript:;" class="btn-aos"></a>
+				<a href="javascript:;" class="btn-ios"></a>
+			</div>
+		</div>
+
+		<!-- footer -->
+		<script type="module" src="./js/default.js"></script>
+	</body>
+</html>

@@ -1,0 +1,66 @@
+.w-full {
+	width: 100%;
+}
+.w-screen {
+	width: 100vw;
+}
+.h-full {
+	height: 100%;
+}
+.h-screen {
+	height: 100vh;
+}
+.text-red {
+	color: red;
+}
+.text-blue {
+	color: blue;
+}
+.text-green {
+	color: green;
+}
+.text-yellow {
+	color: yellow;
+}
+.text-black {
+	color: #000;
+}
+.text-white {
+	color: #fff;
+}
+.text-30 {
+	font-size: 30px;
+	@include media {
+		font-size: vw(30);
+	}
+}
+.text-36 {
+	font-size: 36px;
+	@include media {
+		font-size: vw(36);
+	}
+}
+.block {
+	display: block;
+}
+.inline-block {
+	display: inline-block;
+}
+.absolute {
+	position: absolute;
+}
+.fixed {
+	position: fixed;
+}
+.relative {
+	position: relative;
+}
+.flex {
+	display: flex;
+}
+.inline-flex {
+	display: inline-flex;
+}
+.grid {
+	display: grid;
+}
