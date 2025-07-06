@@ -16,52 +16,28 @@
 				justify-content: center;
 				align-items: center;
 				background-image: url("./images/bg.jpg");
+				background-size: cover;
+				background-position: center;
+			}
+			.gif {
+				position: absolute;
+				top: 326px;
+				left: 50%;
+				transform: translateX(-50%);
+				text-align: center;
+			}
+			.gif img {
+				max-width: 50%;
+				display: inline-block;
 			}
 		</style>
 	</head>
 	<body>
 		<div id="app">
-			<video id="video" src="./video/TOSM_twlogo_big.mp4" autoplay loop muted></video>
-			<canvas id="canvas"></canvas>
+			<div class="gif">
+				<img src="images/big.gif" alt="" />
+			</div>
 		</div>
-		<script>
-			const video = document.getElementById("video");
-			const canvas = document.getElementById("canvas");
-			const ctx = canvas.getContext("2d");
-
-			// 設定 Canvas 尺寸與影片一致
-			video.addEventListener("loadeddata", () => {
-				canvas.width = video.videoWidth;
-				canvas.height = video.videoHeight;
-				drawFrame();
-			});
-
-			function drawFrame() {
-				// 畫出當前 video 影格
-				ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-				// 取出畫面像素
-				let frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				let data = frame.data;
-
-				// 粗略去背：抓「綠色為主」的像素變透明
-				for (let i = 0; i < data.length; i += 4) {
-					let r = data[i],
-						g = data[i + 1],
-						b = data[i + 2];
-
-					// 這裡是簡單條件，根據你綠幕顏色可再調整
-					if (g > 100 && r < 100 && b < 100) {
-						data[i + 3] = 0; // 設為透明
-					}
-				}
-
-				// 更新畫面
-				ctx.putImageData(frame, 0, 0);
-
-				// 每幀重繪
-				requestAnimationFrame(drawFrame);
-			}
-		</script>
+		<script></script>
 	</body>
 </html>

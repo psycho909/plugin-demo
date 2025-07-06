@@ -10,11 +10,11 @@
 	@return math.div(strip-unit($size), $breakpoint) * $zoom * 1rem;
 }
 @function vw($size, $breakpoint: 768) {
-	@return math.div(strip-unit($size), $breakpoint) * 100vw;
+	@return math.div(strip-unit($size), $breakpoint) * 100vw * 0.85;
 }
 // fullpage用
 @function vw2($size, $breakpoint: 1920) {
-	@return math.div(strip-unit($size), $breakpoint) * 100vw;
+	// @return math.div(strip-unit($size), $breakpoint) * 100vw;
 	@return (strip-unit($size)) * 1px;
 }
 @function vh0($size, $breakpoint: 1080) {
