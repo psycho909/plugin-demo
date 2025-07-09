@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+		<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet" /> -->
+		<style>
+			@font-face {
+				font-family: "Noto Sans TC";
+				src: url("https://tw.hicdn.beanfun.com/fonts/NotoSansTC/NotoSansTC-VariableFont_wght.ttf") format("truetype");
+				font-weight: 200 900; /* 可變粗細範圍 */
+				font-style: normal;
+				font-display: swap;
+			}
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			body {
+				/* background-color: rgba(75, 75, 75, 0.8); */
+			}
+			.lb-s .gbox-wrap {
+				max-width: 460px;
+			}
+			.lb-m .gbox-wrap {
+				max-width: 500px;
+			}
+			.lb-l .gbox-wrap {
+				max-width: 670px;
+			}
+			.lb-xl .gbox-wrap {
+				max-width: 950px;
+			}
+			.gbox-wrap {
+				max-width: 460px;
+				width: 100%;
+				padding: 16px;
+				margin-top: 80px;
+				margin-bottom: 80px;
+				background-color: rgba(0, 0, 0, 0.7);
+				color: #fff;
+				background-size: cover;
+				border: 1px solid #9fa0a0;
+				position: relative;
+			}
+			.gbox-wrap:before {
+				content: "";
+				width: calc(100% + 32px);
+				height: calc(100% - 32px);
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				border: 1px solid #9fa0a0;
+			}
+			.gbox-title {
+				margin: 0;
+				padding: 0;
+				font-size: 0;
+				width: 100%;
+				height: 76px;
+				background-position: center center;
+				background-repeat: no-repeat;
+			}
+			.gbox-content {
+				position: relative;
+				padding: 24px 0;
+				width: 100%;
+				font-size: 30px;
+				font-weight: bold;
+			}
+			.gbox-action {
+				display: flex;
+				justify-content: center;
+				column-gap: 28px;
+				margin-bottom: 24px;
+				position: relative;
+				z-index: 1;
+			}
+			.gbox-btn {
+				background-color: #d69d44;
+				border-radius: 0;
+				border: 2px solid #9fa0a0;
+				font-family: "Noto Sans TC", sans-serif;
+				font-weight: 400;
+				font-size: 22px;
+				color: #3e3a39;
+				padding: 16px;
+				margin: 0;
+			}
+			.gbox-btn:hover {
+				background-image: linear-gradient(to top, #c7822d 25%, #d69d44);
+			}
+			.gbox-btn.btn-ticket {
+				background-color: #996c33;
+				color: #dcdddd;
+			}
+			.gbox-btn.btn-ticket:hover {
+				background-image: linear-gradient(to top, #8f5b24 25%, #996c33);
+			}
+			.gbox-close {
+				width: 36px;
+				height: 36px;
+				background-color: #727171;
+				font-size: 0;
+				top: 14px;
+				right: 0px;
+				background-size: cover;
+			}
+			.gbox-close::before {
+				content: "";
+				width: 60%;
+				height: 2px;
+				background-color: #000;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%) rotate(45deg);
+			}
+			.gbox-close::after {
+				content: "";
+				width: 60%;
+				height: 2px;
+				background-color: #000;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%) rotate(-45deg);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script>
+			function LB(msg, url, callback) {
+				var config = {
+					addClass: "default lb-s",
+					hasCloseBtn: true,
+					hasActionBtn: true,
+					afterClose: function () {
+						$.gbox.close();
+					},
+					actionBtns: [
+						{
+							text: "我知道了",
+							click: function () {
+								$.gbox.close();
+							}
+						},
+						{
+							text: "返回探險資訊頁",
+							click: function () {
+								$.gbox.close();
+							}
+						}
+					]
+				};
+
+				var HTML = "";
+				gbox.open(msg, config);
+			}
+			LB(`活動頁面維護中，<br/>請稍晚再試。`);
+		</script>
+	</body>
+</html>
