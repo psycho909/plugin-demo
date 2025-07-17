@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://tw.hicdn.beanfun.com/jquery/jquery.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/jquery/jquery-migrate.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/script/gbox/gbox.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div style="position: relative; width: 320px; height: 240px">
+				<video ref="myVideo" width="320" height="240" :controls="controlStatus" :muted="mutedStatus" style="background: #222; display: block" @click="playVideo">
+					<source src="./video/1.mp4" type="video/mp4" />
+					你的瀏覽器不支援 HTML5 video。
+				</video>
+				<div v-if="!isPlayed" @click="playVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 22px; z-index: 2">點擊播放影片</div>
+			</div>
+			<br />
+			<button @click="mutedStatus = !mutedStatus">{{ mutedStatus ? '開啟聲音' : '靜音' }}</button>
+			<button @click="controlStatus = !controlStatus">{{ controlStatus ? '隱藏控制列' : '顯示控制列' }}</button>
+		</div>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+		<script>
+			let videoHTML = `
+				<video src="./video/1.mp4" autoplay muted></video>
+			`;
+			$.gbox.open(videoHTML);
+			const { createApp, ref } = Vue;
+			createApp({
+				setup() {
+					const mutedStatus = ref(true);
+					const controlStatus = ref(false);
+					const isPlayed = ref(false);
+					const myVideo = ref(null);
+
+					// 播放影片
+					function playVideo() {
+						if (!isPlayed.value) {
+							myVideo.value.play();
+							isPlayed.value = true;
+							mutedStatus.value = false; // 播放時自動開啟聲音
+						} else {
+							myVideo.value.pause();
+							isPlayed.value = false;
+						}
+					}
+
+					return {
+						mutedStatus,
+						controlStatus,
+						playVideo,
+						isPlayed,
+						myVideo
+					};
+				}
+			}).mount("#app");
+		</script>
+	</body>
+</html>
