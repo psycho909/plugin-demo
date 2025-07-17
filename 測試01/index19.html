@@ -10,9 +10,10 @@
 	</head>
 	<body>
 		<div id="app">
+			<video src="https://tw.hicdn.beanfun.com/beanfun/promo/Test/video/mp4.mp4" controls playsinline></video>
 			<div style="position: relative; width: 320px; height: 240px">
 				<video ref="myVideo" width="320" height="240" :controls="controlStatus" :muted="mutedStatus" style="background: #222; display: block" @click="playVideo">
-					<source src="./video/1.mp4" type="video/mp4" />
+					<source src="https://tw.hicdn.beanfun.com/beanfun/promo/Test/video/mp4.mp4" type="video/mp4" />
 					你的瀏覽器不支援 HTML5 video。
 				</video>
 				<div v-if="!isPlayed" @click="playVideo" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 22px; z-index: 2">點擊播放影片</div>
@@ -23,10 +24,6 @@
 		</div>
 		<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 		<script>
-			let videoHTML = `
-				<video src="./video/1.mp4" autoplay muted></video>
-			`;
-			$.gbox.open(videoHTML);
 			const { createApp, ref } = Vue;
 			createApp({
 				setup() {
