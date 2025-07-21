@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			.box {
+				width: 680px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box"><canvas id="myLine" width="800" height="350"></canvas></div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+			let ctx2 = document.getElementById("myLine").getContext("2d");
+			new Chart(ctx2, {
+				type: "line",
+				data: {
+					labels: Array.from({ length: 24 }, (_, i) => i + 1),
+					datasets: [
+						{
+							label: "公共臨時充電樁",
+							data: [400, 300, 200, 400, 300, 200, 100, 200, 250, 220, 260, 280, 300, 320, 340, 360, 320, 300, 330, 400, 380, 330, 350, 360],
+							borderColor: "#50e3c2",
+							backgroundColor: "transparent",
+							borderWidth: 3,
+							pointRadius: 0,
+							lineTension: 0
+						},
+						{
+							label: "固定車位充電樁",
+							data: [200, 300, 400, 320, 340, 200, 100, 180, 260, 230, 270, 300, 350, 390, 380, 370, 350, 320, 320, 200, 180, 320, 300, 300],
+							borderColor: "#1976d2",
+							backgroundColor: "transparent",
+							borderWidth: 3,
+							lineTension: 0,
+							pointRadius: 0
+						}
+					]
+				},
+				options: {
+					responsive: false,
+					plugins: {
+						legend: {
+							display: false,
+							labels: {
+								color: "#ccc",
+								usePointStyle: true, // 圖例用色塊，不是圓點
+								boxWidth: 36,
+								boxHeight: 12,
+								padding: 20,
+								font: {
+									size: 16,
+									weight: "normal"
+								}
+							}
+						}
+					},
+					scales: {
+						x: {
+							title: {
+								display: true,
+								text: "(h)",
+								color: "#ccc",
+								font: { size: 16 }
+							},
+							ticks: { color: "#ccc", font: { size: 14 } },
+							grid: { color: "rgba(255,255,255,0.05)" }
+						},
+						y: {
+							title: {
+								display: true,
+								text: "(度)",
+								color: "#ccc",
+								font: { size: 16 }
+							},
+							min: 100,
+							max: 450,
+							ticks: { color: "#ccc", font: { size: 14 }, stepSize: 50 },
+							grid: { color: "rgba(255,255,255,0.08)" }
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
