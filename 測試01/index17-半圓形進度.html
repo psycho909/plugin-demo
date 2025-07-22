@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>Gauge ‧ 漸層 + 可調大小 + 數字置中</title>
+		<title>Gauge — 動態 update R / stroke / color</title>
 		<style>
 			body {
 				background: #1e1e1e;
@@ -12,7 +12,7 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				gap: 38px;
+				gap: 26px;
 				padding: 40px;
 			}
 			svg {
@@ -26,163 +26,146 @@
 			}
 			.row {
 				display: flex;
-				gap: 34px;
+				gap: 32px;
 				flex-wrap: wrap;
 				justify-content: center;
+			}
+			button {
+				margin: 6px 8px;
+				padding: 6px 14px;
+				background: #00d4aa;
+				border: 0;
+				border-radius: 4px;
+				color: #fff;
+				cursor: pointer;
+			}
+			button:hover {
+				background: #00b89a;
 			}
 		</style>
 	</head>
 	<body>
-		<h2>多尺寸 / 單色 + 漸層 Gauge</h2>
+		<h2>動態調整 Gauge</h2>
 
 		<div class="row">
-			<svg id="gSmall"></svg>
-			<svg id="gMid"></svg>
-			<svg id="gLarge"></svg>
+			<svg id="gauge"></svg>
 		</div>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+		<div>
+			<button onclick="gauge.update({R:140,stroke:20,color:'#000'})">R=140 / stroke=20 / 粉紅</button>
+			<button onclick="gauge.update({R:80,stroke:12,gradient:[{offset:'0%',color:'#00ffe5'},{offset:'100%',color:'#0061ff'}]})">回到小尺寸 + 漸層</button>
+			<button onclick="gauge.animateTo(Math.random()*100,1.2)">隨機值 (動畫)</button>
+		</div>
+		<script src="https://tw.hicdn.beanfun.com/plugins/gsap/3.11.5/gsap.min.js"></script>
+		<!-- Chart.js v2.9.3 -->
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+		<!-- chartjs-plugin-datalabels -->
+		<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0/dist/chartjs-plugin-datalabels.min.js"></script>
 		<script>
 			/* ---------- Gauge Class ---------- */
-			let gid = 0; // 產生唯一漸層 id
+			let gid = 0; // 漸層 id
 			class Gauge {
-				/**
-				 * @param {SVGElement} svg
-				 * @param {Object} opt    可用參數：
-				 *  R, stroke, value, color, gradient[],
-				 *  bgExtra, gap, arrowScale, valueDy
-				 */
-				constructor(svg, opt) {
-					const def = {
-						R: 80,
-						stroke: 12,
-						value: 0,
-						color: "#00d4aa",
-						gradient: null, // [{offset:'0%',color:'...'},{…}]
-						bgExtra: 1.2, // 白底加粗比例 (相對 stroke)
-						gap: 0.45, // 箭頭外推 (相對 R)
-						arrowScale: 0.23, // 箭頭高度 (相對 R)
-						valueDy: -0.15 // 百分比文字額外位移 (相對 R)
-					};
-					this.cfg = { ...def, ...opt };
+				constructor(svg, opt = {}) {
 					this.svg = svg;
-					this.cur = 0;
-					this._build();
-					this.set(this.cfg.value);
+					this._defaults();
+					this.update(opt);
 				}
-				/* ---- public ---- */
-				set(v) {
+				/* ===== 公開 API ===== */
+				setValue(v) {
 					this._update(Math.max(0, Math.min(100, v)));
 				}
 				animateTo(v, d = 1) {
 					this.tween?.kill();
 					this.tween = gsap.to({ p: this.cur }, { p: v, duration: d, ease: "power1.inOut", onUpdate: () => this._update(this.tween.targets()[0].p) });
 				}
-				/* ---- build ---- */
+				/** 動態更新設定並重建 */
+				update(opts) {
+					// 合併新設定，保留當前 value
+					const keepVal = this.cur ?? this.cfg?.value ?? 0;
+					this.cfg = { ...this.def, ...(this.cfg || {}), ...opts };
+					this.svg.innerHTML = ""; // 清空舊畫面
+					this._build(); // 重新繪製
+					this.setValue(keepVal); // 還原進度
+				}
+				/* ===== 私有 ===== */
+				_defaults() {
+					this.def = {
+						R: 80,
+						stroke: 12,
+						color: "#00d4aa",
+						gradient: null,
+						value: 0,
+						bgExtra: 1.2,
+						gap: 0.45,
+						arrowScale: 0.23,
+						valueDy: -0.15
+					};
+				}
 				_build() {
-					const { R, stroke, bgExtra, gradient, color, arrowScale, valueDy } = this.cfg;
+					const C = this.cfg,
+						{ R, stroke, bgExtra, gradient, color, arrowScale, valueDy } = C;
 					const WH = R * 2;
 					this.svg.setAttribute("width", WH);
-					this.svg.setAttribute("height", R + stroke); // 半圓高 + 一半線寬
+					this.svg.setAttribute("height", R + stroke);
 					this.svg.setAttribute("viewBox", `0 0 ${WH} ${R + stroke}`);
-
 					const Cx = R,
 						Cy = R;
 					this.Cx = Cx;
 					this.Cy = Cy;
 
-					/* defs / gradient */
-					let strokePaint = color;
+					/* defs & gradient */
+					let paint = color;
 					if (gradient) {
-						const gradId = `grad_${++gid}`;
-						const defs = this._elem("defs");
-						const lg = this._elem("linearGradient", { id: gradId, x1: "0%", y1: "0%", x2: "100%", y2: "0%" }, defs);
-						gradient.forEach((stp) =>
-							this._elem(
-								"stop",
-								{
-									offset: stp.offset,
-									"stop-color": stp.color // 必須 stop-color
-								},
-								lg
-							)
-						);
-						strokePaint = `url(#${gradId})`;
-						this.arrowColor = gradient.at(-1).color; // 箭頭用最後色
-					} else {
-						this.arrowColor = color;
-					}
+						const id = `grad_${++gid}`;
+						const defs = this._elm("defs");
+						const lg = this._elm("linearGradient", { id, x1: "0%", y1: "0%", x2: "100%", y2: "0%" }, defs);
+						gradient.forEach((s) => this._elm("stop", { offset: s.offset, "stop-color": s.color }, lg));
+						paint = `url(#${id})`;
+						this.arrowColor = gradient.at(-1).color;
+					} else this.arrowColor = color;
 
 					const arc = `M 0 ${Cy} A ${R} ${R} 0 0 1 ${R * 2} ${Cy}`;
-
-					// 白底弧
 					this._path({ d: arc, stroke: "#fff", "stroke-width": stroke * (1 + bgExtra), "stroke-linecap": "butt", fill: "none" });
-					// 進度弧
-					this.bar = this._path({ d: arc, stroke: strokePaint, "stroke-width": stroke, "stroke-linecap": "butt", fill: "none" });
+					this.bar = this._path({ d: arc, stroke: paint, "stroke-width": stroke, "stroke-linecap": "butt", fill: "none" });
 
-					// 箭頭
-					this.gArrow = this._elem("g");
-					const arrowH = R * arrowScale;
-					this._elem("polygon", { points: `-${arrowH * 0.45},0 ${arrowH * 0.45},0 0,-${arrowH}`, fill: this.arrowColor }, this.gArrow);
+					this.gArrow = this._elm("g");
+					const ah = R * arrowScale;
+					this._elm("polygon", { points: `-${ah * 0.45},0 ${ah * 0.45},0 0,-${ah}`, fill: this.arrowColor }, this.gArrow);
 
-					// 百分比文字（完全置中 + 可位移）
-					const txtY = Cy + valueDy * R; // 相對位移
-					this.txt = this._elem("text", {
-						x: Cx,
-						y: txtY,
-						"font-size": R * 0.45
-					});
+					this.txt = this._elm("text", { x: Cx, y: Cy + valueDy * R, "font-size": R * 0.45 });
 				}
-				/* ---- update ---- */
 				_update(p) {
-					const { R, stroke, gap } = this.cfg;
-					const FULL = Math.PI * R;
+					const { R, stroke, gap } = this.cfg,
+						FULL = Math.PI * R;
 					this.bar.setAttribute("stroke-dasharray", `${(p / 100) * FULL} ${FULL - (p / 100) * FULL}`);
 					this.txt.textContent = Math.round(p) + "%";
-
-					const θ = Math.PI - (p / 100) * Math.PI;
-					const ρ = R + stroke / 2 + R * gap;
-					const x = this.Cx + ρ * Math.cos(θ);
-					const y = this.Cy - ρ * Math.sin(θ);
-					const deg = 270 - (θ * 180) / Math.PI;
+					const θ = Math.PI - (p / 100) * Math.PI,
+						ρ = R + stroke / 2 + R * gap,
+						x = this.Cx + ρ * Math.cos(θ),
+						y = this.Cy - ρ * Math.sin(θ),
+						deg = 270 - (θ * 180) / Math.PI;
 					this.gArrow.setAttribute("transform", `translate(${x} ${y}) rotate(${deg})`);
 					this.cur = p;
 				}
-				/* ---- helpers ---- */
-				_elem(tag, attr = {}, parent = this.svg) {
-					const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-					for (const k in attr) el.setAttribute(k, attr[k]);
-					parent.appendChild(el);
-					return el;
+				_elm(tag, attr = {}, parent = this.svg) {
+					const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+					for (const k in attr) e.setAttribute(k, attr[k]);
+					parent.appendChild(e);
+					return e;
 				}
-				_path(attr, p) {
-					return this._elem("path", attr, p);
+				_path(a, p) {
+					return this._elm("path", a, p);
 				}
 			}
 
-			/* ---------- 建立多顆示例 ---------- */
-			const gSmall = new Gauge(document.getElementById("gSmall"), {
-				R: 60,
-				stroke: 10,
-				value: 20,
-				color: "#13cfa3"
-			});
-			const gMid = new Gauge(document.getElementById("gMid"), {
-				R: 80,
-				stroke: 12,
-				value: 50,
+			/* ---------- 建立實例 ---------- */
+			const gauge = new Gauge(document.getElementById("gauge"), {
+				R: 100,
+				stroke: 14,
+				value: 35,
 				gradient: [
-					{ offset: "0%", color: "#ff9a00" },
-					{ offset: "100%", color: "#ff2d2d" }
-				]
-			});
-			const gLarge = new Gauge(document.getElementById("gLarge"), {
-				R: 110,
-				stroke: 18,
-				value: 70,
-				gradient: [
-					{ offset: "0%", color: "#87c7ab" },
-					{ offset: "100%", color: "#14ae67" }
+					{ offset: "0%", color: "#00ffe5" },
+					{ offset: "100%", color: "#0061ff" }
 				]
 			});
 		</script>

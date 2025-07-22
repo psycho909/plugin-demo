@@ -116,20 +116,11 @@
 				}
 				setValue(value);
 
-				/* Slider */
-				const slider = document.createElement("input");
-				slider.type = "range";
-				slider.min = 0;
-				slider.max = 1000;
-				slider.value = value;
-				slider.addEventListener("input", (e) => setValue(+e.target.value));
-				container.appendChild(slider);
-
 				return { setValue };
 			}
 
 			/* ========= 建立三個儀表板 ========= */
-			createGauge(document.getElementById("gauge-1"), {
+			let g1 = createGauge(document.getElementById("gauge-1"), {
 				segments: 10,
 				colors: ["#0066ff", "#008bff", "#00aaff", "#00c8ff", "#00e5ff", "#00e5ff", "#00c8ff", "#00aaff", "#008bff", "#0066ff"],
 				value: 250
