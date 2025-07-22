@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>Multiple Custom-Color Gauges</title>
+		<title>Multiple Custom-Color Gauges – Custom Needle</title>
 		<style>
 			body {
 				background: #111;
@@ -30,10 +30,9 @@
 		</style>
 	</head>
 	<body>
-		<h2>三個獨立儀表板（每格自訂顏色）</h2>
+		<h2>三個儀表板（每格自訂顏色＋指針可自訂長度）</h2>
 
 		<div id="gauges">
-			<!-- data-* 只是示意；真正顏色在 JS 裡傳入陣列 -->
 			<div class="panel" id="gauge-1"></div>
 			<div class="panel" id="gauge-2"></div>
 			<div class="panel" id="gauge-3"></div>
@@ -41,9 +40,18 @@
 
 		<script>
 			/* ========= 可重用函式 ========= */
-			function createGauge(container, { segments = 10, colors, radius = 120, value = 0 } = {}) {
+			function createGauge(container, opts = {}) {
+				/* 參數展開（新增 needleLen） */
+				const {
+					segments = 10,
+					colors,
+					radius = 120,
+					needleLen = radius - 20, // ★ 指針長度可傳入；預設 radius-20
+					value = 0
+				} = opts;
+
 				/* === 基本幾何 === */
-				const Cx = radius + 30, // 30px 邊距
+				const Cx = radius + 30,
 					Cy = radius + 30;
 				const svgNS = "http://www.w3.org/2000/svg";
 				const svg = document.createElementNS(svgNS, "svg");
@@ -54,23 +62,22 @@
 
 				/* === 畫刻度 === */
 				for (let i = 0; i < segments; i++) {
-					const theta = -Math.PI + (i * Math.PI) / (segments - 1); // −180°→0°
+					const theta = -Math.PI + (i * Math.PI) / (segments - 1);
 					const x = Cx + radius * Math.cos(theta);
 					const y = Cy + radius * Math.sin(theta);
 					const deg = (theta * 180) / Math.PI;
 
 					const rect = document.createElementNS(svgNS, "rect");
-					rect.setAttribute("x", -28); // 外端貼圓周
+					rect.setAttribute("x", -28);
 					rect.setAttribute("y", -5);
 					rect.setAttribute("width", 28);
 					rect.setAttribute("height", 10);
-					rect.setAttribute("fill", colors[i % colors.length]); // 逐格取色
+					rect.setAttribute("fill", colors[i % colors.length]);
 					rect.setAttribute("transform", `translate(${x} ${y}) rotate(${deg})`);
 					svg.appendChild(rect);
 				}
 
-				/* === 指針 === */
-				const needleLen = radius - 20;
+				/* === 指針（用傳入的 needleLen） === */
 				const needle = document.createElementNS(svgNS, "polygon");
 				needle.setAttribute("points", `0,6 0,-6 ${needleLen},0`);
 				needle.setAttribute("fill", "#ccc");
@@ -109,7 +116,7 @@
 				}
 				setValue(value);
 
-				/* === Slider === */
+				/* Slider */
 				const slider = document.createElement("input");
 				slider.type = "range";
 				slider.min = 0;
@@ -117,28 +124,30 @@
 				slider.value = value;
 				slider.addEventListener("input", (e) => setValue(+e.target.value));
 				container.appendChild(slider);
+
+				return { setValue };
 			}
 
 			/* ========= 建立三個儀表板 ========= */
 			createGauge(document.getElementById("gauge-1"), {
 				segments: 10,
-				// 藍→青 漸變
 				colors: ["#0066ff", "#008bff", "#00aaff", "#00c8ff", "#00e5ff", "#00e5ff", "#00c8ff", "#00aaff", "#008bff", "#0066ff"],
 				value: 250
+				// needleLen 不傳 → 預設 radius-20
 			});
 
 			createGauge(document.getElementById("gauge-2"), {
 				segments: 10,
-				// 黃→橘 漸變
 				colors: ["#ffde00", "#ffd000", "#ffbf00", "#ffab00", "#ff9600", "#ff8200", "#ff6d00", "#ff5700", "#ff4100", "#ff2a00"],
-				radius: 140, // 換大一點尺寸也可以
+				radius: 140,
+				needleLen: 140, // ★ 指針拉長到剛好貼到刻度外端
 				value: 600
 			});
 
 			createGauge(document.getElementById("gauge-3"), {
 				segments: 10,
-				// 紫→紅 漸變
-				colors: ["#b400ff", "#c600ff", "#d700ff", "#e600f7", "#f500e1", "#ff00c5", "#ff009f", "#ff0078", "#ff004f", "#ff0026"],
+				colors: ["#0e70bb", "#0e70bb", "#0e70bb", "#0e70bb", "#f69a00", "#f69a00", "#f69a00", "#f69a00", "#e93228", "#e93228"],
+				needleLen: 60, // ★ 指針再短一截
 				value: 900
 			});
 		</script>

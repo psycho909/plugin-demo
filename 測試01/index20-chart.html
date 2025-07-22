@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			.box {
+				width: 300px;
+				height: 300px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box"><canvas id="myPie" width="300" height="300"></canvas></div>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+		<script>
+			const ctx = document.getElementById("myPie").getContext("2d");
+			new Chart(ctx, {
+				type: "pie",
+				data: {
+					labels: ["A", "B", "C"],
+					datasets: [
+						{
+							data: [42, 38, 20],
+							backgroundColor: ["#a2d335", "#f5a623", "#888888"],
+							borderWidth: 0
+						}
+					]
+				},
+				options: {
+					plugins: {
+						legend: { display: false }, // 不顯示圖例
+						datalabels: {
+							color: "#fff",
+							font: (ctx) => {
+								// 大區塊字大
+								let value = ctx.dataset.data[ctx.dataIndex];
+								return {
+									weight: "bold",
+									size: value >= 40 ? 36 : value >= 30 ? 28 : 20
+								};
+							},
+							formatter: (value, ctx) => value + "%"
+						}
+					}
+				},
+				plugins: [ChartDataLabels]
+			});
+		</script>
+	</body>
+</html>

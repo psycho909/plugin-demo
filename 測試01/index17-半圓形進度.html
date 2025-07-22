@@ -81,13 +81,13 @@
 				/* ---- build ---- */
 				_build() {
 					const { R, stroke, bgExtra, gradient, color, arrowScale, valueDy } = this.cfg;
-					const WH = R * 2 + stroke * 2; // 加邊距
+					const WH = R * 2;
 					this.svg.setAttribute("width", WH);
-					this.svg.setAttribute("height", WH / 2 + stroke);
-					this.svg.setAttribute("viewBox", `0 0 ${WH} ${WH}`);
+					this.svg.setAttribute("height", R + stroke); // 半圓高 + 一半線寬
+					this.svg.setAttribute("viewBox", `0 0 ${WH} ${R + stroke}`);
 
-					const Cx = WH / 2,
-						Cy = WH / 2;
+					const Cx = R,
+						Cy = R;
 					this.Cx = Cx;
 					this.Cy = Cy;
 
@@ -113,7 +113,7 @@
 						this.arrowColor = color;
 					}
 
-					const arc = `M ${Cx - R} ${Cy} A ${R} ${R} 0 0 1 ${Cx + R} ${Cy}`;
+					const arc = `M 0 ${Cy} A ${R} ${R} 0 0 1 ${R * 2} ${Cy}`;
 
 					// 白底弧
 					this._path({ d: arc, stroke: "#fff", "stroke-width": stroke * (1 + bgExtra), "stroke-linecap": "butt", fill: "none" });
@@ -178,9 +178,12 @@
 			});
 			const gLarge = new Gauge(document.getElementById("gLarge"), {
 				R: 110,
-				stroke: 16,
+				stroke: 18,
 				value: 70,
-				color: "#4e9aff"
+				gradient: [
+					{ offset: "0%", color: "#87c7ab" },
+					{ offset: "100%", color: "#14ae67" }
+				]
 			});
 		</script>
 	</body>
