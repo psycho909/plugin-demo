@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Document</title>
+		<style>
+			@font-face {
+				font-family: "Noto Sans TC";
+				src: url("https://tw.hicdn.beanfun.com/fonts/NotoSansTC/NotoSansTC-VariableFont_wght.woff2") format("truetype");
+				font-style: normal;
+				font-display: swap;
+			}
+
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			html {
+				font-size: 768px;
+			}
+			html,
+			body {
+				height: 100%;
+			}
+			body {
+				min-height: 1.6927083333rem;
+				font-size: 0.0546875rem;
+				font-weight: bold;
+				text-align: center;
+				color: #000;
+				line-height: 1.5;
+				position: relative;
+				background: url(./images/body-bg.png) 50% 0% / 1rem 2.3294270833rem no-repeat #030303;
+			}
+			.canvas-wrap {
+				width: 100%; /* 響應式容器 */
+				max-width: 768px; /* 最大寬768px */
+				margin: 0 auto;
+			}
+			#myCanvas {
+				width: 100%; /* 撐滿容器 */
+				height: auto; /* 高度自動縮放 */
+				display: block;
+			}
+			.box {
+			}
+			.logo {
+				width: calc(264 / 768 * 1rem);
+				height: calc(128 / 768 * 1rem);
+				background-image: url("./images/logo.png");
+				background-size: cover;
+				margin: 0 auto;
+				margin-top: calc(57 / 768 * 1rem);
+				margin-bottom: calc(48 / 768 * 1rem);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="logo"></div>
+			<div class="canvas-wrap">
+				<canvas id="myCanvas"></canvas>
+			</div>
+		</div>
+
+		<script>
+			function drawCenterTextMultiline(canvas, text, charsPerLine = 5, baseWidth = 768, lineGapRatio = 0.35, finalText = "現場活動派獎") {
+				const ctx = canvas.getContext("2d");
+				// 主內容自動分行
+				const lines = [];
+				for (let i = 0; i < text.length; i += charsPerLine) {
+					lines.push(text.slice(i, i + charsPerLine));
+				}
+				// 最後一行加上固定文字
+				lines.push(finalText);
+
+				// 先估最大字體
+				let fontSize = Math.floor(baseWidth * 0.1);
+				ctx.font = `bold ${fontSize}px sans-serif`;
+
+				// 保證所有行都不超寬
+				let maxLineWidth = Math.max(...lines.map((line) => ctx.measureText(line).width));
+				while (maxLineWidth > baseWidth * 0.92 && fontSize > 10) {
+					fontSize--;
+					ctx.font = `bold ${fontSize}px sans-serif`;
+					maxLineWidth = Math.max(...lines.map((line) => ctx.measureText(line).width));
+				}
+
+				const metrics = ctx.measureText(lines[0]);
+				const textHeight = metrics.fontBoundingBoxAscent ? metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent : fontSize;
+				const lineGap = fontSize * lineGapRatio;
+				const totalHeight = textHeight * lines.length + lineGap * (lines.length - 1);
+				const padding = fontSize * 0.35;
+				const canvasWidth = baseWidth;
+				const canvasHeight = Math.ceil(totalHeight + padding * 2);
+
+				canvas.width = canvasWidth;
+				canvas.height = canvasHeight;
+				canvas.style.width = "100%";
+				canvas.style.height = "auto";
+
+				ctx.font = `bold ${fontSize}px sans-serif`;
+				ctx.textBaseline = "top";
+				ctx.textAlign = "left";
+				ctx.lineJoin = "round";
+
+				let y = (canvas.height - (textHeight * lines.length + lineGap * (lines.length - 1))) / 2;
+
+				for (let i = 0; i < lines.length; i++) {
+					const line = lines[i];
+					const textWidth = ctx.measureText(line).width;
+					const x = (canvas.width - textWidth) / 2;
+
+					if (i === lines.length - 1) {
+						// 最後一行: 固定白色字＋紫、白外框
+						ctx.strokeStyle = "#fff";
+						ctx.lineWidth = fontSize * 0.32;
+						ctx.strokeText(line, x, y);
+
+						ctx.strokeStyle = "#39006e";
+						ctx.lineWidth = fontSize * 0.2;
+						ctx.strokeText(line, x, y);
+
+						ctx.fillStyle = "#fff";
+						ctx.fillText(line, x, y);
+					} else {
+						// 其他行: 黃色字＋紫、白外框
+						ctx.strokeStyle = "#fff";
+						ctx.lineWidth = fontSize * 0.38;
+						ctx.strokeText(line, x, y);
+
+						ctx.strokeStyle = "#39006e";
+						ctx.lineWidth = fontSize * 0.23;
+						ctx.strokeText(line, x, y);
+
+						ctx.fillStyle = "#ffe600";
+						ctx.fillText(line, x, y);
+					}
+					y += textHeight + lineGap;
+				}
+			}
+
+			// demo
+			const canvas = document.getElementById("myCanvas");
+			const content = "2025漫博嘉年華遊戲橘";
+			drawCenterTextMultiline(canvas, content, 12, 768, 0.1, "現場活動派獎");
+
+			// 響應式重繪
+			// window.addEventListener("resize", () => {
+			// 	drawCenterTextMultiline(canvas, content, 12, 768, 0.1, "現場活動派獎");
+			// });
+		</script>
+	</body>
+</html>

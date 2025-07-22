@@ -1,0 +1,266 @@
+@charset "UTF-8";
+
+/*
+body { 
+    padding-top: 55px; 
+}
+*/
+
+.container-fluid { 
+   opacity: 0;
+   transition: opacity 1.5s;
+}
+
+body {
+	font-family: "微軟正黑體", "王漢宗細黑體繁", "Microsoft JhengHei", "新細明體",
+		"PMingLiU", "細明體", "MingLiU", "Trebuchet MS", Helvetica, sans-serif;
+}
+
+body:lang(zh) {
+	font-family: "微軟正黑體", "王漢宗細黑體繁", "Microsoft JhengHei", "新細明體",
+		"PMingLiU", "細明體", "MingLiU", "Trebuchet MS", Helvetica,
+		sans-serif !important;
+}
+
+body:lang(zh-hans) {
+	font-family: "黑体", simhei, "宋体", simsun, nsimsun, "楷体", simkai, "仿宋",
+		simfang, Arial, Verdana, "Trebuchet MS", sans-serif;
+}
+
+body:lang(en) {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+pre:lang(zh) {
+	font-family: "微軟正黑體", "王漢宗細黑體繁", "Microsoft JhengHei", "新細明體",
+		"PMingLiU", "細明體", "MingLiU", "Trebuchet MS", Helvetica, sans-serif;
+}
+
+pre:lang(zh-hans) {
+	font-family: "黑体", simhei, "宋体", simsun, nsimsun, "楷体", simkai, "仿宋",
+		simfang, Arial, Verdana, "Trebuchet MS", sans-serif;
+}
+
+pre:lang(en) {
+	font-family: "Arial, Trebuchet MS", Helvetica, sans-serif;
+}
+
+pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+input[type=file] {
+	font-family: 微軟正黑體;
+}
+
+/*
+label {
+	margin-top: 0.3em !important;
+}
+*/
+
+.field_label::after {
+	content: "：";
+}
+
+.field_desc::before {
+	/*	
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	width: 20px;
+	height: 20px;
+	background: url(../images/icon/bulb.png) no-repeat;
+    background-size: 20px;
+	vertical-align: middle;
+    */
+	content: '\25CF  ';
+	font-family: 微軟正黑體;
+	font-size: 12px;
+	color: red;
+}
+
+.field_desc {
+	display: inline;
+	margin: 10px;
+	padding: 0 0 0 10px;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.sidebar .sidebar-menu .active .treeview-menu {
+	display: block;
+}
+
+.numeric {
+	text-align: right;
+}
+
+section.content:last-child {
+	padding-bottom: 0px !important;
+}
+
+div.form-group:last-child {
+	margin-bottom: 0px !important;
+}
+
+a.back-to-top {
+	display: none;
+	width: 50px;
+	height: 50px;
+	/*text-indent: -9999px;*/
+	position: fixed;
+	z-index: 999;
+	right: 20px;
+	bottom: 20px;
+	/*background: #27AE61 url("up-arrow.png") no-repeat center 43%;*/
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	font-size: 4em;
+	line-height: 50px;
+	opacity: 0.8;
+}
+
+a:hover.back-to-top i {
+	/*background-color: #000;*/
+	color: #27AE61 !important;
+}
+
+/*
+.icheckbox label {
+	padding-top: 0 !important;
+	margin-top: 0 !important;
+}
+*/
+
+.navbar i.ion {
+	font-size: 1.5em;
+}
+
+/*
+.nav-tabs>li.active a {
+	background-color: lightblue !important;
+	color: darkblue !important;
+	font-weight: bold;
+}
+*/
+
+/*
+.select2-selection, .select2-selection--single {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+@media ( max-width : 767px) {
+	.fixed .content-wrapper, .fixed .right-side {
+		padding-top: 50px;
+	}
+}
+*/
+
+/*
+@media (max-width: 978px) {
+	.main-sidebar {
+	  display: none;
+	}
+}
+*/
+
+/*
+div.box-body:first-child {
+	padding-top: 1em !important;
+}
+
+div.box-body:last-child {
+	padding-bottom: 0;
+}
+
+div.box-body:last-child::after {
+	content: none;
+}
+*/
+
+/*
+.nav-item-fix {
+	margin-left: 0 !important;
+}
+
+.nav-link-fix {
+	padding: 15px 15px !important;
+	border: 0;
+}
+*/
+
+/*
+.card-header {
+	padding: 0.4em 0.75em !important;
+}
+*/
+
+label.necessary {
+	color: #e74c3c !important;
+}
+
+label.necessary::after {
+	content: "*";
+}
+
+/*
+.content-wrapper {
+	margin-top: 45px !important;
+}
+*/
+
+.pagination .page-item {
+	padding: 4px 0 0 4px !important;
+}
+
+div.dataTables_info {
+	padding-top: 4px !important;
+}
+
+table.dataTable thead th {
+	color: black !important;	
+	background-color: whitesmoke !important;
+}
+
+table.dataTable tbody tr.dark-mode {
+	background-color: transparent !important;
+}
+
+.select2-container--bootstrap4.select2-container--disabled .select2-selection {
+	/*
+	background-color: #343a40 !important;
+	*/
+	background-color: transparent !important;
+}
+
+table.dataTable tbody tr.odd {
+	background-color: transparent !important; 
+}
+
+table.dataTable tbody tr.even {
+	background-color: transparent !important; 
+}
+
+.dataTable th, td {
+	white-space: nowrap; 
+}
+
+.nowrap_numeric {
+	white-space: nowrap;
+	text-align: right;
+}
+
+.selected_row td {
+	background-color: #ffc107 !important;	
+	color: black !important;	
+}
+
+.qrcode {
+	max-height: 250px;
+}
