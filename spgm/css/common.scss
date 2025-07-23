@@ -260,33 +260,420 @@ td {
 	max-height: 250px;
 }
 #index_floor {
+	.col,
+	.col-1,
+	.col-10,
+	.col-11,
+	.col-12,
+	.col-2,
+	.col-3,
+	.col-4,
+	.col-5,
+	.col-6,
+	.col-7,
+	.col-8,
+	.col-9,
+	.col-auto,
+	.col-lg,
+	.col-lg-1,
+	.col-lg-10,
+	.col-lg-11,
+	.col-lg-12,
+	.col-lg-2,
+	.col-lg-3,
+	.col-lg-4,
+	.col-lg-5,
+	.col-lg-6,
+	.col-lg-7,
+	.col-lg-8,
+	.col-lg-9,
+	.col-lg-auto,
+	.col-md,
+	.col-md-1,
+	.col-md-10,
+	.col-md-11,
+	.col-md-12,
+	.col-md-2,
+	.col-md-3,
+	.col-md-4,
+	.col-md-5,
+	.col-md-6,
+	.col-md-7,
+	.col-md-8,
+	.col-md-9,
+	.col-md-auto,
+	.col-sm,
+	.col-sm-1,
+	.col-sm-10,
+	.col-sm-11,
+	.col-sm-12,
+	.col-sm-2,
+	.col-sm-3,
+	.col-sm-4,
+	.col-sm-5,
+	.col-sm-6,
+	.col-sm-7,
+	.col-sm-8,
+	.col-sm-9,
+	.col-sm-auto,
+	.col-xl,
+	.col-xl-1,
+	.col-xl-10,
+	.col-xl-11,
+	.col-xl-12,
+	.col-xl-2,
+	.col-xl-3,
+	.col-xl-4,
+	.col-xl-5,
+	.col-xl-6,
+	.col-xl-7,
+	.col-xl-8,
+	.col-xl-9,
+	.col-xl-auto {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	.h5 {
+		margin-bottom: 0;
+	}
+	.p-1,
+	.p-2,
+	.p-3,
+	.p-4,
+	.p-5,
+	.py-3 {
+		padding: 0 !important;
+	}
+	.mt-3,
+	.my-3 {
+		margin-top: 0 !important;
+	}
+	svg {
+		overflow: visible;
+	}
+	text {
+		dominant-baseline: middle;
+		text-anchor: middle;
+		font-weight: 700;
+		fill: #fff;
+	}
+	.main-sidebar {
+		background-color: #312f2f;
+		.brand-link {
+			background-color: #312f2f;
+		}
+	}
+	.card-deck {
+		margin-left: 0;
+		margin-right: 0;
+		.card {
+			margin-left: 0;
+			margin-right: 0;
+		}
+	}
+	.container-fluid {
+		padding: 0;
+	}
+	.row {
+		margin-left: 0;
+		margin-right: 0;
+	}
 	#header_sidebar_wrapper {
 		.main-header {
 			background-color: #1f1f1f;
+			padding: 0;
 		}
 	}
-
+	#header_community_name {
+		color: #e5c085 !important;
+		font-size: 40px;
+		margin-right: 12px;
+	}
+	#header_application_name {
+		color: #fff;
+		font-size: 40px;
+	}
+	#main_header {
+		.navbar-nav {
+			.nav-item {
+				display: flex;
+				align-items: center;
+			}
+		}
+		ul:nth-child(2) {
+			width: 560px;
+			height: 123px;
+			background-color: #9cc942;
+			clip-path: polygon(50px 0, 100% 0, 100% 100%, 0 100%);
+			justify-content: flex-end;
+			display: flex;
+			align-items: center;
+			column-gap: 16px;
+			padding-right: 60px;
+			.nav-item {
+				a {
+					width: 50px;
+					height: 50px;
+					background-size: cover;
+					position: relative;
+					display: block;
+					padding: 0;
+					i {
+						display: none;
+					}
+				}
+				#nav_notification_link {
+					background-image: url("../img/notification.png");
+					#nav_notification_count {
+						position: absolute;
+						top: 0;
+						right: 0;
+					}
+				}
+				#nav_reload_page_link {
+					background-image: url("../img/home.png");
+				}
+				#nav_logout_link {
+					background-image: url("../img/logout.png");
+				}
+				#nav_user_link {
+					background-image: url("../img/user.png");
+				}
+			}
+		}
+	}
 	.content-wrapper {
 		background-color: #1f1f1f;
+		margin-top: 124px;
+		padding-left: 30px;
+		padding-right: 30px;
+		.content-header {
+			padding: 0 !important;
+			border-bottom: 1px solid #a0a0a0;
+			.row {
+				align-items: center;
+			}
+			.floor_button_container {
+				padding: 20px 0;
+				column-gap: 30px;
+				.nav-item {
+					&.mr-2 {
+						margin-right: 0 !important;
+					}
+					.nav-link {
+						background-color: #c7c7c7;
+						color: #343434;
+						font-weight: bold;
+						cursor: pointer;
+						&.active {
+							background-color: #077de0;
+							color: #fff;
+						}
+					}
+				}
+			}
+			.row {
+				.col-4 {
+					padding: 0;
+				}
+				.col-4:nth-child(1) {
+					align-self: stretch;
+					h3 {
+						width: 300px;
+						height: 100%;
+						padding-left: 40px !important;
+						position: relative;
+						display: flex;
+						align-items: center;
+						&:before {
+							content: "";
+							width: 100%;
+							height: 8px;
+							background-color: #077de0;
+							position: absolute;
+							bottom: -1px;
+							left: 0;
+						}
+					}
+				}
+				.col-4:nth-child(2) {
+				}
+			}
+		}
 		.card {
 			background-color: #1f1f1f;
 			box-shadow: none;
 			border: none;
 		}
 	}
-	.content-header {
-	}
 	#content_area {
+		margin-top: 100px;
+		.floor_caption {
+			color: #fff;
+			font-size: 105px;
+			font-weight: bold;
+		}
 	}
-	#result_area {
+	.floor_info_container {
+		color: #c3c3c3;
 	}
 	#floor_container5 {
+		.row:nth-of-type(2) {
+			& > div:nth-child(1) {
+				.card {
+					width: 330px;
+					padding-left: 80px;
+				}
+			}
+		}
+		#floor_consumption_gauge {
+			margin-top: 60px;
+		}
+	}
+	#floor_info_24 {
+		text-align: left;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		row-gap: 16px;
+		padding-top: 16px;
+		font-size: 20px;
+		.floor_consumption_label {
+			span {
+				color: #fff;
+				font-size: 24px;
+				font-weight: bold;
+			}
+		}
+		.private_charge_point_count {
+			color: #fff;
+			font-size: 24px;
+			font-weight: bold;
+		}
+		.shared_charge_point_count {
+			color: #fff;
+			font-size: 24px;
+			font-weight: bold;
+		}
+	}
+	#floor_consumption {
+		.card-deck:nth-child(1) {
+			justify-content: space-around;
+			.card {
+				width: 300px;
+				flex: unset;
+				padding: 22px !important;
+				row-gap: 20px;
+			}
+		}
+		.floor_consumption_latest_label,
+		.floor_consumption_daily_label,
+		.floor_consumption_monthly_label {
+			font-size: 30px;
+			font-weight: bold;
+		}
+	}
+	#title_section {
+		color: #077de0;
+		font-size: 30px;
+		display: inline-block;
+	}
+	.nav-tabs {
+		border-bottom: 1px solid #727171;
+	}
+	.charge_point_status_title,
+	.hour_consumption_title {
+		background-color: #727171;
+		color: #fff;
+		font-size: 30px;
+		font-weight: bold;
+		border: none;
+		border-bottom: 1px solid #727171;
+		border-radius: 0;
+		padding: 2px 45px;
+	}
+	#DataTables_Table_0 {
+		color: #fff;
+		border-bottom: 0;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
+		.h5 {
+			font-size: 30px;
+		}
+		.fas {
+			width: 75px;
+			height: 78px;
+			background-size: cover;
+			margin-right: 12px;
+			&:before {
+				content: none;
+			}
+		}
+		.fa-bolt {
+			background-image: url("../img/charging.png");
+		}
+		.fa-cars {
+			background-image: url("../img/queue.png");
+		}
+		.fa-power-off {
+			background-image: url("../img/standby.png");
+		}
+		tr {
+			&:last-child {
+				display: none;
+			}
+			&:nth-child(1) {
+				.status_count {
+					color: #97c831;
+				}
+			}
+			&:nth-child(2) {
+				.status_count {
+					color: #f59900;
+				}
+			}
+			&:nth-child(3) {
+				.status_count {
+					color: #73ccd9;
+				}
+			}
+			td {
+				vertical-align: middle;
+				border: 0;
+				padding: 0;
+				padding-bottom: 6px;
+				i {
+					vertical-align: middle;
+				}
+				span {
+					vertical-align: middle;
+				}
+				&.status_count {
+					text-align: center;
+					font-size: 62px;
+					font-weight: bold;
+				}
+			}
+		}
 	}
 	#floor_consumption {
 		.card {
 			border-radius: 16px;
 		}
+		.knob_container {
+			margin-top: 12px;
+			.h5 {
+				font-size: 36px;
+				color: #727171;
+			}
+		}
 	}
+
 	.main-footer {
 		background-color: #1f1f1f;
 	}

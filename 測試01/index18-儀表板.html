@@ -47,7 +47,9 @@
 					colors,
 					radius = 120,
 					needleLen = radius - 20, // ★ 指針長度可傳入；預設 radius-20
-					value = 0
+					value = 0,
+					min = 0,
+					max = 1000
 				} = opts;
 
 				/* === 基本幾何 === */
@@ -93,8 +95,8 @@
 				svg.appendChild(hub);
 
 				/* 左右標籤 */
-				addLabel("0", Cx - radius - 30, Cy, "#bbb");
-				addLabel("1000", Cx + radius + 30, Cy, "#bbb");
+				addLabel(min, Cx - radius - 30, Cy, "#bbb");
+				addLabel(max, Cx + radius + 30, Cy, "#bbb");
 
 				function addLabel(txt, x, y, fill) {
 					const t = document.createElementNS(svgNS, "text");
@@ -110,8 +112,8 @@
 
 				/* 值 → 角度 */
 				function setValue(val) {
-					const v = Math.max(0, Math.min(1000, val));
-					const deg = -180 + (v * 180) / 1000;
+					const v = Math.max(min, Math.min(max, val));
+					const deg = -180 + ((v - min) * 180) / (max - min);
 					needle.setAttribute("transform", `translate(${Cx} ${Cy}) rotate(${deg})`);
 				}
 				setValue(value);

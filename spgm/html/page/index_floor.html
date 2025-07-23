@@ -799,7 +799,7 @@
 															<span class="shared_charge_point_count">0</span>
 														</div>
 														<div class="mt-3 d-flex jsutify-content-center">
-															<div style="display: inline; width: 180px; height: 100px"><canvas width="180" height="100"></canvas><input type="text" class="knob" value="0" readonly="readonly" style="width: 94px; height: 60px; position: absolute; vertical-align: middle; margin-top: 60px; margin-left: -137px; border: 0px; background: none; font: bold 36px Arial; text-align: center; color: rgb(135, 206, 235); padding: 0px; appearance: none" /></div>
+															<svg id="floor_consumption_gauge"></svg>
 														</div>
 													</div>
 												</div>
@@ -858,7 +858,7 @@
 														<div class="knob_container">
 															<div class="floor_voltage_guage_label p-2 h5">電壓</div>
 															<div class="mt-3">
-																<div style="display: inline; width: 150px; height: 90px"><canvas width="150" height="90"></canvas><input type="text" class="knob floor_voltage_guage" value="0" readonly="readonly" style="width: 79px; height: 50px; position: absolute; vertical-align: middle; margin-top: 50px; margin-left: -114px; border: 0px; background: none; font: bold 30px Arial; text-align: center; color: rgb(255, 193, 7); padding: 0px; appearance: none" /></div>
+																<div id="floor_voltage_guage"></div>
 															</div>
 														</div>
 													</div>
@@ -867,7 +867,7 @@
 														<div class="knob_container">
 															<div class="floor_power_guage_label p-2 h5">電流</div>
 															<div class="mt-3">
-																<div style="display: inline; width: 150px; height: 90px"><canvas width="150" height="90"></canvas><input type="text" class="knob floor_power_guage" value="0" readonly="readonly" style="width: 79px; height: 50px; position: absolute; vertical-align: middle; margin-top: 50px; margin-left: -114px; border: 0px; background: none; font: bold 25px Arial; text-align: center; color: rgb(253, 126, 20); padding: 0px; appearance: none" /></div>
+																<div id="floor_power_guage"></div>
 															</div>
 														</div>
 													</div>
@@ -876,7 +876,7 @@
 														<div class="knob_container">
 															<div class="floor_consumption_guage_label p-2 h5">瓦特</div>
 															<div class="mt-3">
-																<div style="display: inline; width: 150px; height: 90px"><canvas width="150" height="90"></canvas><input type="text" class="knob floor_consumption_guage" value="0" readonly="readonly" style="width: 79px; height: 50px; position: absolute; vertical-align: middle; margin-top: 50px; margin-left: -114px; border: 0px; background: none; font: bold 25px Arial; text-align: center; color: rgb(220, 53, 69); padding: 0px; appearance: none" /></div>
+																<div id="floor_consumption_guage"></div>
 															</div>
 														</div>
 													</div>
@@ -980,11 +980,7 @@
 										<div class="card">
 											<div class="card-body p-3">
 												<div class="chart" style="height: 350px">
-													<div class="chartjs-size-monitor">
-														<div class="chartjs-size-monitor-expand"><div class=""></div></div>
-														<div class="chartjs-size-monitor-shrink"><div class=""></div></div>
-													</div>
-													<canvas class="hour_consumption_chart chartjs-render-monitor" style="display: block; width: 768px; height: 350px" width="768" height="350"></canvas>
+													<canvas class="hour_consumption_chart"></canvas>
 												</div>
 											</div>
 										</div>
