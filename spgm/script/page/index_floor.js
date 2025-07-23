@@ -745,10 +745,9 @@ function getPieChart(element) {
 				datalabels: {
 					color: "#fff",
 					font: (ctx) => {
-						let value = element.get(0).getContext("2d").dataset.data[element.get(0).getContext("2d").dataIndex];
 						return {
 							weight: "bold",
-							size: value >= 40 ? 36 : value >= 30 ? 28 : 20
+							size: 20
 						};
 					},
 					formatter: (value) => {
@@ -777,17 +776,18 @@ function createGauge(container, opts = {}) {
 		Cy = radius + 30;
 	const svgNS = "http://www.w3.org/2000/svg";
 	const svg = document.createElementNS(svgNS, "svg");
-	svg.setAttribute("width", Cx * 2);
-	svg.setAttribute("height", Cy + 40);
+
+	/* ★ 只設 viewBox + preserveAspectRatio，寬高交給 CSS */
 	svg.setAttribute("viewBox", `0 0 ${Cx * 2} ${Cy + 40}`);
+	svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 	container.appendChild(svg);
 
+	/* ------- 畫刻度 ------- */
 	for (let i = 0; i < segments; i++) {
 		const theta = -Math.PI + (i * Math.PI) / (segments - 1);
 		const x = Cx + radius * Math.cos(theta);
 		const y = Cy + radius * Math.sin(theta);
 		const deg = (theta * 180) / Math.PI;
-
 		const rect = document.createElementNS(svgNS, "rect");
 		rect.setAttribute("x", -28);
 		rect.setAttribute("y", -5);
@@ -798,6 +798,7 @@ function createGauge(container, opts = {}) {
 		svg.appendChild(rect);
 	}
 
+	/* ------- 指針 ------- */
 	const needle = document.createElementNS(svgNS, "polygon");
 	needle.setAttribute("points", `0,6 0,-6 ${needleLen},0`);
 	needle.setAttribute("fill", "#ccc");
@@ -811,28 +812,26 @@ function createGauge(container, opts = {}) {
 	hub.setAttribute("fill", "#666");
 	svg.appendChild(hub);
 
-	addLabel(min, Cx - radius - 30, Cy, "#bbb");
-	addLabel(max, Cx + radius + 30, Cy, "#bbb");
-
-	function addLabel(txt, x, y, fill) {
+	const addLabel = (txt, x, y) => {
 		const t = document.createElementNS(svgNS, "text");
 		t.setAttribute("x", x);
 		t.setAttribute("y", y);
+		t.setAttribute("fill", "#bbb");
 		t.setAttribute("font-size", 18);
 		t.setAttribute("text-anchor", "middle");
 		t.setAttribute("dominant-baseline", "middle");
-		t.setAttribute("fill", fill);
 		t.textContent = txt;
 		svg.appendChild(t);
-	}
+	};
+	addLabel(min, Cx - radius - 30, Cy);
+	addLabel(max, Cx + radius + 30, Cy);
 
-	function setValue(val) {
-		const v = Math.max(min, Math.min(max, val));
-		const deg = -180 + ((v - min) * 180) / (max - min);
+	const setValue = (v) => {
+		const val = Math.max(min, Math.min(max, v));
+		const deg = -180 + ((val - min) * 180) / (max - min);
 		needle.setAttribute("transform", `translate(${Cx} ${Cy}) rotate(${deg})`);
-	}
+	};
 	setValue(value);
-
 	return { setValue };
 }
 
@@ -989,90 +988,138 @@ var data = [
 	[400, 300, 250, 300, 210, 180, 220, 190, 200, 210, 220, 250, 330, 340, 290, 260, 300, 320, 280, 330, 350, 310, 340, 360],
 	[200, 220, 400, 300, 340, 200, 170, 150, 250, 230, 270, 300, 350, 390, 370, 350, 300, 330, 310, 400, 380, 320, 340, 300]
 ];
-var ctx = document.querySelector(".hour_consumption_chart").getContext("2d");
-var chart = new Chart(ctx, {
-	type: "line",
-	data: {
-		labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"],
-		datasets: [
-			{
-				label: "公共臨時充電樁",
-				data: [400, 300, 250, 300, 210, 180, 220, 190, 200, 210, 220, 250, 330, 340, 290, 260, 300, 320, 280, 330, 350, 310, 340, 360],
-				borderColor: "#50e3c2",
-				backgroundColor: "transparent",
-				borderWidth: 3,
-				pointRadius: 0,
-				lineTension: 0
-			},
-			{
-				label: "固定車位充電樁",
-				data: [200, 220, 400, 300, 340, 200, 170, 150, 250, 230, 270, 300, 350, 390, 370, 350, 300, 330, 310, 400, 380, 320, 340, 300],
-				borderColor: "#1976d2",
-				backgroundColor: "transparent",
-				borderWidth: 3,
-				pointRadius: 0,
-				lineTension: 0
-			}
-		]
-	},
-	options: {
-		legend: {
-			display: true,
-			position: "bottom",
-			labels: {
-				fontColor: "#ccc",
-				fontSize: 16,
-				boxWidth: 40,
-				padding: 24,
-				fontStyle: "bold"
-			}
-		},
-		plugins: {
-			datalabels: {
-				display: false // 這一行關閉所有 datalabels
-			}
-		},
-		scales: {
-			xAxes: [
+var hourConsumptionChart = getLineChart2(document.querySelector("#hour_consumption_chart"));
+hourConsumptionChart.data.datasets[0].data = data[0];
+hourConsumptionChart.data.datasets[1].data = data[1];
+hourConsumptionChart.update();
+
+function getLineChart2(element) {
+	return new Chart(element.getContext("2d"), {
+		type: "line",
+		data: {
+			labels: chartLabels,
+			datasets: [
 				{
-					gridLines: {
-						color: "rgba(255,255,255,0.05)"
-					},
-					scaleLabel: {
-						display: true,
-						labelString: "(h)",
-						fontColor: "#ccc",
-						fontSize: 16
-					},
-					ticks: {
-						fontColor: "#ccc",
-						fontSize: 14
-					}
-				}
-			],
-			yAxes: [
+					borderColor: "#50e3c2",
+					borderWidth: 3,
+					pointRadius: 0,
+					lineTension: 0,
+					backgroundColor: "transparent",
+					label: "公共臨時充電樁",
+					data: []
+				},
 				{
-					gridLines: {
-						color: "rgba(255,255,255,0.08)"
-					},
-					scaleLabel: {
-						display: true,
-						labelString: "(度)",
-						fontColor: "#ccc",
-						fontSize: 16
-					},
-					ticks: {
-						min: 0,
-						max: 500,
-						stepSize: 100,
-						fontColor: "#ccc",
-						fontSize: 14
-					}
+					borderColor: "#1976d2",
+					borderWidth: 3,
+					pointRadius: 0,
+					lineTension: 0,
+					backgroundColor: "transparent",
+					label: "固定車位充電樁",
+					data: []
 				}
 			]
+		},
+		options: {
+			responsive: true,
+			animation: false, // for Performance
+			maintainAspectRatio: false,
+			title: { display: false },
+			tooltips: {
+				mode: "index",
+				intersect: false
+			},
+			scales: {
+				xAxes: [
+					{
+						gridLines: {
+							color: "rgba(255,255,255,0.05)"
+						},
+						scaleLabel: {
+							display: true,
+							labelString: "(h)",
+							fontColor: "#ccc",
+							fontSize: 16
+						},
+						ticks: {
+							fontColor: "#ccc",
+							fontSize: 14
+						}
+					}
+				],
+				yAxes: [
+					{
+						gridLines: {
+							color: "rgba(255,255,255,0.08)"
+						},
+						scaleLabel: {
+							display: true,
+							labelString: "(度)",
+							fontColor: "#ccc",
+							fontSize: 16
+						},
+						ticks: {
+							min: 0,
+							max: 500,
+							stepSize: 100,
+							fontColor: "#ccc",
+							fontSize: 14
+						}
+					}
+				]
+			},
+			legend: {
+				display: true,
+				position: "bottom",
+				labels: {
+					fontColor: "#ccc",
+					fontSize: 16,
+					boxWidth: 40,
+					padding: 24,
+					fontStyle: "bold"
+				}
+			},
+			plugins: {
+				datalabels: {
+					display: false
+				}
+			}
 		}
-	},
-	plugins: [ChartDataLabels]
-});
-// hourConsumptionChart.data.datasets[0].data = data[0];
-// hourConsumptionChart.data.datasets[1].data = data[1];
+	});
+}
+
+var data2 = [42, 38, 20];
+var pieChart = getPieChart2(document.querySelector("#status_count_chart"));
+pieChart.data.datasets[0].data = data2;
+pieChart.update();
+
+function getPieChart2(element) {
+	return new Chart(element.getContext("2d"), {
+		type: "pie",
+		options: {
+			title: { display: false },
+			legend: { display: false },
+			responsive: true,
+			plugins: {
+				datalabels: {
+					color: "#fff",
+					font: (ctx) => {
+						return {
+							weight: "bold",
+							size: 20
+						};
+					},
+					formatter: (value, ctx) => value + "%"
+				}
+			}
+		},
+		data: {
+			datasets: [
+				{
+					backgroundColor: ["#a2d335", "#f5a623", "#888888"],
+					data: [0]
+				}
+			]
+			//labels: []
+		}
+	});
+}

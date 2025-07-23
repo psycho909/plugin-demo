@@ -1,11 +1,25 @@
 @charset "UTF-8";
-
+@use "sass:math";
 /*
 body { 
     padding-top: 55px; 
 }
 */
+@function strip-unit($number) {
+	@if type-of($number) == "number" and not unitless($number) {
+		@return math.div($number, $number * 0 + 1);
+	}
 
+	@return $number;
+}
+@function vw($size, $breakpoint: 1920) {
+	@return math.div(strip-unit($size), $breakpoint) * 100vw;
+}
+@mixin media($breakpoint: 1920px) {
+	@media screen and (max-width: $breakpoint) {
+		@content;
+	}
+}
 .container-fluid {
 	opacity: 0;
 	transition: opacity 1.5s;
@@ -349,6 +363,11 @@ td {
 	.py-3 {
 		padding: 0 !important;
 	}
+	.pl-1,
+	.px-1 {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
 	.mt-3,
 	.my-3 {
 		margin-top: 0 !important;
@@ -362,10 +381,100 @@ td {
 		font-weight: 700;
 		fill: #fff;
 	}
+	.badge-pill {
+		@include media {
+			padding-right: vw(7.2);
+			padding-left: vw(7.2);
+			border-radius: vw(160);
+			padding: vw(3) vw(4.8);
+		}
+	}
+	&.sidebar-collapse {
+		@include media {
+			.main-header {
+				@include media {
+					margin-left: vw(74) !important;
+				}
+			}
+			.main-sidebar {
+				width: vw(74);
+				&:hover {
+					width: vw(250);
+					.brand-link {
+						width: vw(250);
+					}
+				}
+				.brand-link {
+					width: vw(74);
+					height: calc(vw(56) + 1px);
+				}
+			}
+			.main-footer {
+				margin-left: vw(74) !important;
+			}
+			.content-wrapper {
+				margin-left: vw(74) !important;
+			}
+		}
+	}
 	.main-sidebar {
+		@include media {
+			width: vw(250);
+		}
 		background-color: #312f2f;
 		.brand-link {
 			background-color: #312f2f;
+		}
+		.brand-link {
+			@include media {
+				width: vw(250);
+				font-size: vw(20);
+				padding: vw(13) vw(8);
+			}
+			.pt-1,
+			.py-1 {
+				@include media {
+					padding-top: vw(4) !important;
+				}
+			}
+			.brand-image {
+				@include media {
+					margin-left: vw(12.8);
+					margin-right: vw(8);
+					margin-top: vw(-2);
+					max-height: vw(33);
+				}
+			}
+		}
+		.sidebar {
+			@include media {
+				margin-top: calc(vw(56) + 1px);
+				padding-left: vw(8);
+				padding-right: vw(8);
+			}
+		}
+		#sidebar_menu {
+			.nav-link {
+				width: 100%;
+				@include media {
+					padding: vw(8) vw(16);
+					border-radius: vw(4);
+					font-size: vw(16);
+				}
+				.pl-1,
+				.px-1 {
+					@include media {
+						padding-left: vw(4) !important;
+						padding-right: vw(4) !important;
+					}
+				}
+				.fa-lg {
+					@include media {
+						font-size: vw(20);
+						vertical-align: vw(-1.4);
+					}
+				}
+			}
 		}
 	}
 	.card-deck {
@@ -387,16 +496,24 @@ td {
 		.main-header {
 			background-color: #1f1f1f;
 			padding: 0;
+			margin-left: vw(250);
 		}
 	}
 	#header_community_name {
 		color: #e5c085 !important;
 		font-size: 40px;
 		margin-right: 12px;
+		@include media {
+			font-size: vw(40);
+			margin-right: vw(12);
+		}
 	}
 	#header_application_name {
 		color: #fff;
 		font-size: 40px;
+		@include media {
+			font-size: vw(40);
+		}
 	}
 	#main_header {
 		.navbar-nav {
@@ -415,6 +532,13 @@ td {
 			align-items: center;
 			column-gap: 16px;
 			padding-right: 60px;
+			@include media {
+				width: vw(560);
+				height: vw(123);
+				padding-right: vw(60);
+				column-gap: vw(16);
+				clip-path: polygon(vw(50) 0, 100% 0, 100% 100%, 0 100%);
+			}
 			.nav-item {
 				a {
 					width: 50px;
@@ -423,6 +547,10 @@ td {
 					position: relative;
 					display: block;
 					padding: 0;
+					@include media {
+						width: vw(50);
+						height: vw(50);
+					}
 					i {
 						display: none;
 					}
@@ -452,15 +580,28 @@ td {
 		margin-top: 124px;
 		padding-left: 30px;
 		padding-right: 30px;
+		@include media {
+			margin-top: vw(124);
+			padding-left: vw(30);
+			padding-right: vw(30);
+			margin-left: vw(250);
+		}
 		.content-header {
 			padding: 0 !important;
 			border-bottom: 1px solid #a0a0a0;
+			@include media {
+				border-bottom: vw(1) solid #a0a0a0;
+			}
 			.row {
 				align-items: center;
 			}
 			.floor_button_container {
 				padding: 20px 0;
 				column-gap: 30px;
+				@include media {
+					padding: vw(20) 0;
+					column-gap: vw(30);
+				}
 				.nav-item {
 					&.mr-2 {
 						margin-right: 0 !important;
@@ -483,13 +624,21 @@ td {
 				}
 				.col-4:nth-child(1) {
 					align-self: stretch;
+					max-width: 300px;
+					margin-right: 68px;
+					@include media {
+						max-width: vw(300);
+						margin-right: vw(68);
+					}
 					h3 {
-						width: 300px;
 						height: 100%;
 						padding-left: 40px !important;
 						position: relative;
 						display: flex;
 						align-items: center;
+						@include media {
+							padding-left: vw(40) !important;
+						}
 						&:before {
 							content: "";
 							width: 100%;
@@ -498,10 +647,22 @@ td {
 							position: absolute;
 							bottom: -1px;
 							left: 0;
+							@include media {
+								height: vw(8);
+								bottom: vw(-1);
+							}
 						}
 					}
 				}
 				.col-4:nth-child(2) {
+					flex: 1;
+					max-width: 100%;
+					justify-content: flex-start;
+					display: flex;
+				}
+				.col-4:nth-child(3) {
+					flex: 1;
+					margin-left: auto;
 				}
 			}
 		}
@@ -513,10 +674,16 @@ td {
 	}
 	#content_area {
 		margin-top: 100px;
+		@include media {
+			margin-top: vw(100);
+		}
 		.floor_caption {
 			color: #fff;
 			font-size: 105px;
 			font-weight: bold;
+			@include media {
+				font-size: vw(105);
+			}
 		}
 	}
 	.floor_info_container {
@@ -528,11 +695,28 @@ td {
 				.card {
 					width: 330px;
 					padding-left: 80px;
+					@include media {
+						width: vw(330);
+						padding-left: vw(80);
+					}
+				}
+			}
+		}
+		.row:nth-of-type(4) {
+			& > div:nth-child(2) {
+				margin-top: 24px;
+				@include media {
+					margin-top: vw(24);
 				}
 			}
 		}
 		#floor_consumption_gauge {
 			margin-top: 60px;
+			width: 100%;
+			margin: auto;
+			@include media {
+				margin-top: vw(60);
+			}
 		}
 	}
 	#floor_info_24 {
@@ -543,32 +727,59 @@ td {
 		row-gap: 16px;
 		padding-top: 16px;
 		font-size: 20px;
+		@include media {
+			font-size: vw(20);
+			row-gap: vw(16);
+			padding-top: vw(16);
+		}
 		.floor_consumption_label {
 			span {
 				color: #fff;
 				font-size: 24px;
 				font-weight: bold;
+				@include media {
+					font-size: vw(24);
+				}
 			}
 		}
 		.private_charge_point_count {
 			color: #fff;
 			font-size: 24px;
 			font-weight: bold;
+			@include media {
+				font-size: vw(24);
+			}
 		}
 		.shared_charge_point_count {
 			color: #fff;
 			font-size: 24px;
 			font-weight: bold;
+			@include media {
+				font-size: vw(24);
+			}
 		}
 	}
 	#floor_consumption {
-		.card-deck:nth-child(1) {
-			justify-content: space-around;
-			.card {
-				width: 300px;
-				flex: unset;
-				padding: 22px !important;
-				row-gap: 20px;
+		.card-deck {
+			&:nth-child(1) {
+				justify-content: space-around;
+				.card {
+					width: 300px;
+					flex: unset;
+					padding: 22px !important;
+					row-gap: 20px;
+					@include media {
+						width: vw(300);
+						padding: vw(22) !important;
+						row-gap: vw(20);
+					}
+				}
+			}
+			&:nth-child(2) {
+				column-gap: 32px;
+				@include media {
+					column-gap: vw(32);
+				}
 			}
 		}
 		.floor_consumption_latest_label,
@@ -576,15 +787,30 @@ td {
 		.floor_consumption_monthly_label {
 			font-size: 30px;
 			font-weight: bold;
+			@include media {
+				font-size: vw(30);
+			}
+		}
+
+		.mt-3 {
+			display: flex;
+			width: 100%;
+			justify-content: center;
 		}
 	}
 	#title_section {
 		color: #077de0;
 		font-size: 30px;
 		display: inline-block;
+		@include media {
+			font-size: vw(30);
+		}
 	}
 	.nav-tabs {
 		border-bottom: 1px solid #727171;
+		@include media {
+			border-bottom: vw(1) solid #727171;
+		}
 	}
 	.charge_point_status_title,
 	.hour_consumption_title {
@@ -596,6 +822,10 @@ td {
 		border-bottom: 1px solid #727171;
 		border-radius: 0;
 		padding: 2px 45px;
+		@include media {
+			font-size: vw(30);
+			padding: vw(2) vw(45);
+		}
 	}
 	#DataTables_Table_0 {
 		color: #fff;
@@ -604,12 +834,20 @@ td {
 		margin-bottom: 0 !important;
 		.h5 {
 			font-size: 30px;
+			@include media {
+				font-size: vw(30);
+			}
 		}
 		.fas {
 			width: 75px;
 			height: 78px;
 			background-size: cover;
 			margin-right: 12px;
+			@include media {
+				width: vw(75);
+				height: vw(78);
+				margin-right: vw(12);
+			}
 			&:before {
 				content: none;
 			}
@@ -647,6 +885,9 @@ td {
 				border: 0;
 				padding: 0;
 				padding-bottom: 6px;
+				@include media {
+					margin-bottom: vw(6);
+				}
 				i {
 					vertical-align: middle;
 				}
@@ -657,6 +898,9 @@ td {
 					text-align: center;
 					font-size: 62px;
 					font-weight: bold;
+					@include media {
+						font-size: vw(62);
+					}
 				}
 			}
 		}
@@ -664,17 +908,43 @@ td {
 	#floor_consumption {
 		.card {
 			border-radius: 16px;
+			@include media {
+				border-radius: vw(16);
+			}
 		}
 		.knob_container {
 			margin-top: 12px;
+			@include media {
+				margin-top: vw(12);
+			}
 			.h5 {
 				font-size: 36px;
 				color: #727171;
+				@include media {
+					font-size: vw(36);
+				}
 			}
 		}
 	}
-
+	#floor_power_guage,
+	#floor_voltage_guage,
+	#floor_consumption_guage {
+		flex: 1 1 150px;
+		max-width: 300px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		@include media {
+			flex: 1 1 vw(150);
+			max-width: vw(300);
+		}
+	}
 	.main-footer {
 		background-color: #1f1f1f;
+		@include media {
+			margin-left: vw(250);
+			padding: vw(16);
+			font-size: vw(16);
+		}
 	}
 }

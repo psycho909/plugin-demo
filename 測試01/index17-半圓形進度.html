@@ -27,8 +27,8 @@
 			.row {
 				display: flex;
 				gap: 32px;
-				flex-wrap: wrap;
 				justify-content: center;
+				width: 100%;
 			}
 			button {
 				margin: 6px 8px;
@@ -42,19 +42,26 @@
 			button:hover {
 				background: #00b89a;
 			}
+			svg.gauge {
+				width: 100%; /* 填滿父層 */
+				height: auto; /* 等比例 */
+			}
+			.box {
+				flex-basis: 150px;
+				flex-shrink: 0;
+				max-width: 200px;
+				height: 200px;
+				border: 1px solid #00d4aa;
+			}
 		</style>
 	</head>
 	<body>
-		<h2>動態調整 Gauge</h2>
-
 		<div class="row">
-			<svg id="gauge"></svg>
-		</div>
-
-		<div>
-			<button onclick="gauge.update({R:140,stroke:20,color:'#000'})">R=140 / stroke=20 / 粉紅</button>
-			<button onclick="gauge.update({R:80,stroke:12,gradient:[{offset:'0%',color:'#00ffe5'},{offset:'100%',color:'#0061ff'}]})">回到小尺寸 + 漸層</button>
-			<button onclick="gauge.animateTo(Math.random()*100,1.2)">隨機值 (動畫)</button>
+			<div class="box"></div>
+			<div class="box"></div>
+			<div id="wrap" style="width: 100%; max-width: 200px; margin: auto">
+				<svg id="gauge" class="gauge"></svg>
+			</div>
 		</div>
 		<script src="https://tw.hicdn.beanfun.com/plugins/gsap/3.11.5/gsap.min.js"></script>
 		<!-- Chart.js v2.9.3 -->
