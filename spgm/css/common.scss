@@ -352,6 +352,7 @@ td {
 	h3,
 	h4,
 	h5,
+	.h4,
 	.h5 {
 		margin-bottom: 0;
 	}
@@ -367,6 +368,11 @@ td {
 	.px-1 {
 		padding-left: 0 !important;
 		padding-right: 0 !important;
+	}
+	.pb-2,
+	.py-2 {
+		padding-bottom: 0 !important;
+		padding-top: 0 !important;
 	}
 	.mt-3,
 	.my-3 {

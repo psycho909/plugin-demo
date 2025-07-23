@@ -326,6 +326,7 @@ td {
 #index_floor h3,
 #index_floor h4,
 #index_floor h5,
+#index_floor .h4,
 #index_floor .h5 {
   margin-bottom: 0;
 }
@@ -341,6 +342,11 @@ td {
 #index_floor .px-1 {
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+#index_floor .pb-2,
+#index_floor .py-2 {
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
 }
 #index_floor .mt-3,
 #index_floor .my-3 {
