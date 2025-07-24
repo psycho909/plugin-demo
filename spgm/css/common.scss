@@ -867,10 +867,15 @@ td {
 		.fa-power-off {
 			background-image: url("../img/standby.png");
 		}
-		tr {
-			&:last-child {
-				display: none;
+		.fa-circle-question {
+			font-size: 80px;
+			margin-right: 12px;
+			@include media {
+				font-size: vw(80);
+				margin-right: vw(12);
 			}
+		}
+		tr {
 			&:nth-child(1) {
 				.status_count {
 					color: #97c831;
