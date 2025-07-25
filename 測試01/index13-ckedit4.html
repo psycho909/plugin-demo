@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Notice</title>
+		<meta name="description" content="Anydoor後台" />
+		<meta http-equiv="X-UA-Compatible" content="IE=7" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" type="text/css" href="./assets/css/default.css" />
+		<link rel="stylesheet" type="text/css" href="./assets/css/jquery-ui-1.10.4.custom.min.css" />
+		<link rel="stylesheet" type="text/css" href="./assets/css/jquery-ui-timepicker-addon.css" />
+		<script src="./assets/js/jquery.js"></script>
+		<script src="./assets/js/jquery-ui.min.js"></script>
+		<script src="./assets/js/jquery-ui-timepicker-addon.js"></script>
+		<script src="./assets/js/json2.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/script/gbox/gbox.js"></script>
+		<script src="./assets/js/jquery.tablesort.js"></script>
+		<script src="./assets/js/simplePagination.min.js"></script>
+		<script src="./ckeditor/ckeditor.js"></script>
+		<script src="./ckeditor/plugins/image/dialogs/image.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<textarea id="edit_Content" class="layui-textarea editor1" name="Contents" style="width: 99%; height: 50%"></textarea>
+		</div>
+
+		<script src="./assets/js/default.js"></script>
+
+		<script>
+			CKEDITOR.replace("edit_Content", {
+				extraPlugins: "pastebase64",
+				removePlugins: "easyimage,cloudservices",
+				disallowedContent: "*{style}(*)[*]{id,class}",
+				filebrowserImageUploadUrl: "../api/ImageUpload/UploadImgCkeditor_New?FunctionName=CommonPlatform-NoticeList2",
+				filebrowserUploadMethod: "form",
+				font_names: "Arial/Arial, Helvetica, sans-serif;Comic Sans MS/Comic Sans MS, cursive;Courier New/Courier New, Courier, monospace;Georgia/Georgia, serif;Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;Tahoma/Tahoma, Geneva, sans-serif;Times New Roman/Times New Roman, Times, serif;Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;Verdana/Verdana, Geneva, sans-serif;新細明體;標楷體;微軟正黑體",
+				width: "1500px",
+				height: "700px"
+			});
+
+			CKEDITOR.on("dialogDefinition", function (event) {
+				try {
+					var dialogName = event.data.name;
+					var dialogDefinition = event.data.definition;
+
+					if (dialogName === "table" || dialogName === "tableProperties") {
+						var advancedTab = dialogDefinition.getContents("advanced");
+						var infoTab = dialogDefinition.getContents("info");
+						infoTab.get("txtWidth").default = "100%";
+						advancedTab.get("advStyles").default = "width: 100%;";
+						advancedTab.get("advCSSClasses").default = "mod-table table-list-view";
+					}
+				} catch (exception) {
+					window.alert("Error " + event.message);
+				}
+			});
+			CKEDITOR.on("instanceReady", function (ev) {
+				var editor = ev.editor;
+				let pendingUploads = [];
+				ev.editor.on("paste", function (evt) {
+					var html = evt.data.dataValue.trim();
+					var match = html.match(/^https?:\/\/\S+\.(?:jpg|jpeg|png|gif|bmp|webp)$/i);
+					if (match) {
+						evt.data.dataValue = '<img src="' + match[0] + '" />';
+					}
+				});
+				editor.on("afterPaste", async function () {
+					var all = editor.document.find("*").toArray();
+					all.forEach(function (el) {
+						el.removeAttribute && el.removeAttribute("style");
+						el.removeAttribute && el.removeAttribute("class");
+						el.removeAttribute && el.removeAttribute("id");
+					});
+					pendingUploads = [];
+					let imgs = editor.document.find("img").toArray();
+					for (let img of imgs) {
+						const src = img.getAttribute("src");
+						if (!src) continue;
+
+						// 判斷是否已經是 base64
+						if (src.startsWith("data:image/")) {
+							console.log("處理 base64 圖片");
+
+							// 記錄需要上傳的圖片
+							pendingUploads.push({
+								originalSrc: src,
+								base64: src
+							});
+						} else {
+							try {
+								console.log("處理 圖片:", src);
+								const response = await fetch(src);
+								if (!response.ok) throw new Error("圖片載入失敗");
+								const blob = await response.blob();
+
+								// 轉 base64
+								const base64 = await new Promise((resolve, reject) => {
+									const reader = new FileReader();
+									reader.onloadend = () => resolve(reader.result);
+									reader.onerror = reject;
+									reader.readAsDataURL(blob);
+								});
+
+								// 先設置 base64
+								img.setAttribute("src", base64);
+
+								// 記錄需要上傳的圖片
+								pendingUploads.push({
+									originalSrc: src,
+									base64: base64
+								});
+
+								console.log("片轉換為 base64 成功");
+							} catch (err) {
+								console.log("載入圖片失敗：", src, err);
+							}
+						}
+					}
+					if (pendingUploads.length > 0) {
+						console.log("開始處理", pendingUploads.length, "張圖片上傳");
+						for (let uploadInfo of pendingUploads) {
+							try {
+								console.log("開始上傳圖片...");
+								// uploadInfo.base64 就是 data:image/png;base64,...
+								let response = await fetch("../api/ImageUpload/UploadImgCkeditor_New?FunctionName=CommonPlatform-NoticeList2", {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({ base64: uploadInfo.base64 })
+								});
+								let data = await response.json();
+								if (data.url) {
+									// 在 DOM 找到這個 base64 圖片，換成 server 回傳的圖片網址
+									let imgs = editor.document.find("img").toArray();
+									imgs.forEach(function (imgElem) {
+										if (imgElem.getAttribute("src") === uploadInfo.base64) {
+											imgElem.setAttribute("src", data.url);
+										}
+									});
+									console.log("圖片上傳成功:", data.url);
+								}
+							} catch (error) {
+								console.error("圖片上傳失敗:", error);
+							}
+						}
+						// 清空列表
+						pendingUploads = [];
+					}
+				});
+			});
+			CKEDITOR.instances.edit_Content.setData("");
+		</script>
+	</body>
+</html>

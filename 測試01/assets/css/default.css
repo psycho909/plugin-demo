@@ -1,0 +1,446 @@
+html, body, h1, h2, h3, h4, h5, h6, pre,p, a, b, strong, em, small, input, button, select, textarea, fieldset, legend, img, table{
+	padding: 0;
+	margin: 0;
+}
+html, body, input, button, select, textarea{
+	line-height: 1.5;
+	font-size: 12px;
+	color: #556164;
+	font-family: "PingFangTC-Regular", "Heiti TC", "Noto Sans TC", "Microsoft JhengHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+h1, h2, h3, h4, h5, h6{
+	margin-bottom: 12px;
+	font-weight: bold;
+}
+h1{font-size: 36px;}
+h2{font-size: 30px;}
+h3{font-size: 24px;}
+h4{font-size: 18px;}
+h5{font-size: 14px;}
+h6{font-size: 12px;}
+p{
+	min-height: 18px;
+	margin: 0 0 12px 0;
+}
+a{
+	color: #00a3db;
+}
+pre{
+	color: #00a3db;
+}
+em{
+	color: red;
+	font-style: normal;
+}
+span, label{
+	*zoom: 1;
+	display: inline-block;
+}
+hr{
+	height: 1px;
+	margin: 0 0 12px 0;
+	background: #cfcfcf;
+	border: none;
+}
+
+[class^='cln'], .row{
+	margin-bottom: 12px;
+	vertical-align: top;
+	display: inline-block;
+}
+[class^='cln'] > *, .row > *{
+	vertical-align: middle;
+}
+.cln5{width:4.95%;}
+.cln10{width:9.95%;}
+.cln15{width:14.95%;}
+.cln20{width:19.95%;}
+.cln25{width:24.95%;}
+.cln30{width:29.95%;}
+.cln35{width:34.95%;}
+.cln40{width:39.95%;}
+.cln45{width:44.95%;}
+.cln50{width:49.95%;}
+.cln55{width:54.95%;}
+.cln60{width:59.95%;}
+.cln65{width:64.95%;}
+.cln70{width:69.95%;}
+.cln75{width:74.95%;}
+.cln80{width:79.95%;}
+.cln85{width:84.95%;}
+.cln90{width:89.95%;}
+.cln95{width:94.95%;}
+.cln100{width:99.95%;}
+.row{width:100%; margin-bottom:0;}
+
+.v-padding{
+	padding: 6px 0;
+}
+.h-padding{
+	padding: 0 6px;
+}
+
+input[type='text'], input[type='password'], textarea{
+	width: 138px;
+	padding: 0 2px 0 5px;
+	margin-right: 5px;
+	height: 26px;
+	line-height: 24px;
+	border: 1px solid #8fa2a7;
+	vertical-align: middle;
+	display: inline-block;
+}
+textarea{
+	width: 228px;
+	height: 98px;
+}
+input::placeholder{
+	color: #bbb;
+}
+input:-ms-input-placeholder{ /*IE要分開寫*/
+	color: #bbb;
+}
+
+[class^='btn'], #gbox .gbox-wrap .gbox-action a[class*=btn]{
+	padding: 0 12px;
+	margin: 0 4px;
+	color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	text-align: center;
+	line-height: 28px;
+	border: none;
+	border-radius: 0;
+	background: url(img/btn.png) 50% 50% repeat-x #00a3db;
+	overflow: visible;
+	vertical-align: middle;
+	cursor: pointer;
+	display: inline-block;
+}
+input[class^='btn'], button[class^='btn']{
+	line-height: 24px;
+}
+.btn-cancel, #gbox .gbox-wrap .gbox-action a.btn-cancel{
+	background-image: url(img/btn-cancel.png);
+}
+.btn-disabled, #gbox .gbox-wrap .gbox-action a.btn-disabled{
+	color: #b2bcc0;
+	background-image: url(img/btn-disabled.png);
+	cursor: default;
+}
+.btn-small{
+	padding: 0 4px;
+	line-height: 20px;
+}
+
+.alignLeft, .align-left{
+	text-align: left;
+}
+.alignRight, .align-right{
+	text-align: right;
+}
+.alignRight > *, .align-right > *{
+	text-align: left;
+	display: inline-block;
+}
+.alignCenter, .align-center{
+	text-align: center;
+}
+.alignCenter > *, .align-center > *{
+	text-align: left;
+	display: inline-block;
+}
+.alignTop, .align-top{
+	vertical-align: top;
+}
+
+select{
+	width: 147px;
+	height: 28px;
+	margin-right: 5px;
+	border-radius: 0;
+}
+select{
+	border: 1px solid #8fa2a7;
+}
+
+input[type=checkbox], input[type=radio]{
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	margin: 0 3px 0 0;
+	border: none;
+	outline: none;
+	vertical-align: -4px;
+	cursor: pointer;
+	appearance: none;
+	background: none;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 50% 100%;
+	background-size: cover;
+	display: inline-block;
+}
+input::-ms-check{
+	display:none
+}
+input[type=checkbox]{
+	background-image: url(img/checkbox.png);
+}
+input[type=radio]{
+	background-image: url(img/radio.png);
+}
+input[type=checkbox]:checked, input[type=radio]:checked{
+	background-position: 50% 0%;
+}
+
+table{
+	width: 100%;
+	margin-bottom: 12px;
+	border: none;
+	border-top: 1px solid #cfcfcf;
+	border-bottom: 1px solid #cfcfcf;
+	border-collapse: collapse;
+	table-layout: fixed;
+	border-left: none;
+	border-right: none;
+}
+th, td{
+	padding: 9px;
+	border: none;
+	word-wrap: break-word;
+	word-break: break-all;
+	border-bottom: 1px solid #cfcfcf;
+}
+th > *, td > *{
+	vertical-align: middle;
+}
+th{
+	color: #cce3f0;
+	background: #4a4a4a;
+	border-right: 1px solid #6f6f6f;
+}
+th.sort, th.sorted.ascendin, th.sorted.descending{
+	background-image: url(img/white-bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+th.sorted.ascending{
+	background-image: url(img/white-asc.gif);
+}
+th.sorted.descending{
+	background-image: url(img/white-desc.gif);
+}
+th.sort:hover{
+	background-color: #5f5f5f;
+}
+table.noStyle, table.no-style{
+	margin: 0;
+	table-layout: auto;
+	border: none;
+}
+table.noStyle th, table.noStyle td, table.no-style th, table.no-style td{
+	padding: 5px 0;
+	border: none;
+	color: #556164;
+	background: none;
+}
+
+.container{
+	width: 95%;
+	min-width: 1000px;
+	padding: 24px 0;
+	margin: 0 auto;
+}
+
+.bgGray, .bg-gray{
+	padding: 5px 8px;
+	background: #dbdbdb;
+}
+
+.marker{
+	background: #c0ffc8;
+	display: inline-block;
+}
+.highlight{
+	color: #00d01a;
+}
+.fade{
+	color: #cccccc;
+}
+
+.ui-datepicker select{
+	height: auto;
+}
+.ui-datepicker-trigger{
+	margin-right: 5px;
+	cursor: pointer;
+	vertical-align: middle;
+}
+.sortable-type1{
+	user-select: none;
+}
+.sortable-type1 > *{
+	border: 1px solid #898989;
+	padding: 6px 8px 6px 26px;
+	margin-bottom: 1px;
+	font-weight: bold;
+	color: black;
+	cursor: move;
+	background: url(img/double-arrow.png) 6px 50% no-repeat #dbdbdb;
+	display: block;
+}
+.sortable-type1 .disabled{
+	background-image: url(img/pinned.png);
+	cursor: auto;
+}
+.sortable-type1 > *:hover{
+	background-color: #e9e9e9;
+}
+.sortable-type1 > .disabled:hover{
+	all: revert;
+	border: 1px solid #898989;
+	padding: 6px 8px 6px 26px;
+	margin-bottom: 1px;
+	font-weight: bold;
+	color: black;
+	background: url(img/pinned.png) 6px 50% no-repeat #dbdbdb;
+	display: block;
+}
+
+#gbox{
+	color: #556164;
+}
+#gbox .gbox-wrap{
+	width: auto;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+}
+#gbox .gbox-wrap .gbox-title{
+	padding: 0;
+	margin: 0;
+}
+#gbox .gbox-wrap .gbox-content{
+	padding: 0;
+	line-height: 1.5;
+    font-size: 12px;
+}
+#gbox .gbox-wrap .gbox-close{
+	font-size: 0;
+}
+#gbox .gbox-wrap .gbox-action .gbox-btn{
+	margin: 0;
+}
+
+.ie7box{
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 1;
+	background: url(img/modal-bg.png) 0% 0% ;
+	overflow: auto;
+}
+.i7b-wrap-before{
+	height: 100%;
+	vertical-align: middle;
+	display: inline-block;
+}
+.i7b-wrap, #gbox .gbox-wrap{
+	padding: 1px 1px 24px 1px;
+	min-width: 320px;
+	max-width: 640px;
+	margin: 20px;
+	background: #fff;
+	vertical-align: middle;
+	position: relative;
+	display: inline-block;
+}
+.i7b-close, #gbox .gbox-wrap .gbox-close{
+	width: 24px;
+	height: 24px;
+	background: url(img/i7b-close.png) 0% 0% no-repeat;
+	cursor: pointer;
+	position: absolute;
+	right: -8px;
+	top: -8px;
+}
+.i7b-title, #gbox .gbox-wrap .gbox-title{
+	padding: 8px 24px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+	background: #00a3db;
+}
+.i7b-content, #gbox .gbox-wrap .gbox-content{ /*目前寬度最大到752px*/
+	padding: 18px 24px 0 24px;
+	margin-bottom: 16px;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+.i7b-content *{
+	word-wrap: break-word;
+	word-break: break-all;
+}
+.overflowHidden{
+	overflow: hidden;
+}
+
+.ie7-loading{
+	width: 100%;
+	height: 100%;
+	background: url(img/modal-bg.png) 0% 0%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 9001;
+	display: none;
+}
+.ie7-loading img{
+	width: 32px;
+	height: 32px;
+	margin: -16px 0 0 -16px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+
+.pagination{
+	padding: 12px 0 0 0;
+	margin: 0 0 12px 0;
+	list-style: none;
+	display: inline-block;
+}
+.pagination li{
+	margin: 0 2px;
+	border: 1px solid #00a3db;
+	display: inline-block;
+}
+.pagination li:first-child{
+	border-left: 1px solid #00a3db;
+}
+.pagination li.active{
+	background: #00a3db;
+}
+.pagination li a, .pagination li span{
+	padding: 5px 11px;
+	color: #00a3db;
+	text-decoration: none;
+	display: inline-block;
+}
+.pagination li.active a, .pagination li.active span{
+	color: #fff;
+}
+.pagination li.disabled a{
+	color: #bebebe;
+	cursor: default;
+}
+
+*[hiddentarget]{
+	display: none;
+}

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>圖片上傳測試</title>
+	</head>
+	<body>
+		<input type="text" id="imageUrlInput" placeholder="輸入圖片網址" style="width: 300px" />
+		<button id="urlToBase64Btn">網址轉base64</button>
+		<br />
+		<img id="preview" style="max-width: 200px; display: none" />
+		<script>
+			// 網址圖片轉 base64
+			document.getElementById("urlToBase64Btn").addEventListener("click", async function () {
+				const url = document.getElementById("imageUrlInput").value.trim();
+				if (!url) {
+					console.log("請輸入圖片網址");
+					return;
+				}
+				try {
+					const base64 = await urlToBase64(url);
+					console.log("網址圖片 base64:", base64);
+					showPreview(base64);
+				} catch (err) {
+					console.error("轉換失敗：", err);
+				}
+			});
+
+			// 圖片網址轉 base64
+			async function urlToBase64(url) {
+				const response = await fetch(url);
+				if (!response.ok) throw new Error("圖片載入失敗");
+				const blob = await response.blob();
+				return await new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onloadend = () => resolve(reader.result);
+					reader.onerror = reject;
+					reader.readAsDataURL(blob);
+				});
+			}
+
+			// 預覽用
+			function showPreview(base64) {
+				const img = document.getElementById("preview");
+				img.src = base64;
+				img.style.display = "block";
+			}
+		</script>
+	</body>
+</html>

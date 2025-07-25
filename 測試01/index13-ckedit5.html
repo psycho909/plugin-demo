@@ -120,11 +120,20 @@
 							const src = img.getAttribute("src");
 							if (!src) continue;
 
-							// 判斷是否 googleusercontent.com 的圖
-							if (src.includes("googleusercontent.com")) {
+							// 判斷是否已經是 base64
+							if (src.startsWith("data:image/")) {
+								console.log("處理 base64 圖片");
+
+								// 記錄需要上傳的圖片
+								pendingUploads.push({
+									originalSrc: src,
+									base64: src
+								});
+							} else {
 								try {
-									console.log("處理 Google 圖片:", src);
+									console.log("處理 圖片:", src);
 									const response = await fetch(src);
+									if (!response.ok) throw new Error("圖片載入失敗");
 									const blob = await response.blob();
 
 									// 轉 base64
@@ -144,20 +153,10 @@
 										base64: base64
 									});
 
-									console.log("Google 圖片轉換為 base64 成功");
+									console.log("片轉換為 base64 成功");
 								} catch (err) {
-									console.log("載入 Google 圖片失敗：", src, err);
+									console.log("載入圖片失敗：", src, err);
 								}
-							}
-							// 判斷是否已經是 base64
-							else if (src.startsWith("data:image/")) {
-								console.log("處理 base64 圖片");
-
-								// 記錄需要上傳的圖片
-								pendingUploads.push({
-									originalSrc: src,
-									base64: src
-								});
 							}
 						}
 
