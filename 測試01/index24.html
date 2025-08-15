@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<!-- <script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script> -->
+	</head>
+	<body>
+		<div id="app">
+			<vvideo></vvideo>
+		</div>
+		<script>
+			let vvideo = {
+				template: `
+                <video src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/BNB/video/casong.mp4" playsinline="" controls="" loop="" autoplay="" class="g-video__box-video"></video>
+                `
+			};
+			let app = Vue.createApp({
+				components: {
+					vvideo: vvideo
+				}
+			});
+			app.mount("#app");
+		</script>
+	</body>
+</html>
