@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>多重階梯 - 使用 px 單位</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+			}
+
+			/* 固定尺寸的容器 */
+			.shape {
+				width: 400px;
+				height: 300px;
+				position: relative;
+			}
+
+			/* 多重階梯 - 每個角落有多層階梯 */
+			.multi-step-corners {
+				/* ===== 可調參數 ===== */
+				--u: 6px; /* 單階厚度（6px） */
+				--c: calc(var(--u) * 2); /* 階梯外層偏移（= 12px） */
+
+				width: 100%;
+				height: 300px;
+				background: #000;
+
+				/* 四角三階「ㄇ」型缺角，使用 --u 與 --c 組合而成 */
+				clip-path: polygon(/* 左上 */ 0 var(--c), var(--u) var(--c), var(--u) var(--u), var(--c) var(--u), var(--c) 0, /* 右上 */ calc(100% - var(--c)) 0, calc(100% - var(--c)) var(--u), calc(100% - var(--u)) var(--u), calc(100% - var(--u)) var(--c), 100% var(--c), /* 右下 */ 100% calc(100% - var(--c)), calc(100% - var(--u)) calc(100% - var(--c)), calc(100% - var(--u)) calc(100% - var(--u)), calc(100% - var(--c)) calc(100% - var(--u)), calc(100% - var(--c)) 100%, /* 左下 */ var(--c) 100%, var(--c) calc(100% - var(--u)), var(--u) calc(100% - var(--u)), var(--u) calc(100% - var(--c)), 0 calc(100% - var(--c)));
+			}
+			.corner-notched {
+				width: 300px;
+				height: 200px;
+				background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+				margin: 20px auto;
+				clip-path: polygon(5px 0, /* 左上角缺口开始 */ 5px 5px, /* 左上角缺口垂直 */ 0 5px, /* 左上角缺口结束 */ 0 calc(100% - 5px), /* 左下角缺口开始 */ 5px calc(100% - 5px), /* 左下角缺口水平 */ 5px 100%, /* 左下角缺口结束 */ calc(100% - 5px) 100%, /* 右下角缺口开始 */ calc(100% - 5px) calc(100% - 5px), /* 右下角缺口垂直 */ 100% calc(100% - 5px), /* 右下角缺口结束 */ 100% 5px, /* 右上角缺口开始 */ calc(100% - 5px) 5px, /* 右上角缺口水平 */ calc(100% - 5px) 0 /* 右上角缺口结束 */);
+				position: relative;
+				transition: transform 0.3s ease;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: white;
+				font-weight: bold;
+				font-size: 18px;
+				text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+			}
+			.corner-notched2 {
+				width: 300px;
+				height: 200px;
+				background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+				margin: 20px auto;
+				clip-path: polygon(5px 0, /* 左上角缺口开始 */ 5px 5px, /* 左上角缺口垂直 */ 0 5px, /* 左上角缺口结束 */ 0 calc(100% - 5px), /* 左下角缺口开始 */ 0 100%, /* 左下角缺口水平 */ 0 100%, /* 左下角缺口结束 */ 100% 100%, /* 右下角缺口开始 */ 100% 100%, /* 右下角缺口垂直 */ 100% 100%, /* 右下角缺口结束 */ 100% 5px, /* 右上角缺口开始 */ calc(100% - 5px) 5px, /* 右上角缺口水平 */ calc(100% - 5px) 0 /* 右上角缺口结束 */);
+				position: relative;
+				transition: transform 0.3s ease;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: white;
+				font-weight: bold;
+				font-size: 18px;
+				text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="example">
+				<div class="shape multi-step-corners"></div>
+			</div>
+			<div class="corner-notched"></div>
+			<div class="corner-notched2"></div>
+		</div>
+	</body>
+</html>

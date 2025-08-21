@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+			.default {
+			}
+			.default .gbox-wrap {
+				max-width: 708px;
+				width: 100%;
+				padding: 0px;
+				margin-top: 80px;
+				margin-bottom: 80px;
+				background-color: transparent;
+				color: #fff;
+				background-size: cover;
+				padding-bottom: 48px;
+			}
+			.default .gbox-wrap:before {
+				content: "";
+				width: 708px;
+				height: 85px;
+				background-image: url("./images/lb-bg-top.png");
+				background-size: 100%;
+				display: block;
+			}
+			.default .gbox-wrap:after {
+				content: "";
+				width: 708px;
+				height: 96px;
+				background-image: url("./images/lb-bg-bottom.png");
+				background-size: 100%;
+				display: block;
+			}
+			.default .gbox-content {
+				position: relative;
+				padding: 0px;
+				width: 100%;
+				background-image: url("./images/lb-bg-repeat.png");
+				background-size: 708px 14px;
+			}
+			.default .gbox-action {
+				background-image: url("./images/lb-bg-repeat.png");
+				background-size: 708px 14px;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			function LB(msg) {
+				var config = {
+					addClass: "default",
+					hasCloseBtn: true,
+					hasActionBtn: true,
+					afterClose: function () {
+						gbox.close();
+					},
+					actionBtns: [
+						{
+							text: "text1",
+							class: "btn",
+							click: function () {
+								$.gbox.close();
+							}
+						}
+					]
+				};
+				gbox.open(msg, config);
+			}
+
+			LB("恭喜獲得");
+		</script>
+	</body>
+</html>
