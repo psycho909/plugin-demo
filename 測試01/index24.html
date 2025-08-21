@@ -1,39 +1,11 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-=======
 ﻿<!DOCTYPE html>
->>>>>>> 5ad07e881b6756db085c9535f2c8c0c36c622edf
 <html lang="zh-Hant-TW">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
-<<<<<<< HEAD
 		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.2.45/vue.global.js"></script>
 		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.2.45/vue.global.prod.min.js"></script>
-	</head>
-	<body>
-		<div id="app">
-			<div :data-title="flagFilter"></div>
-		</div>
-		<script>
-			const app = Vue.createApp({
-				setup() {
-					let flag = Vue.ref(3);
-					let flagFilter = Vue.computed(() => {
-						return flag.value > 2 ? 3 : 4;
-					});
-					return {
-						flagFilter
-					};
-				}
-			});
-
-=======
-		<!-- 開發用 -->
-		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
-		<!-- 正式用 -->
-		<!-- <script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script> -->
 	</head>
 	<body>
 		<div id="app">
@@ -50,7 +22,6 @@
 					vvideo: vvideo
 				}
 			});
->>>>>>> 5ad07e881b6756db085c9535f2c8c0c36c622edf
 			app.mount("#app");
 		</script>
 	</body>
