@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+		<title>Document</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				background-color: gray;
+			}
+			#particles-js {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="particles-js"></div>
+	</body>
+	<script>
+		particlesJS("particles-js", {
+			particles: {
+				number: {
+					value: 2,
+					density: {
+						enable: !0,
+						value_area: 500
+					}
+				},
+				color: {
+					value: "#ff7633"
+				},
+				shape: {
+					type: "image",
+					stroke: {
+						width: 1,
+						color: "#ff7633"
+					},
+					polygon: {
+						nb_sides: 5
+					},
+					image: {
+						src: "https://lwi.nexon.com/maplestory/2024/1017_dave_5E968C4B55DE82D1/exception/bubble.png",
+						width: 93,
+						height: 93
+					}
+				},
+				opacity: {
+					value: 1,
+					random: !1,
+					anim: {
+						enable: !1,
+						speed: 1,
+						opacity_min: 0.1,
+						sync: !1
+					}
+				},
+				size: {
+					value: 20,
+					random: !0,
+					anim: {
+						enable: !1,
+						speed: 40,
+						size_min: 0.1,
+						sync: !1
+					}
+				},
+				line_linked: {
+					enable: false //是否產生連線
+				},
+				move: {
+					enable: !0,
+					speed: 5,
+					direction: "top",
+					random: !1,
+					straight: !1,
+					out_mode: "out",
+					attract: {
+						enable: !1,
+						rotateX: 600,
+						rotateY: 1200
+					}
+				}
+			},
+			interactivity: {
+				detect_on: "canvas",
+				events: {
+					onhover: {
+						enable: !1,
+						mode: "repulse"
+					},
+					onclick: {
+						enable: !1,
+						mode: "push"
+					},
+					resize: !0
+				},
+				modes: {
+					grab: {
+						distance: 400,
+						line_linked: {
+							opacity: 1
+						}
+					},
+					bubble: {
+						distance: 400,
+						size: 40,
+						duration: 2,
+						opacity: 8,
+						speed: 3
+					},
+					repulse: {
+						distance: 200
+					},
+					push: {
+						particles_nb: 4
+					},
+					remove: {
+						particles_nb: 2
+					}
+				}
+			},
+			retina_detect: true
+		});
+	</script>
+</html>
