@@ -11,11 +11,18 @@
 				margin: 0;
 				padding: 0;
 			}
+			.text-60 {
+				font-size: 60px;
+			}
+			.text-602 {
+				font-size: calc(60 / 768 * 100vw);
+			}
 		</style>
 	</head>
 	<body>
 		<div id="app">
-			<h1>Hello World</h1>
+			<div class="text-60">60px</div>
+			<div class="text-602">60px</div>
 		</div>
 		<script>
 			function ZoomAdapter({ baseWidth = 1920, elementSelector = "body", debounceDelay = 100 } = {}) {
@@ -66,7 +73,7 @@
 			}
 
 			// 直接使用
-			ZoomAdapter({ baseWidth: 1920, elementSelector: "scale" });
+			ZoomAdapter({ baseWidth: 1200, elementSelector: "body" });
 			// 注意事項
 			/*
 			1.使用時不要使用VW
