@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>gbox 獨立模式測試</title>
+		<title>gbox 獨立模式測試 - 重構版本</title>
 		<style>
 			body {
 				font-family: Arial, sans-serif;
@@ -22,36 +22,229 @@
 			.btn:hover {
 				background-color: #45a049;
 			}
+			.btn.independent {
+				background-color: #ff9800;
+			}
+			.btn.independent:hover {
+				background-color: #e68900;
+			}
+			.btn.close {
+				background-color: #f44336;
+			}
+			.btn.close:hover {
+				background-color: #da190b;
+			}
+			.test-section {
+				margin: 20px 0;
+				padding: 15px;
+				border: 1px solid #ddd;
+				border-radius: 5px;
+			}
+			.test-section h3 {
+				margin-top: 0;
+			}
+			.status {
+				margin: 10px 0;
+				padding: 10px;
+				background-color: #f0f0f0;
+				border-radius: 3px;
+				font-family: monospace;
+			}
 		</style>
 	</head>
 	<body>
-		<h1>gbox 獨立模式測試</h1>
+		<h1>gbox 獨立模式測試 - 重構版本</h1>
 
-		<div class="btn" id="normalBtn">開啟普通 gbox</div>
-		<div class="btn" id="independentBtn">開啟獨立 gbox</div>
+		<div class="status" id="status">狀態：準備就緒</div>
+
+		<div class="test-section">
+			<h3>基本測試</h3>
+			<div class="btn" id="normalBtn">開啟普通 gbox</div>
+			<div class="btn independent" id="independentBtn">開啟獨立 gbox</div>
+			<div class="btn close" id="closeBtn">關閉最後開啟的 gbox</div>
+			<div class="btn close" id="closeAllBtn">關閉所有 gbox</div>
+		</div>
+
+		<div class="test-section">
+			<h3>問題修正測試</h3>
+			<p><strong>測試步驟：</strong></p>
+			<ol>
+				<li>點擊「開啟獨立 gbox A」</li>
+				<li>點擊「開啟普通 gbox B」（B 應該被立即關閉，A 仍然存在）</li>
+				<li>點擊「關閉 gbox A」，確認 A 可以正常關閉</li>
+			</ol>
+			<div class="btn independent" id="independentABtn">開啟獨立 gbox A</div>
+			<div class="btn" id="normalBBtn">開啟普通 gbox B</div>
+			<div class="btn close" id="closeABtn">關閉 gbox A</div>
+		</div>
+
+		<div class="test-section">
+			<h3>多重獨立模式測試</h3>
+			<p>測試多個獨立 gbox 可以同時存在</p>
+			<div class="btn independent" id="independent1Btn">獨立 gbox 1</div>
+			<div class="btn independent" id="independent2Btn">獨立 gbox 2</div>
+			<div class="btn independent" id="independent3Btn">獨立 gbox 3</div>
+		</div>
+
+		<div class="test-section">
+			<h3>混合模式測試</h3>
+			<p>測試普通模式和獨立模式的交互</p>
+			<div class="btn" id="normal1Btn">普通 gbox 1</div>
+			<div class="btn" id="normal2Btn">普通 gbox 2</div>
+			<div class="btn independent" id="independentMixBtn">獨立 gbox (混合)</div>
+		</div>
 
 		<script src="gbox.js"></script>
 
 		<script>
-			// 普通 gbox
+			let gboxAId = null;
+
+			function updateStatus() {
+				// 由於我們沒有 getInstances 方法，我們需要手動追蹤
+				const gboxElements = document.querySelectorAll(".gbox");
+				const status = document.getElementById("status");
+				status.textContent = `狀態：目前有 ${gboxElements.length} 個 gbox 實例`;
+			}
+
+			// 基本測試
 			document.getElementById("normalBtn").addEventListener("click", function () {
-				gbox.open("<h2>普通 gbox</h2><p>這個 gbox 會被其他 gbox 影響而關閉。</p>", {
+				gbox.open("<h2>普通 gbox</h2><p>這個 gbox 會被其他普通 gbox 影響而關閉。</p>", {
 					titleBar: "普通 gbox",
-					hasCloseBtn: true
+					hasCloseBtn: true,
+					clickBgClose: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
 				});
 			});
 
-			// 獨立 gbox
 			document.getElementById("independentBtn").addEventListener("click", function () {
 				gbox.open("<h2>獨立 gbox</h2><p>這個 gbox 不會被其他 gbox 影響而關閉，只有使用者手動關閉才會關閉。</p>", {
 					titleBar: "獨立 gbox",
 					hasCloseBtn: true,
-					independent: true,
-					afterClose: function () {
-						gbox.close();
-					}
+					clickBgClose: true,
+					allowMultiple: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
 				});
 			});
+
+			document.getElementById("closeBtn").addEventListener("click", function () {
+				gbox.close();
+				setTimeout(updateStatus, 100);
+			});
+
+			document.getElementById("closeAllBtn").addEventListener("click", function () {
+				gbox.closeAll();
+				setTimeout(updateStatus, 100);
+			});
+
+			// 問題修正測試
+			document.getElementById("independentABtn").addEventListener("click", function () {
+				gbox.open("<h2>獨立 gbox A</h2><p>我是獨立模式的 gbox A，不會被其他 gbox 影響而關閉。</p><p>請點擊「開啟普通 gbox B」測試，然後確認我可以正常關閉。</p>", {
+					titleBar: "獨立 gbox A",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					allowMultiple: true,
+					afterOpen: function () {
+						// 儲存這個 gbox 的 ID 以便後續關閉
+						const gboxElements = document.querySelectorAll(".gbox");
+						if (gboxElements.length > 0) {
+							const lastGbox = gboxElements[gboxElements.length - 1];
+							gboxAId = parseInt(lastGbox.getAttribute("data-gbox-id"));
+						}
+						updateStatus();
+					},
+					afterClose: updateStatus
+				});
+			});
+
+			document.getElementById("normalBBtn").addEventListener("click", function () {
+				gbox.open("<h2>普通 gbox B</h2><p>我是普通模式的 gbox B。</p>", {
+					titleBar: "普通 gbox B",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					allowMultiple: false,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			document.getElementById("closeABtn").addEventListener("click", function () {
+				if (gboxAId) {
+					gbox.closeById(gboxAId);
+					gboxAId = null;
+				}
+				setTimeout(updateStatus, 100);
+			});
+
+			// 多重獨立模式測試
+			document.getElementById("independent1Btn").addEventListener("click", function () {
+				gbox.open("<h2>獨立 gbox 1</h2><p>我是第一個獨立 gbox，可以與其他獨立 gbox 共存。</p>", {
+					titleBar: "獨立 gbox 1",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					allowMultiple: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			document.getElementById("independent2Btn").addEventListener("click", function () {
+				gbox.open("<h2>獨立 gbox 2</h2><p>我是第二個獨立 gbox，可以與其他獨立 gbox 共存。</p>", {
+					titleBar: "獨立 gbox 2",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					allowMultiple: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			document.getElementById("independent3Btn").addEventListener("click", function () {
+				gbox.open("<h2>獨立 gbox 3</h2><p>我是第三個獨立 gbox，可以與其他獨立 gbox 共存。</p>", {
+					titleBar: "獨立 gbox 3",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					allowMultiple: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			// 混合模式測試
+			document.getElementById("normal1Btn").addEventListener("click", function () {
+				gbox.open("<h2>普通 gbox 1</h2><p>我是普通模式，會關閉其他普通模式的 gbox。</p>", {
+					titleBar: "普通 gbox 1",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			document.getElementById("normal2Btn").addEventListener("click", function () {
+				gbox.open("<h2>普通 gbox 2</h2><p>我是普通模式，會關閉前一個普通 gbox。</p>", {
+					titleBar: "普通 gbox 2",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			document.getElementById("independentMixBtn").addEventListener("click", function () {
+				gbox.open("<h2>獨立 gbox (混合)</h2><p>我是獨立模式，不會被其他 gbox 影響。</p>", {
+					titleBar: "獨立 gbox (混合)",
+					hasCloseBtn: true,
+					clickBgClose: true,
+					allowMultiple: true,
+					afterOpen: updateStatus,
+					afterClose: updateStatus
+				});
+			});
+
+			// 初始化狀態顯示
+			updateStatus();
 		</script>
 	</body>
 </html>

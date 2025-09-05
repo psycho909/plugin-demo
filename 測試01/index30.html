@@ -4,10 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape" />
 		<title>橫屏RWD</title>
-
-		<script src="https://tw.hicdn.beanfun.com/jquery/jquery.min.js"></script>
-		<script src="https://tw.hicdn.beanfun.com/jquery/jquery-migrate.min.js"></script>
-		<script src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/script/gbox/gbox.js"></script>
+		<script src="../gbox/gbox.js"></script>
 		<style>
 			body {
 				margin: 0;
@@ -45,18 +42,21 @@
 					addClass: "default",
 					hasCloseBtn: true,
 					hasActionBtn: false,
+					allowMultiple: true,
 					afterClose: function () {
 						let _arr = data.slice(1);
 						if (_arr.length > 0) {
 							MessageLB(_arr);
-						} else $.gbox.close();
+						} else {
+							gbox.close();
+						}
 					}
 				};
 
 				var HTML = `
 				<div class="warning-icon">${data[0].name}</div>
 			`;
-				$.gbox.open(HTML, config);
+				gbox.open(HTML, config);
 			}
 			MessageLB(arr);
 		</script>

@@ -14,7 +14,10 @@
 	let open = false;
 	let $pubBox = null;
 	let $pubModule, $pubWrap, $pubContent, $pubTitleBar, $pubCloseBtn, $pubAction, $pubActionBtn;
-	let independentMode = false; // 追蹤當前gbox是否為獨立模式
+
+	// 支援多個 gbox 的變數
+	let gboxInstances = [];
+	let gboxCounter = 0;
 
 	// 輔助函數：擴展/合併物件 (相當於jQuery的$.extend)
 	const extend = (defaults, options) => {
@@ -38,7 +41,6 @@
 	};
 
 	const PopupPlugin = function (content, options) {
-		open = true;
 		// 預設參數
 		const defaults = {
 			titleBar: null,
@@ -48,6 +50,7 @@
 			closeBtn: "\u00D7", // 可插入HTML
 			clickBgClose: false,
 			hasActionBtn: true,
+			allowMultiple: false, // 新增：是否允許多個 gbox 同時存在
 			actionBtns: [
 				{
 					text: "確定",
@@ -61,23 +64,38 @@
 				}
 			],
 			afterClose: null, // 網址 or Function
-			afterOpen: null, // function
-			independent: false // 是否為獨立模式，預設會被其他gbox影響而關閉
+			afterOpen: null // function
 		};
 		// 合併 defaults 和 options，修改並返回 defaults
 		const settings = extend(defaults, options);
 
-		// 設定當前gbox的獨立模式
-		independentMode = settings.independent;
+		// 只有在非多重模式時才設定 open = true
+		if (!settings.allowMultiple) {
+			open = true;
+		}
 
 		// 建立popupBox
 		// 轉換：jQuery $('<div>').appendTo('body') → document.createElement + appendChild
 
+		// 為每個 gbox 實例生成唯一 ID
+		const instanceId = ++gboxCounter;
+		const gboxId = settings.allowMultiple ? `gbox-${instanceId}` : "gbox";
+
 		// 外容器
 		$pubBox = document.createElement("div");
 		$pubBox.className = "gbox";
-		$pubBox.id = "gbox";
+		$pubBox.id = gboxId;
+		$pubBox.setAttribute("data-gbox-id", instanceId);
 		document.body.appendChild($pubBox);
+
+		// 如果允許多個 gbox，將實例加入陣列
+		if (settings.allowMultiple) {
+			gboxInstances.push({
+				id: instanceId,
+				element: $pubBox,
+				settings: settings
+			});
+		}
 
 		$pubModule = document.createElement("div");
 		$pubModule.className = "gbox-module";
@@ -119,7 +137,11 @@
 
 			$pubCloseBtn.addEventListener("click", function () {
 				// close popup
-				gbox.close(settings.afterClose);
+				if (settings.allowMultiple) {
+					gbox.closeById(instanceId, settings.afterClose);
+				} else {
+					gbox.close(settings.afterClose);
+				}
 			});
 		}
 
@@ -133,7 +155,11 @@
 			const clickOutsideHandler = function (e) {
 				if (!$pubWrap.contains(e.target) && e.target !== $pubWrap) {
 					// close popup
-					gbox.close(settings.afterClose);
+					if (settings.allowMultiple) {
+						gbox.closeById(instanceId, settings.afterClose);
+					} else {
+						gbox.close(settings.afterClose);
+					}
 					// 關閉後移除事件監聽器
 					document.removeEventListener("mouseup", clickOutsideHandler);
 				}
@@ -167,7 +193,11 @@
 						btn.target = "_blank";
 						if (actionBtn.targetClose) {
 							btn.addEventListener("click", function () {
-								gbox.close();
+								if (settings.allowMultiple) {
+									gbox.closeById(instanceId);
+								} else {
+									gbox.close();
+								}
 							});
 						}
 					}
@@ -199,7 +229,11 @@
 				if (settings.actionBtns[0].target && typeof settings.actionBtns[0].click === "string") {
 					btn.target = "_blank";
 					btn.addEventListener("click", function () {
-						gbox.close();
+						if (settings.allowMultiple) {
+							gbox.closeById(instanceId);
+						} else {
+							gbox.close();
+						}
 					});
 				}
 
@@ -234,7 +268,6 @@
 	const gbox = {
 		close: function (callback) {
 			open = false;
-			independentMode = false; // 重置獨立模式
 			if ($pubBox !== null) {
 				$pubBox.remove(); // 轉換：原生JS沒有remove方法，在下方定義Element.prototype.remove
 				$pubBox = null;
@@ -248,19 +281,65 @@
 			}
 		},
 
-		open: function (content, options) {
-			// 檢查是否已有gbox開啟，且當前gbox不是獨立模式
-			if (open === true && independentMode === false) {
-				// 關閉現有的gbox
-				if ($pubBox !== null) {
-					$pubBox.remove();
-					$pubBox = null;
+		closeById: function (instanceId, callback) {
+			const instanceIndex = gboxInstances.findIndex((instance) => instance.id === instanceId);
+			if (instanceIndex !== -1) {
+				const instance = gboxInstances[instanceIndex];
+				instance.element.remove();
+				gboxInstances.splice(instanceIndex, 1);
+
+				// 如果沒有其他 gbox 實例，移除 body 的 ov-hidden class
+				if (gboxInstances.length === 0) {
 					document.body.classList.remove("ov-hidden");
+					open = false;
+				}
+
+				if (isFunction(callback)) {
+					callback();
+				} else if (typeof callback === "string") {
+					window.open(callback, "_self");
 				}
 			}
+		},
 
-			// 開啟新的gbox
-			new PopupPlugin(content, options);
+		closeAll: function (callback) {
+			gboxInstances.forEach((instance) => {
+				instance.element.remove();
+			});
+			gboxInstances = [];
+			document.body.classList.remove("ov-hidden");
+			open = false;
+
+			if (isFunction(callback)) {
+				callback();
+			} else if (typeof callback === "string") {
+				window.open(callback, "_self");
+			}
+		},
+
+		open: function (content, options) {
+			// 建立預設設定來檢查 allowMultiple
+			const defaults = {
+				allowMultiple: false
+			};
+			const checkSettings = extend(defaults, options || {});
+
+			if (checkSettings.allowMultiple) {
+				// 允許多個 gbox 時，直接建立新的
+				new PopupPlugin(content, options);
+			} else {
+				// 不允許多個 gbox 時，使用原本的邏輯
+				if (open === false) {
+					new PopupPlugin(content, options);
+				} else {
+					if ($pubBox !== null) {
+						$pubBox.remove();
+						$pubBox = null;
+						document.body.classList.remove("ov-hidden");
+					}
+					new PopupPlugin(content, options);
+				}
+			}
 		}
 	};
 
@@ -278,18 +357,9 @@
 	HTMLElement.prototype.gbox = function (content, options) {
 		this.addEventListener("click", function (e) {
 			e.preventDefault();
-			// 檢查是否已有gbox開啟，且當前gbox不是獨立模式
-			if (open === true && independentMode === false) {
-				// 關閉現有的gbox
-				if ($pubBox !== null) {
-					$pubBox.remove();
-					$pubBox = null;
-					document.body.classList.remove("ov-hidden");
-				}
+			if (open === false) {
+				new PopupPlugin(content, options);
 			}
-
-			// 開啟新的gbox
-			new PopupPlugin(content, options);
 		});
 		return this; // 支持鏈式調用
 	};
