@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape" />
+		<title>橫屏RWD</title>
+
+		<script src="https://tw.hicdn.beanfun.com/jquery/jquery.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/jquery/jquery-migrate.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/script/gbox/gbox.js"></script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #f2f2f2;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+			}
+
+			.card {
+				width: calc((1200 / 2796) * 100vw);
+				height: calc((600 / 2796) * 100vw);
+				background-color: #fff;
+				border-radius: 1vw;
+				box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.1);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 1.2vw;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="card">我是卡片</div>
+		<script>
+			let arr = [
+				{ name: "Apple", price: 100 },
+				{ name: "Banana", price: 200 },
+				{ name: "Orange", price: 300 }
+			];
+			function MessageLB(data) {
+				var config = {
+					addClass: "default",
+					hasCloseBtn: true,
+					hasActionBtn: false,
+					afterClose: function () {
+						let _arr = data.slice(1);
+						if (_arr.length > 0) {
+							MessageLB(_arr);
+						} else $.gbox.close();
+					}
+				};
+
+				var HTML = `
+				<div class="warning-icon">${data[0].name}</div>
+			`;
+				$.gbox.open(HTML, config);
+			}
+			MessageLB(arr);
+		</script>
+	</body>
+</html>
