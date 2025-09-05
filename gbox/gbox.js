@@ -14,6 +14,7 @@
 	let open = false;
 	let $pubBox = null;
 	let $pubModule, $pubWrap, $pubContent, $pubTitleBar, $pubCloseBtn, $pubAction, $pubActionBtn;
+	let independentMode = false; // 追蹤當前gbox是否為獨立模式
 
 	// 輔助函數：擴展/合併物件 (相當於jQuery的$.extend)
 	const extend = (defaults, options) => {
@@ -60,10 +61,14 @@
 				}
 			],
 			afterClose: null, // 網址 or Function
-			afterOpen: null // function
+			afterOpen: null, // function
+			independent: false // 是否為獨立模式，預設會被其他gbox影響而關閉
 		};
 		// 合併 defaults 和 options，修改並返回 defaults
 		const settings = extend(defaults, options);
+
+		// 設定當前gbox的獨立模式
+		independentMode = settings.independent;
 
 		// 建立popupBox
 		// 轉換：jQuery $('<div>').appendTo('body') → document.createElement + appendChild
@@ -229,6 +234,7 @@
 	const gbox = {
 		close: function (callback) {
 			open = false;
+			independentMode = false; // 重置獨立模式
 			if ($pubBox !== null) {
 				$pubBox.remove(); // 轉換：原生JS沒有remove方法，在下方定義Element.prototype.remove
 				$pubBox = null;
@@ -243,16 +249,18 @@
 		},
 
 		open: function (content, options) {
-			if (open === false) {
-				new PopupPlugin(content, options);
-			} else {
+			// 檢查是否已有gbox開啟，且當前gbox不是獨立模式
+			if (open === true && independentMode === false) {
+				// 關閉現有的gbox
 				if ($pubBox !== null) {
 					$pubBox.remove();
 					$pubBox = null;
 					document.body.classList.remove("ov-hidden");
 				}
-				new PopupPlugin(content, options);
 			}
+
+			// 開啟新的gbox
+			new PopupPlugin(content, options);
 		}
 	};
 
@@ -270,9 +278,18 @@
 	HTMLElement.prototype.gbox = function (content, options) {
 		this.addEventListener("click", function (e) {
 			e.preventDefault();
-			if (open === false) {
-				new PopupPlugin(content, options);
+			// 檢查是否已有gbox開啟，且當前gbox不是獨立模式
+			if (open === true && independentMode === false) {
+				// 關閉現有的gbox
+				if ($pubBox !== null) {
+					$pubBox.remove();
+					$pubBox = null;
+					document.body.classList.remove("ov-hidden");
+				}
 			}
+
+			// 開啟新的gbox
+			new PopupPlugin(content, options);
 		});
 		return this; // 支持鏈式調用
 	};

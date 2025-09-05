@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>gbox 獨立模式測試</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				padding: 20px;
+			}
+			.btn {
+				display: inline-block;
+				padding: 10px 20px;
+				margin: 10px;
+				background-color: #4caf50;
+				color: white;
+				text-align: center;
+				cursor: pointer;
+				border-radius: 5px;
+			}
+			.btn:hover {
+				background-color: #45a049;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>gbox 獨立模式測試</h1>
+
+		<div class="btn" id="normalBtn">開啟普通 gbox</div>
+		<div class="btn" id="independentBtn">開啟獨立 gbox</div>
+
+		<script src="gbox.js"></script>
+
+		<script>
+			// 普通 gbox
+			document.getElementById("normalBtn").addEventListener("click", function () {
+				gbox.open("<h2>普通 gbox</h2><p>這個 gbox 會被其他 gbox 影響而關閉。</p>", {
+					titleBar: "普通 gbox",
+					hasCloseBtn: true
+				});
+			});
+
+			// 獨立 gbox
+			document.getElementById("independentBtn").addEventListener("click", function () {
+				gbox.open("<h2>獨立 gbox</h2><p>這個 gbox 不會被其他 gbox 影響而關閉，只有使用者手動關閉才會關閉。</p>", {
+					titleBar: "獨立 gbox",
+					hasCloseBtn: true,
+					independent: true,
+					afterClose: function () {
+						gbox.close();
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
