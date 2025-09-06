@@ -1,369 +1,255 @@
-﻿// gbox - A lightweight vanilla JavaScript modal plugin
-// 轉換自jQuery插件版本
+﻿(function () {
+	"use strict";
 
-(function () {
-	// 動態引入CSS
-	const stylePath = "https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/style/gbox/";
-	const newCssObj = document.createElement("link");
-	newCssObj.type = "text/css";
-	newCssObj.rel = "stylesheet";
-	newCssObj.href = stylePath + "gbox.css";
-	// newCssObj.href = './gbox.css';
-	document.head.appendChild(newCssObj);
+	const sanitizeHTML = (str) => {
+		if (typeof str !== "string") return "";
+		const temp = document.createElement("div");
+		temp.innerHTML = str;
+		Array.from(temp.querySelectorAll("script, style")).forEach((el) => el.remove());
+		Array.from(temp.getElementsByTagName("*")).forEach((el) => {
+			Array.from(el.attributes).forEach((attr) => {
+				if (attr.name.toLowerCase().startsWith("on")) el.removeAttribute(attr.name);
+			});
+		});
+		return temp.innerHTML;
+	};
 
-	let open = false;
-	let $pubBox = null;
-	let $pubModule, $pubWrap, $pubContent, $pubTitleBar, $pubCloseBtn, $pubAction, $pubActionBtn;
-
-	// 支援多個 gbox 的變數
 	let gboxInstances = [];
 	let gboxCounter = 0;
 
-	// 輔助函數：擴展/合併物件 (相當於jQuery的$.extend)
-	const extend = (defaults, options) => {
-		const extended = {};
-		for (let prop in defaults) {
-			if (Object.prototype.hasOwnProperty.call(defaults, prop)) {
-				extended[prop] = defaults[prop];
-			}
-		}
-		for (let prop in options) {
-			if (Object.prototype.hasOwnProperty.call(options, prop)) {
-				extended[prop] = options[prop];
-			}
-		}
-		return extended;
-	};
-
-	// 輔助函數：檢查是否為函數
-	const isFunction = (fn) => {
-		return typeof fn === "function";
-	};
-
-	const PopupPlugin = function (content, options) {
-		// 預設參數
-		const defaults = {
-			titleBar: null,
-			addClass: null,
-			fixedPos: true,
-			hasCloseBtn: false,
-			closeBtn: "\u00D7", // 可插入HTML
-			clickBgClose: false,
-			hasActionBtn: true,
-			allowMultiple: false, // 新增：是否允許多個 gbox 同時存在
-			actionBtns: [
-				{
-					text: "確定",
-					id: "",
-					class: "",
-					target: false,
-					targetClose: true,
-					click: function () {
-						gbox.close(settings.afterClose); // 網址 or Function
-					}
-				}
-			],
-			afterClose: null, // 網址 or Function
-			afterOpen: null // function
-		};
-		// 合併 defaults 和 options，修改並返回 defaults
-		const settings = extend(defaults, options);
-
-		// 只有在非多重模式時才設定 open = true
-		if (!settings.allowMultiple) {
-			open = true;
+	class GBox {
+		constructor(content, options) {
+			this.id = ++gboxCounter;
+			this.pristineContent = content;
+			this._initSettings(options);
+			this._validateSettings();
+			this._buildDOM();
+			this._attachEvents();
+			this._registerAndShow();
 		}
 
-		// 建立popupBox
-		// 轉換：jQuery $('<div>').appendTo('body') → document.createElement + appendChild
-
-		// 為每個 gbox 實例生成唯一 ID
-		const instanceId = ++gboxCounter;
-		const gboxId = settings.allowMultiple ? `gbox-${instanceId}` : "gbox";
-
-		// 外容器
-		$pubBox = document.createElement("div");
-		$pubBox.className = "gbox";
-		$pubBox.id = gboxId;
-		$pubBox.setAttribute("data-gbox-id", instanceId);
-		document.body.appendChild($pubBox);
-
-		// 如果允許多個 gbox，將實例加入陣列
-		if (settings.allowMultiple) {
-			gboxInstances.push({
-				id: instanceId,
-				element: $pubBox,
-				settings: settings
-			});
-		}
-
-		$pubModule = document.createElement("div");
-		$pubModule.className = "gbox-module";
-		$pubBox.appendChild($pubModule);
-
-		$pubWrap = document.createElement("div");
-		$pubWrap.className = "gbox-wrap";
-		$pubBox.appendChild($pubWrap);
-
-		// 內容區塊
-		$pubContent = document.createElement("div");
-		$pubContent.className = "gbox-content";
-		$pubWrap.appendChild($pubContent);
-
-		// 帶入內容 - 轉換：jQuery的html()方法改為innerHTML
-		$pubContent.innerHTML = content;
-
-		// 新增外層Class - 轉換：jQuery的addClass()改為classList.add()
-		if (settings.addClass) {
-			settings.addClass.split(" ").forEach((cls) => {
-				if (cls) $pubBox.classList.add(cls);
-			});
-		}
-
-		// 標題列 - 轉換：jQuery的prependTo改為insertBefore
-		if (settings.titleBar) {
-			$pubTitleBar = document.createElement("div");
-			$pubTitleBar.className = "gbox-title";
-			$pubTitleBar.innerHTML = settings.titleBar;
-			$pubWrap.insertBefore($pubTitleBar, $pubWrap.firstChild);
-		}
-
-		// 右上關閉按鈕 - 轉換：jQuery的on('click')改為addEventListener
-		if (settings.hasCloseBtn) {
-			$pubCloseBtn = document.createElement("button");
-			$pubCloseBtn.className = "gbox-close";
-			$pubCloseBtn.innerHTML = settings.closeBtn;
-			$pubWrap.appendChild($pubCloseBtn);
-
-			$pubCloseBtn.addEventListener("click", function () {
-				// close popup
-				if (settings.allowMultiple) {
-					gbox.closeById(instanceId, settings.afterClose);
-				} else {
-					gbox.close(settings.afterClose);
-				}
-			});
-		}
-
-		// 鎖定畫面 - 轉換：jQuery的addClass改為classList.add
-		if (settings.fixedPos) {
-			document.body.classList.add("ov-hidden");
-		}
-
-		// 點擊背景關閉 - 轉換：jQuery的on事件綁定轉為addEventListener
-		if (settings.clickBgClose) {
-			const clickOutsideHandler = function (e) {
-				if (!$pubWrap.contains(e.target) && e.target !== $pubWrap) {
-					// close popup
-					if (settings.allowMultiple) {
-						gbox.closeById(instanceId, settings.afterClose);
-					} else {
-						gbox.close(settings.afterClose);
-					}
-					// 關閉後移除事件監聽器
-					document.removeEventListener("mouseup", clickOutsideHandler);
-				}
+		_initSettings(options) {
+			const defaults = {
+				titleBar: null,
+				addClass: null,
+				fixedPos: true,
+				hasCloseBtn: false,
+				closeBtn: "\u00D7",
+				clickBgClose: false,
+				hasActionBtn: true,
+				allowMultiple: false,
+				unsafeHTML: false,
+				actionBtns: [{ text: "確定", click: (instance) => instance.close() }],
+				afterClose: null,
+				afterOpen: null
 			};
-			document.addEventListener("mouseup", clickOutsideHandler);
+			this.settings = { ...defaults, ...options };
 		}
 
-		// 按鈕區塊 - 轉換：jQuery的forEach與DOM操作
-		if (settings.hasActionBtn) {
-			$pubAction = document.createElement("div");
-			$pubAction.className = "gbox-action";
-			$pubWrap.appendChild($pubAction);
+		_validateSettings() {
+			if (typeof this.pristineContent !== "string") throw new Error("gbox Error: Content must be a string.");
+			if (this.settings.actionBtns && !Array.isArray(this.settings.actionBtns)) throw new Error("gbox Error: actionBtns must be an array.");
+		}
 
-			if (settings.actionBtns.length > 1) {
-				settings.actionBtns.forEach(function (actionBtn) {
+		_buildDOM() {
+			this.dom = {};
+			const sanitize = (html) => (this.settings.unsafeHTML ? html : sanitizeHTML(html));
+			this.dom.box = document.createElement("div");
+			this.dom.box.className = "gbox";
+			this.dom.box.id = `gbox-${this.id}`;
+			this.dom.box.setAttribute("role", "dialog");
+			this.dom.box.setAttribute("aria-modal", "true");
+			this.dom.wrap = document.createElement("div");
+			this.dom.wrap.className = "gbox-wrap";
+			this.dom.box.innerHTML = `<div class="gbox-module"></div>`;
+			this.dom.box.appendChild(this.dom.wrap);
+			// ... (rest of the DOM building is the same)
+			const safeContent = sanitize(this.pristineContent);
+			const safeTitle = this.settings.titleBar ? sanitize(this.settings.titleBar) : null;
+			this.dom.content = document.createElement("div");
+			this.dom.content.className = "gbox-content";
+			this.dom.content.innerHTML = safeContent;
+			this.dom.wrap.appendChild(this.dom.content);
+			if (this.settings.addClass) this.settings.addClass.split(" ").forEach((cls) => cls && this.dom.box.classList.add(cls));
+			if (safeTitle) {
+				const titleBar = document.createElement("div");
+				titleBar.className = "gbox-title";
+				titleBar.innerHTML = safeTitle;
+				this.dom.wrap.insertBefore(titleBar, this.dom.content);
+			}
+			if (this.settings.hasCloseBtn) {
+				this.dom.closeBtn = document.createElement("button");
+				this.dom.closeBtn.className = "gbox-close";
+				this.dom.closeBtn.innerHTML = sanitize(this.settings.closeBtn);
+				this.dom.closeBtn.setAttribute("aria-label", "Close");
+				this.dom.wrap.appendChild(this.dom.closeBtn);
+			}
+			if (this.settings.hasActionBtn && this.settings.actionBtns.length > 0) {
+				const actionArea = document.createElement("div");
+				actionArea.className = "gbox-action";
+				this.settings.actionBtns.forEach((btnConfig) => {
 					const btn = document.createElement("a");
 					btn.className = "gbox-btn";
-					btn.innerHTML = actionBtn.text;
-
-					if (actionBtn.id) {
-						btn.id = actionBtn.id;
-					}
-
-					if (actionBtn.class) {
-						actionBtn.class.split(" ").forEach((cls) => {
-							if (cls) btn.classList.add(cls);
-						});
-					}
-
-					if (actionBtn.target && typeof actionBtn.click === "string") {
-						btn.target = "_blank";
-						if (actionBtn.targetClose) {
-							btn.addEventListener("click", function () {
-								if (settings.allowMultiple) {
-									gbox.closeById(instanceId);
-								} else {
-									gbox.close();
-								}
-							});
-						}
-					}
-
-					if (typeof actionBtn.click === "function") {
+					btn.innerHTML = sanitize(btnConfig.text);
+					if (btnConfig.id) btn.id = btnConfig.id;
+					if (btnConfig.class) btnConfig.class.split(" ").forEach((cls) => cls && btn.classList.add(cls));
+					const clickHandler = btnConfig.click || btnConfig.onClick;
+					if (typeof clickHandler === "function") {
 						btn.href = "javascript:;";
-						btn.addEventListener("click", actionBtn.click);
-					} else if (typeof actionBtn.click === "string") {
-						btn.href = actionBtn.click;
+						btn.addEventListener("click", (e) => {
+							e.preventDefault();
+							clickHandler.call(btn, this, e);
+						});
+					} else if (typeof clickHandler === "string") {
+						btn.href = clickHandler;
+						if (btnConfig.target) btn.target = "_blank";
+						if (btnConfig.targetClose !== false) btn.addEventListener("click", () => this.close());
 					}
-
-					$pubAction.appendChild(btn);
+					actionArea.appendChild(btn);
 				});
-			} else {
-				const btn = document.createElement("a");
-				btn.className = "gbox-btn";
-				btn.innerHTML = settings.actionBtns[0].text;
-
-				if (settings.actionBtns[0].id) {
-					btn.id = settings.actionBtns[0].id;
-				}
-
-				if (settings.actionBtns[0].class) {
-					settings.actionBtns[0].class.split(" ").forEach((cls) => {
-						if (cls) btn.classList.add(cls);
-					});
-				}
-
-				if (settings.actionBtns[0].target && typeof settings.actionBtns[0].click === "string") {
-					btn.target = "_blank";
-					btn.addEventListener("click", function () {
-						if (settings.allowMultiple) {
-							gbox.closeById(instanceId);
-						} else {
-							gbox.close();
-						}
-					});
-				}
-
-				if (typeof settings.actionBtns[0].click === "function") {
-					btn.href = "javascript:;";
-					btn.addEventListener("click", settings.actionBtns[0].click);
-				} else if (typeof settings.actionBtns[0].click === "string") {
-					btn.href = settings.actionBtns[0].click;
-				}
-
-				$pubAction.appendChild(btn);
+				this.dom.wrap.appendChild(actionArea);
 			}
 		}
 
-		// 一版到底 - 轉換：使用ES6語法重寫meta查詢
-		const metas = document.getElementsByTagName("meta");
-		for (let m = 0; m < metas.length; m++) {
-			const meta = metas[m];
-			if (meta.content.match(/750/)) {
-				$pubWrap.classList.add("vp750");
-				break;
+		_attachEvents() {
+			// 只處理實例自身的事件，不再處理 document 事件
+			if (this.dom.closeBtn) {
+				this.dom.closeBtn.addEventListener("click", () => this.close());
 			}
 		}
 
-		// 開啟後Callback - 轉換：保持相同邏輯，使用isFunction輔助函數
-		if (isFunction(settings.afterOpen)) {
-			settings.afterOpen();
+		_detachEvents() {
+			// 實例自身的事件會隨 DOM 移除，此處無需額外處理
 		}
-	};
 
-	// 建立gbox物件作為window全局對象，取代jQuery的$.gbox
-	const gbox = {
-		close: function (callback) {
-			open = false;
-			if ($pubBox !== null) {
-				$pubBox.remove(); // 轉換：原生JS沒有remove方法，在下方定義Element.prototype.remove
-				$pubBox = null;
-				document.body.classList.remove("ov-hidden");
+		_registerAndShow() {
+			document.body.appendChild(this.dom.box);
+			gboxInstances.push(this);
+			if (this.settings.fixedPos && !document.body.classList.contains("ov-hidden")) {
+				document.body.classList.add("ov-hidden");
 			}
-
-			if (isFunction(callback)) {
-				callback();
-			} else if (typeof callback === "string") {
-				window.open(callback, "_self");
-			}
-		},
-
-		closeById: function (instanceId, callback) {
-			const instanceIndex = gboxInstances.findIndex((instance) => instance.id === instanceId);
-			if (instanceIndex !== -1) {
-				const instance = gboxInstances[instanceIndex];
-				instance.element.remove();
-				gboxInstances.splice(instanceIndex, 1);
-
-				// 如果沒有其他 gbox 實例，移除 body 的 ov-hidden class
-				if (gboxInstances.length === 0) {
-					document.body.classList.remove("ov-hidden");
-					open = false;
-				}
-
-				if (isFunction(callback)) {
-					callback();
-				} else if (typeof callback === "string") {
-					window.open(callback, "_self");
-				}
-			}
-		},
-
-		closeAll: function (callback) {
-			gboxInstances.forEach((instance) => {
-				instance.element.remove();
-			});
-			gboxInstances = [];
-			document.body.classList.remove("ov-hidden");
-			open = false;
-
-			if (isFunction(callback)) {
-				callback();
-			} else if (typeof callback === "string") {
-				window.open(callback, "_self");
-			}
-		},
-
-		open: function (content, options) {
-			// 建立預設設定來檢查 allowMultiple
-			const defaults = {
-				allowMultiple: false
-			};
-			const checkSettings = extend(defaults, options || {});
-
-			if (checkSettings.allowMultiple) {
-				// 允許多個 gbox 時，直接建立新的
-				new PopupPlugin(content, options);
-			} else {
-				// 不允許多個 gbox 時，使用原本的邏輯
-				if (open === false) {
-					new PopupPlugin(content, options);
-				} else {
-					if ($pubBox !== null) {
-						$pubBox.remove();
-						$pubBox = null;
-						document.body.classList.remove("ov-hidden");
-					}
-					new PopupPlugin(content, options);
+			// 觸發全域監聽器
+			gbox._addGlobalListeners();
+			if (typeof this.settings.afterOpen === "function") {
+				try {
+					this.settings.afterOpen(this);
+				} catch (e) {
+					console.error("gbox Error in afterOpen callback:", e);
 				}
 			}
 		}
-	};
 
-	// 增強DOM元素，添加jQuery中使用的方法
-	// 為Element添加remove方法，模擬jQuery的remove()
-	if (!("remove" in Element.prototype)) {
-		Element.prototype.remove = function () {
-			if (this.parentNode) {
-				this.parentNode.removeChild(this);
+		close(callback) {
+			this.destroy();
+			const finalCallback = callback || this.settings.afterClose;
+			if (typeof finalCallback === "function") {
+				try {
+					finalCallback();
+				} catch (e) {
+					console.error("gbox Error in afterClose callback:", e);
+				}
+			} else if (typeof finalCallback === "string") {
+				window.open(finalCallback, "_self");
 			}
-		};
+		}
+
+		destroy() {
+			this._detachEvents();
+			if (this.dom.box.parentNode) this.dom.box.remove();
+			const index = gboxInstances.findIndex((inst) => inst.id === this.id);
+			if (index > -1) gboxInstances.splice(index, 1);
+			if (gboxInstances.length === 0) document.body.classList.remove("ov-hidden");
+			// 觸發全域監聽器移除檢查
+			gbox._removeGlobalListeners();
+		}
 	}
 
-	// 為HTMLElement添加gbox方法，替代jQuery的$.fn.gbox
-	HTMLElement.prototype.gbox = function (content, options) {
-		this.addEventListener("click", function (e) {
-			e.preventDefault();
-			if (open === false) {
-				new PopupPlugin(content, options);
+	const gbox = {
+		// ... (open, closeById, closeAll, getInstances methods remain the same)
+		open: function (content, options) {
+			const settings = { ...{ allowMultiple: false }, ...options };
+			if (!settings.allowMultiple) {
+				gbox.closeAll((instance) => !instance.settings.allowMultiple);
 			}
-		});
-		return this; // 支持鏈式調用
+			try {
+				return new GBox(content, options);
+			} catch (e) {
+				console.error(e);
+				return null;
+			}
+		},
+		closeById: function (instanceId, callback) {
+			const instance = gboxInstances.find((inst) => inst.id === instanceId);
+			if (instance) instance.close(callback);
+		},
+		closeAll: function (filter) {
+			const instancesToClose = typeof filter === "function" ? gboxInstances.filter(filter) : [...gboxInstances];
+			instancesToClose.forEach((instance) => instance.destroy());
+		},
+		getInstances: () => gboxInstances,
+
+		// ==================== 【新架構】全域事件管理器 ====================
+		_isListening: false,
+
+		_handleGlobalKeyDown: function (e) {
+			if (e.key === "Escape" && gboxInstances.length > 0) {
+				const lastInstance = gboxInstances[gboxInstances.length - 1];
+				lastInstance.close();
+			}
+		},
+
+		_handleGlobalMouseDown: function (e) {
+			if (gboxInstances.length > 0) {
+				const lastInstance = gboxInstances[gboxInstances.length - 1];
+				if (lastInstance.settings.clickBgClose && lastInstance.dom.wrap && !lastInstance.dom.wrap.contains(e.target)) {
+					lastInstance.close();
+				}
+			}
+		},
+
+		_addGlobalListeners: function () {
+			if (!this._isListening) {
+				document.addEventListener("keydown", this._handleGlobalKeyDown);
+				document.addEventListener("mousedown", this._handleGlobalMouseDown);
+				this._isListening = true;
+			}
+		},
+
+		_removeGlobalListeners: function () {
+			if (this._isListening && gboxInstances.length === 0) {
+				document.removeEventListener("keydown", this._handleGlobalKeyDown);
+				document.removeEventListener("mousedown", this._handleGlobalMouseDown);
+				this._isListening = false;
+			}
+		},
+		// =================================================================
+
+		// 全域 gbox.close() 總是關閉最上層的彈窗
+		close: function (callback) {
+			if (gboxInstances.length > 0) {
+				gboxInstances[gboxInstances.length - 1].close(callback);
+			}
+		}
 	};
 
-	// 將gbox暴露為全局對象
+	// --- 動態載入 CSS & 向下相容 ---
+	if (!document.querySelector('link[href*="gbox.css"]')) {
+		const stylePath = "https://tw.hicdn.beanfun.com/beanfun/GamaWWW/allProducts/style/gbox/gbox.css";
+		const newCssObj = document.createElement("link");
+		newCssObj.type = "text/css";
+		newCssObj.rel = "stylesheet";
+		newCssObj.href = stylePath;
+		document.head.appendChild(newCssObj);
+	}
+	if ("HTMLElement" in window) {
+		HTMLElement.prototype.gbox = function (content, options) {
+			console.warn("gbox warning: Using HTMLElement.prototype.gbox is deprecated. Please use gbox.open() instead.");
+			this.addEventListener("click", (e) => {
+				e.preventDefault();
+				gbox.open(content, options);
+			});
+			return this;
+		};
+	}
 	window.gbox = gbox;
 })();

@@ -110,10 +110,21 @@
 			document.getElementById("normalBtn").addEventListener("click", function () {
 				gbox.open("<h2>普通 gbox</h2><p>這個 gbox 會被其他普通 gbox 影響而關閉。</p>", {
 					titleBar: "普通 gbox",
+					addClass: "default",
 					hasCloseBtn: true,
 					clickBgClose: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					// afterOpen: updateStatus,
+					// afterClose: updateStatus,
+					actionBtns: [
+						{
+							text: "關閉",
+							class: "gbox-btn-close",
+							onClick: function () {
+								console.log(123);
+								gbox.close();
+							}
+						}
+					]
 				});
 			});
 
