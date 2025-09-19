@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Swiper demo</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+		<!-- Demo styles -->
+		<style>
+			@font-face {
+				font-family: "Noto Sans TC";
+				src: url("https://tw.hicdn.beanfun.com/fonts/NotoSansTC/NotoSansTC-VariableFont_wght.woff2") format("truetype");
+				font-style: normal;
+				font-display: swap;
+			}
+			/* --- 基礎設定 --- */
+
+			/* 將 box-sizing 設為 border-box 讓寬高和邊框的計算更直觀 */
+			* {
+				box-sizing: border-box;
+			}
+
+			/* 定義 CSS 變數，方便統一管理 */
+			:root {
+				--corner-cut: 20px; /* 切角的大小 */
+				--outer-border-width: 3px; /* 外邊框寬度 */
+				--gap-width: 16px; /* 中間黑色間距寬度 */
+				--inner-border-width: 2px; /* 內邊框寬度 */
+				--border-color: #ff9900; /* 邊框顏色 */
+				--bg-color: #111; /* 背景顏色 */
+			}
+
+			/* --- 共用的裁切形狀 --- */
+			.clipped-shape {
+				clip-path: polygon(var(--corner-cut) 0%, calc(100% - var(--corner-cut)) 0%, 100% var(--corner-cut), 100% calc(100% - var(--corner-cut)), calc(100% - var(--corner-cut)) 100%, var(--corner-cut) 100%, 0% calc(100% - var(--corner-cut)), 0% var(--corner-cut));
+			}
+
+			/* --- 各層樣式 --- */
+
+			/* 1. 最外層容器 (外圈橘色邊框) */
+			.frame-outer {
+				width: 100%;
+				height: 350px;
+				background-color: var(--border-color);
+				padding: var(--outer-border-width); /* padding 控制邊框寬度 */
+			}
+
+			/* 2. 第二層容器 (黑色間距) */
+			.frame-middle {
+				width: 100%;
+				height: 100%;
+				background-color: var(--bg-color);
+				padding: var(--gap-width); /* padding 控制間距寬度 */
+			}
+
+			/* 3. 第三層容器 (內圈橘色邊框) */
+			.frame-inner {
+				width: 100%;
+				height: 100%;
+				background-color: var(--border-color);
+				padding: var(--inner-border-width); /* padding 控制邊框寬度 */
+			}
+
+			/* 4. 最內層 (最終內容區) */
+			.content-area {
+				width: 100%;
+				height: 100%;
+				background-color: var(--bg-color);
+				color: white;
+				padding: 20px; /* 內容的內邊距 */
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			/* --- 將裁切形狀應用到所有層 --- */
+			.frame-outer,
+			.frame-middle,
+			.frame-inner,
+			.content-area {
+				/* 關鍵：每一層都套用相同的裁切路徑 */
+				clip-path: polygon(var(--corner-cut) 0%, calc(100% - var(--corner-cut)) 0%, 100% var(--corner-cut), 100% calc(100% - var(--corner-cut)), calc(100% - var(--corner-cut)) 100%, var(--corner-cut) 100%, 0% calc(100% - var(--corner-cut)), 0% var(--corner-cut));
+			}
+			.gbox-wrap {
+				background: transparent;
+			}
+			.line-deco {
+				width: 1186px;
+				height: 48px;
+				background-size: cover;
+				background-image: url("./images/line-deco.png");
+				transform: scale(-1);
+			}
+			.btn {
+				padding: 9px 25px;
+				border-radius: 33px;
+				text-decoration: none;
+				font-size: 33px;
+				font-weight: bold;
+				font-family: sans-serif;
+				background-color: #ffffff;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				box-shadow: 8px 10px 0 0px #ea9741;
+				position: relative;
+			}
+			.btn-text {
+				position: relative;
+				color: #ea9741;
+			}
+			.btn-text:after {
+				content: attr(data-txt);
+				color: transparent;
+				transform: translate(1px, 2px);
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			.btn-arrow {
+				width: 0px;
+				height: 0px;
+				border-style: solid;
+				border-width: 7px 0 7px 9px;
+				border-color: transparent transparent transparent #ea9741;
+				transform: rotate(0deg);
+				margin-left: 12px;
+				position: relative;
+			}
+			.btn:hover {
+				background-color: #f3eae0;
+			}
+			.btn:hover .btn-arrow {
+				border-color: transparent transparent transparent #ea9741;
+				filter: drop-shadow(-1px -2px 0px #97421a);
+			}
+			.btn:hover .btn-text {
+				color: #97421a;
+			}
+			.btn:hover .btn-text:after {
+				color: #ea9741;
+			}
+			.btn:active {
+				box-shadow: unset;
+				top: 10px;
+				left: 10px;
+				background-color: #ea9741;
+			}
+			.btn:active .btn-text {
+				color: #fff;
+			}
+			.btn:active .btn-text:after {
+				color: transparent;
+			}
+			.btn:active .btn-arrow {
+				border-color: transparent transparent transparent #fff;
+				filter: drop-shadow(0 0 0px #ea9741);
+			}
+			.bevel-box {
+				--corner-cut: 8px;
+				width: 117px;
+				height: 108px;
+				position: relative;
+			}
+			.bevel-box:after {
+				content: "";
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				background-color: #ea9741;
+				clip-path: polygon(var(--corner-cut) 0%, calc(100% - var(--corner-cut)) 0%, 100% var(--corner-cut), 100% calc(100% - var(--corner-cut)), calc(100% - var(--corner-cut)) 100%, var(--corner-cut) 100%, 0% calc(100% - var(--corner-cut)), 0% var(--corner-cut));
+			}
+			.bevel-box:before {
+				content: "";
+				width: 104%;
+				height: 104%;
+				position: absolute;
+				top: 2px;
+				left: 2px;
+				background-color: #9c3729;
+				clip-path: polygon(var(--corner-cut) 0%, calc(100% - var(--corner-cut)) 0%, 100% var(--corner-cut), 100% calc(100% - var(--corner-cut)), calc(100% - var(--corner-cut)) 100%, var(--corner-cut) 100%, 0% calc(100% - var(--corner-cut)), 0% var(--corner-cut));
+			}
+			.system2:hover {
+				width: 360px;
+			}
+			.system2:hover:before {
+				width: 102%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="bevel-box system"></div>
+		<br />
+		<div class="bevel-box system2"></div>
+		<a href="javascript:;" class="btn"><span class="btn-text" data-txt="確定">確定</span><span class="btn-arrow"></span></a>
+		<div class="frame-outer">
+			<div class="frame-middle">
+				<div class="frame-inner">
+					<div class="content-area">
+						<p>您的內容放在這裡</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<a href="javascript:;" id="open">OPEN Video</a>
+		<div class="line-deco"></div>
+		<script>
+			document.querySelector("#open").addEventListener("click", function () {
+				VideoLB();
+			});
+			function VideoLB() {
+				let data = "num";
+				gbox.open(
+					`<div class="frame-outer">
+                    <div class="frame-middle">
+                        <div class="frame-inner">
+                            <div class="content-area">
+                                <video src="./1.mp4" poster="" autoplay muted playsinline></video>
+                                <p data-num="${data}">您的內容放在這裡</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`,
+					{
+						hasActionBtn: false,
+						hasCloseBtn: true,
+						afterClose: function () {}
+					}
+				);
+			}
+		</script>
+	</body>
+</html>

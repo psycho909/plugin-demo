@@ -4,29 +4,44 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
 		<style>
 			* {
 				padding: 0;
 				margin: 0;
 			}
-			body {
-			}
-			.wrap {
-				width: 100dvw;
-				height: 100dvh;
-				background-color: red;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-			}
-			.box {
-				width: calc(861 / 430 * 100vh);
-				height: calc(350 / 430 * 100vh);
-				border: 1px solid #000;
-			}
 		</style>
 	</head>
 	<body>
-		<div class="wrap"><div class="box"></div></div>
+		<div id="app">
+			<div v-html="msg2"></div>
+			<div v-html="'<script>alert(\'XSS\')</script>'"></div>
+			<div class="profile-bio" v-html="userProfile.bio"></div>
+			<textarea v-model="userProfile.bio" rows="5" style="width: 100%"></textarea>
+		</div>
+		<script>
+			// let a = `&lt;script&gt;alert(21312)&lt;/script&gt;`;
+			// let b = `21323&lt;br/&gt;21312`;
+			// document.querySelector(".box").innerHTML = b;
+			Vue.createApp({
+				setup() {
+					let msg = Vue.ref(`&lt;script&gt;alert(21312)&lt;/script&gt;`);
+					return {
+						msg
+					};
+				},
+				data() {
+					return {
+						msg2: "<script>alert('XSS')<\/script>",
+						userProfile: {
+							bio: '<img src="invalid-image" onerror="alert(\'這就是一個 XSS 攻擊！\')">'
+						}
+					};
+				}
+			}).mount("#app");
+		</script>
 	</body>
 </html>

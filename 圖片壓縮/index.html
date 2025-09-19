@@ -52,10 +52,11 @@
 
 			// ★★ 1. 等比例縮放到 maxWidth ★★
 			function getResizeOptions(width, height, maxWidth = 1920) {
-				if (width > maxWidth) {
-					const scale = maxWidth / width;
-					return { width: maxWidth, height: Math.round(height * scale) };
+				if (width > 1920) {
+					const scale = 1920 / width;
+					return { width: 1920, height: Math.round(height * scale) };
 				}
+				console.log(width);
 				return { width, height };
 			}
 
@@ -66,8 +67,10 @@
 					img.onload = async function () {
 						const { width, height } = getResizeOptions(img.width, img.height, 1920);
 						console.log(width, height);
-						// maxWidthOrHeight 會自動維持比例
-						options.maxWidthOrHeight = width;
+						// 僅當 width 或 height > 1920 才設定 maxWidthOrHeight
+						if (img.width > 1920 || img.height > 1920) {
+							options.maxWidthOrHeight = Math.max(width, height);
+						}
 						options.useWebWorker = true;
 						try {
 							const compressed = await imageCompression(file, options);
@@ -87,6 +90,11 @@
 				const arrayBuffer = await file.arrayBuffer();
 				const decoded = UPNG.decode(arrayBuffer);
 				let { width, height } = getResizeOptions(decoded.width, decoded.height, 1920);
+				// 僅當 width 或 height > 1920 才縮放
+				if (decoded.width > 1920 || decoded.height > 1920) {
+					width = Math.min(decoded.width, 1920);
+					height = Math.round(decoded.height * (width / decoded.width));
+				}
 
 				// 建立canvas縮放
 				const canvas = document.createElement("canvas");
