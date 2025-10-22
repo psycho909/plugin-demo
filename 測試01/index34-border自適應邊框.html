@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Border Image 撐開效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 28px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+        }
+
+        .demo-title {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .content {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .control-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+
+        .control-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .demo-box {
+            background: white;
+            padding: 20px;
+            border: 15px solid transparent;
+            border-image-source: url('./images/border-bg.png');
+            border-image-slice: 15;
+            border-image-repeat: repeat;
+            margin-top: 10px;
+            min-height: 50px;
+            color: #333;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="control-section">
+            <h3>🔧 互動範例 - 輸入文字看邊框撐開</h3>
+            <div class="control-group">
+                <label for="textInput">輸入內容（邊框會根據內容大小自動撐開）:</label>
+                <textarea id="textInput" rows="4" placeholder="在這裡輸入文字，邊框會根據內容大小調整...">試著輸入文字看看邊框如何撐開</textarea>
+            </div>
+            <div class="demo-box" id="demoBox">試著輸入文字看看邊框如何撐開</div>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('textInput');
+        const demoBox = document.getElementById('demoBox');
+
+        textarea.addEventListener('input', function() {
+            demoBox.textContent = this.value || '邊框內容為空';
+        });
+    </script>
+</body>
+</html>

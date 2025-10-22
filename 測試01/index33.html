@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Swiper demo</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+		<!-- Demo styles -->
+		<style>
+			@font-face {
+				font-family: "Noto Sans TC";
+				src: url("https://tw.hicdn.beanfun.com/fonts/NotoSansTC/NotoSansTC-VariableFont_wght.woff2") format("truetype");
+				font-style: normal;
+				font-display: swap;
+			}
+			/* --- 基礎設定 --- */
+
+			/* 將 box-sizing 設為 border-box 讓寬高和邊框的計算更直觀 */
+			* {
+				box-sizing: border-box;
+			}
+
+			/* 定義 CSS 變數，方便統一管理 */
+			:root {
+				--corner-cut: 20px; /* 切角的大小 */
+			}
+
+			/* 1. 最外層容器 (外圈橘色邊框) */
+			.frame-outer {
+				width: 408px;
+				height: 408px;
+				background-color: #ff9900;
+				padding: 1px;
+			}
+
+			/* 2. 第二層容器 (黑色間距) */
+			.frame-middle {
+				width: 100%;
+				height: 100%;
+				padding: 1px;
+				position: relative;
+			}
+			.frame-middle:before {
+				content: "";
+				width: 100%;
+				height: 100%;
+				background-image: url("./images/reward-bg.jpg");
+				position: absolute;
+				top: 0;
+				left: 0;
+				filter: grayscale(1);
+			}
+			/* --- 將裁切形狀應用到所有層 --- */
+			.frame-outer,
+			.frame-middle {
+				/* 關鍵：每一層都套用相同的裁切路徑 */
+				clip-path: polygon(var(--corner-cut) 0%, calc(100% - var(--corner-cut)) 0%, 100% var(--corner-cut), 100% calc(100% - var(--corner-cut)), calc(100% - var(--corner-cut)) 100%, var(--corner-cut) 100%, 0% calc(100% - var(--corner-cut)), 0% var(--corner-cut));
+			}
+			.frame-wrap {
+				position: relative;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="frame-outer">
+			<div class="frame-middle">
+				<div class="frame-wrap">
+					<img src="./images/logo.png" alt="" />
+					<p>您的內容放在這裡</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
