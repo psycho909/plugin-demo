@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iframe 嵌入 (完整範例 - iPhone 16 Pro Max 模擬)</title>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #333; /* 主頁面深色背景，凸顯模擬器 */
+      color: #fff;
+      margin: 0;
+      padding-top: 80px; /* 留出空間給固定的控制列 */
+    }
+    
+    .controls {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px 20px;
+      text-align: center;
+      background: #1a1a1a;
+      border-bottom: 2px solid #555;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+    .controls button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .controls button:disabled {
+      background-color: #999;
+      color: #eee;
+      cursor: not-allowed;
+    }
+    #btn-pc-preview { background-color: #007bff; color: white; }
+    #btn-mobile-preview { background-color: #28a745; color: white; }
+    
+    .preview-wrapper {
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      /* 確保 wrapper 有最小高度 */
+      min-height: calc(100vh - 140px); 
+    }
+    
+    #previewFrame {
+      background: #fff;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      /* 關鍵：流暢的切換動畫 */
+      transition: width 0.4s ease-out, height 0.4s ease-out, border-radius 0.4s, border-width 0.4s;
+    }
+    
+    /* PC 預覽 (預設) */
+    .preview-wrapper.pc-mode #previewFrame {
+      width: 100%;
+      height: 700px;
+      border: 4px solid #888;
+      border-radius: 8px;
+    }
+    
+    /* Mobile 預覽 (iPhone 16 Pro Max 模擬) */
+    .preview-wrapper.mobile-mode #previewFrame {
+      width: 430px;  /* iPhone 16 Pro Max 寬度 */
+      height: 932px; /* iPhone 16 Pro Max 高度 */
+      /* 模擬手機外框 */
+      border: 12px solid #111;
+      border-radius: 44px;
+    }
+  </style>
+</head>
+<body>
+
+  <template id="app-content">
+    
+    <style>
+      /* --- 通用 & PC 版樣式 (預設) --- */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        background: #f9f9f9;
+        color: #333;
+        line-height: 1.6;
+      }
+      * { box-sizing: border-box; }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+      }
+      .navbar .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .navbar .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+        margin: 0;
+      }
+      .navbar .nav-links a {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+      }
+      .navbar .hamburger {
+        display: none; /* PC 版隱藏漢堡 */
+        cursor: pointer;
+      }
+
+      .layout-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+        display: flex;
+        gap: 2rem;
+      }
+      .main-content {
+        flex: 3; /* 佔 3/4 空間 */
+      }
+      .sidebar {
+        flex: 1; /* 佔 1/4 空間 */
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #eee;
+      }
+      .sidebar h3 { margin-top: 0; }
+      
+      article img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 2rem;
+        background: #222;
+        color: #aaa;
+        margin-top: 2rem;
+      }
+
+      /* 關鍵：@media 規則 (以 iPhone 16 Pro Max 寬度 430px 為斷點)
+        當 iframe 寬度被設為 430px 時，此規則「自動觸發」。
+      */
+      @media (max-width: 430px) {
+        .navbar {
+          padding: 1rem;
+        }
+        .navbar .hamburger {
+          display: block; /* 顯示漢堡 */
+        }
+        .navbar .nav-links {
+          display: none; /* 隱藏 PC 選單 */
+          position: absolute;
+          top: 60px; /* 導覽列下方 */
+          left: 0;
+          right: 0;
+          background: #fff;
+          width: 100%;
+          flex-direction: column;
+          text-align: center;
+          padding: 1rem 0;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        /* JS 會加上 .active 來顯示選單 */
+        .navbar .nav-links.active {
+          display: flex;
+        }
+        
+        .layout-container {
+          flex-direction: column; /* 主要內容和側邊欄變為垂直堆疊 */
+          padding: 0;
+          margin: 0;
+        }
+        .main-content {
+          padding: 1rem;
+        }
+        .sidebar {
+          width: 100%;
+          border-radius: 0;
+          border: none;
+          border-top: 1px solid #eee;
+        }
+        .footer {
+          margin-top: 0;
+        }
+      }
+    </style>
+
+    <header class="navbar">
+      <div class="logo">MyWebsite</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#">首頁</a></li>
+        <li><a href="#">關於我</a></li>
+        <li><a href="#">服務</a></li>
+        <li><a href="#">聯絡</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger-btn">
+        <span>☰</span> </div>
+    </header>
+
+    <div class="layout-container">
+      <main class="main-content">
+        <article>
+          <h1>這是一個完整的網頁範例</h1>
+          <p>這篇文章展示了在 `iframe` 中運作的完整響應式設計。當您切換到「手機版本」時，此 `iframe` 的寬度會被強制設為 430px。</p>
+          <img src="https://via.placeholder.com/800x400.png?text=Responsive+Image" alt="範例圖片">
+          <p>因為 `iframe` 寬度變為 430px，CSS ` @media (max-width: 430px) ` 規則會自動生效。導覽列會變成漢堡選單，側邊欄會堆疊到主要內容下方。</p>
+        </article>
+      </main>
+      <aside class="sidebar">
+        <h3>側邊欄</h3>
+        <p>這是在 PC 版位於右側，手機版位於下方的側邊欄。</p>
+        <ul>
+          <li>項目一</li>
+          <li>項目二</li>
+          <li>項目三</li>
+        </ul>
+      </aside>
+    </div>
+
+    <footer class="footer">
+      <p>&copy; 2025 完整範例. All rights reserved.</p>
+    </footer>
+    
+    <script>
+      // 確保 DOM 載入完成後才執行
+      // (在 srcdoc 中，腳本會立即執行，所以直接綁定是安全的)
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      const navLinks = document.getElementById('nav-links');
+      
+      if (hamburgerBtn && navLinks) {
+        hamburgerBtn.addEventListener('click', () => {
+          navLinks.classList.toggle('active');
+        });
+      }
+    </script>
+    
+  </template>
+
+
+  <div class="controls">
+    <button id="btn-pc-preview">切換PC版本 (100%)</button>
+    <button id="btn-mobile-preview">切換手機版本 (iPhone 16 Pro Max)</button>
+  </div>
+  
+  <div class="preview-wrapper pc-mode" id="preview-wrapper">
+    <iframe id="previewFrame" title="Website Preview"></iframe>
+  </div>
+
+  <script>
+    const btnPc = document.getElementById('btn-pc-preview');
+    const btnMobile = document.getElementById('btn-mobile-preview');
+    const wrapper = document.getElementById('preview-wrapper');
+    const iframe = document.getElementById('previewFrame');
+    
+    // 1. 從 <template> 讀取 HTML 內容字串
+    const contentHTML = document.getElementById('app-content').innerHTML;
+
+    // 2. 定義一個函數來載入/重新載入 iframe
+    function loadIframeContent() {
+      // 3. 將 HTML 內容字串注入 iframe 的 srcdoc 屬性
+      //    這會建立一個完整的、沙盒化的 DOM 環境
+      iframe.srcdoc = contentHTML;
+    }
+    
+    // 頁面載入時，立即載入一次內容
+    loadIframeContent();
+    btnPc.disabled = true; // 預設為 PC
+
+    // 4. 綁定按鈕事件
+    btnMobile.addEventListener('click', () => {
+      wrapper.classList.remove('pc-mode');
+      wrapper.classList.add('mobile-mode');
+      btnMobile.disabled = true;
+      btnPc.disabled = false;
+      
+      // 切換時重新載入 iframe 內容，確保 JS 和 CSS 都能在新環境正確執行
+      loadIframeContent(); 
+    });
+
+    btnPc.addEventListener('click', () => {
+      wrapper.classList.remove('mobile-mode');
+      wrapper.classList.add('pc-mode');
+      btnPc.disabled = true;
+      btnMobile.disabled = false;
+      
+      loadIframeContent();
+    });
+  </script>
+
+</body>
+</html>
