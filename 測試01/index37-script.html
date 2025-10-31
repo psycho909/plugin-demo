@@ -1,0 +1,596 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動態腳本管理系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        .script-list {
+            list-style: none;
+        }
+
+        .script-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .script-item:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .script-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .script-item p {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .script-item .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .script-item button {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 標籤切換 -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchPage('admin')">管理介面</button>
+            <button class="tab-btn" onclick="switchPage('execute')">執行頁面</button>
+        </div>
+
+        <!-- 管理介面 -->
+        <div id="admin-page" class="page active">
+            <div class="card">
+                <h1>📝 動態腳本管理系統</h1>
+                <p class="subtitle">儲存、管理和執行動態 JavaScript 程式碼</p>
+
+                <div id="message" class="message"></div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="scriptCount">0</h3>
+                        <p>已儲存腳本</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="scriptName">腳本名稱</label>
+                    <input type="text" id="scriptName" placeholder="例如: 側邊欄腳本" />
+                </div>
+
+                <div class="form-group">
+                    <label for="scriptCode">JavaScript 程式碼</label>
+                    <textarea id="scriptCode" placeholder="在此貼上您的 JavaScript 程式碼..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="saveScript()">💾 儲存腳本</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📚 已儲存的腳本</h2>
+                <ul id="scriptList" class="script-list"></ul>
+            </div>
+        </div>
+
+        <!-- 執行頁面 -->
+        <div id="execute-page" class="page">
+            <div class="card">
+                <h1>▶️ 腳本執行頁面</h1>
+                <p class="subtitle">選擇要執行的腳本</p>
+
+                <div id="executeMessage" class="message"></div>
+
+                <div class="form-group">
+                    <label for="scriptSelect">選擇腳本</label>
+                    <select id="scriptSelect" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                        <option value="">-- 請選擇腳本 --</option>
+                    </select>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="executeSelectedScript()">▶️ 執行腳本</button>
+                    <button class="btn-danger" onclick="clearExecutedScripts()">🗑️ 清除已執行的腳本</button>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border: 2px solid #ffc107;">
+                    <strong>⚠️ 注意事項：</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px; color: #856404;">
+                        <li>腳本會直接在當前頁面執行</li>
+                        <li>確保腳本來源可信任</li>
+                        <li>執行前請檢查程式碼內容</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模擬資料庫 (使用 localStorage)
+        class ScriptDatabase {
+            constructor() {
+                this.storageKey = 'dynamicScripts';
+            }
+
+            // 儲存腳本
+            save(name, code) {
+                const scripts = this.getAll();
+                const id = Date.now().toString();
+                const encoded = btoa(unescape(encodeURIComponent(code)));
+                
+                scripts.push({
+                    id,
+                    name,
+                    code: encoded,
+                    encoding: 'base64',
+                    createdAt: new Date().toISOString()
+                });
+
+                localStorage.setItem(this.storageKey, JSON.stringify(scripts));
+                return { success: true, id };
+            }
+
+            // 獲取所有腳本
+            getAll() {
+                const data = localStorage.getItem(this.storageKey);
+                return data ? JSON.parse(data) : [];
+            }
+
+            // 根據 ID 獲取腳本
+            getById(id) {
+                const scripts = this.getAll();
+                return scripts.find(script => script.id === id);
+            }
+
+            // 刪除腳本
+            delete(id) {
+                const scripts = this.getAll();
+                const filtered = scripts.filter(script => script.id !== id);
+                localStorage.setItem(this.storageKey, JSON.stringify(filtered));
+                return { success: true };
+            }
+
+            // 解碼腳本
+            decode(script) {
+                if (script.encoding === 'base64') {
+                    return decodeURIComponent(escape(atob(script.code)));
+                }
+                return script.code;
+            }
+        }
+
+        const db = new ScriptDatabase();
+
+        // 顯示訊息
+        function showMessage(message, type = 'success', containerId = 'message') {
+            const messageEl = document.getElementById(containerId);
+            messageEl.textContent = message;
+            messageEl.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // 切換頁面
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(`${page}-page`).classList.add('active');
+            event.target.classList.add('active');
+
+            if (page === 'execute') {
+                loadScriptSelect();
+            } else {
+                loadScriptList();
+            }
+        }
+
+      
+        // 儲存腳本
+        function saveScript() {
+            const name = document.getElementById('scriptName').value.trim();
+            const code = document.getElementById('scriptCode').value.trim();
+
+            if (!name) {
+                showMessage('❌ 請輸入腳本名稱', 'error');
+                return;
+            }
+
+            if (!code) {
+                showMessage('❌ 請輸入程式碼', 'error');
+                return;
+            }
+
+            try {
+                const result = db.save(name, code);
+                if (result.success) {
+                    showMessage('✅ 腳本儲存成功！', 'success');
+                    document.getElementById('scriptName').value = '';
+                    document.getElementById('scriptCode').value = '';
+                    loadScriptList();
+                }
+            } catch (error) {
+                showMessage('❌ 儲存失敗: ' + error.message, 'error');
+            }
+        }
+
+        // 載入腳本列表
+        function loadScriptList() {
+            const scripts = db.getAll();
+            const listEl = document.getElementById('scriptList');
+            
+            document.getElementById('scriptCount').textContent = scripts.length;
+
+            if (scripts.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p>尚未儲存任何腳本</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = scripts.map(script => {
+                const date = new Date(script.createdAt).toLocaleString('zh-TW');
+                return `
+                    <li class="script-item">
+                        <h3>${script.name}</h3>
+                        <p>建立時間: ${date} | ID: ${script.id}</p>
+                        <div class="actions">
+                            <button class="btn-secondary" onclick="viewScript('${script.id}')">👁️ 查看</button>
+                            <button class="btn-danger" onclick="deleteScript('${script.id}')">🗑️ 刪除</button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // 查看腳本
+        function viewScript(id) {
+            const script = db.getById(id);
+            if (script) {
+                const code = db.decode(script);
+                document.getElementById('scriptName').value = script.name;
+                document.getElementById('scriptCode').value = code;
+                showMessage('✅ 已載入腳本到編輯區', 'success');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // 刪除腳本
+        function deleteScript(id) {
+            if (confirm('確定要刪除這個腳本嗎？')) {
+                db.delete(id);
+                showMessage('✅ 腳本已刪除', 'success');
+                loadScriptList();
+            }
+        }
+
+        // 載入腳本選擇器
+        function loadScriptSelect() {
+            const scripts = db.getAll();
+            const selectEl = document.getElementById('scriptSelect');
+            
+            selectEl.innerHTML = '<option value="">-- 請選擇腳本 --</option>' +
+                scripts.map(script => 
+                    `<option value="${script.id}">${script.name} (${new Date(script.createdAt).toLocaleDateString('zh-TW')})</option>`
+                ).join('');
+        }
+
+        // 執行選中的腳本
+        function executeSelectedScript() {
+            const selectEl = document.getElementById('scriptSelect');
+            const scriptId = selectEl.value;
+
+            if (!scriptId) {
+                showMessage('❌ 請選擇要執行的腳本', 'error', 'executeMessage');
+                return;
+            }
+
+            const script = db.getById(scriptId);
+            if (!script) {
+                showMessage('❌ 找不到指定的腳本', 'error', 'executeMessage');
+                return;
+            }
+
+            try {
+                const code = db.decode(script);
+                
+                // 創建 script 標籤並執行
+                const scriptElement = document.createElement('script');
+                scriptElement.textContent = code;
+                scriptElement.setAttribute('data-dynamic-script', scriptId);
+                
+                scriptElement.onerror = (error) => {
+                    showMessage('❌ 腳本執行失敗: ' + error.message, 'error', 'executeMessage');
+                };
+
+                document.head.appendChild(scriptElement);
+                
+                showMessage('✅ 腳本已執行: ' + script.name, 'success', 'executeMessage');
+            } catch (error) {
+                showMessage('❌ 執行失敗: ' + error.message, 'error', 'executeMessage');
+                console.error('Script execution error:', error);
+            }
+        }
+
+        // 清除已執行的腳本
+        function clearExecutedScripts() {
+            const scripts = document.querySelectorAll('script[data-dynamic-script]');
+            scripts.forEach(script => script.remove());
+            
+            // 也可以嘗試移除動態創建的元素
+            const sideBar = document.getElementById('sideBar');
+            if (sideBar) {
+                sideBar.remove();
+            }
+
+            showMessage('✅ 已清除所有動態執行的腳本', 'success', 'executeMessage');
+        }
+
+        // 初始化
+        loadScriptList();
+    </script>
+</body>
+</html>

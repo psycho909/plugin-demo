@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可調整模糊範圍</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 500px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .image-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        #blurImage {
+            width: 600px;
+            height: 400px;
+            object-fit: cover;
+            transition: mask-image 0.3s ease;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .preset-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .preset-btn:hover {
+            background: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        p {
+            color: #666;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>四邊線性漸層模糊 - 可調整範圍</h1>
+
+    <div class="controls">
+        <div class="control-group">
+            <label>
+                上方模糊範圍
+                <span class="value-display" id="topValue">15%</span>
+            </label>
+            <input type="range" id="topBlur" min="0" max="50" value="15">
+        </div>
+
+        <div class="control-group">
+            <label>
+                下方模糊範圍
+                <span class="value-display" id="bottomValue">15%</span>
+            </label>
+            <input type="range" id="bottomBlur" min="0" max="50" value="15">
+        </div>
+
+        <div class="control-group">
+            <label>
+                左側模糊範圍
+                <span class="value-display" id="leftValue">15%</span>
+            </label>
+            <input type="range" id="leftBlur" min="0" max="50" value="15">
+        </div>
+
+        <div class="control-group">
+            <label>
+                右側模糊範圍
+                <span class="value-display" id="rightValue">15%</span>
+            </label>
+            <input type="range" id="rightBlur" min="0" max="50" value="15">
+        </div>
+
+        <div class="preset-buttons">
+            <button class="preset-btn" onclick="setPreset('subtle')">細微模糊</button>
+            <button class="preset-btn" onclick="setPreset('medium')">中等模糊</button>
+            <button class="preset-btn" onclick="setPreset('strong')">強烈模糊</button>
+            <button class="preset-btn" onclick="setPreset('reset')">重置</button>
+        </div>
+    </div>
+
+    <div class="image-container">
+        <img id="blurImage" src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800" alt="花朵">
+        <p>即時調整四邊的模糊範圍，數值越大模糊範圍越廣</p>
+    </div>
+
+    <script>
+        const img = document.getElementById('blurImage');
+        const topBlur = document.getElementById('topBlur');
+        const bottomBlur = document.getElementById('bottomBlur');
+        const leftBlur = document.getElementById('leftBlur');
+        const rightBlur = document.getElementById('rightBlur');
+        
+        const topValue = document.getElementById('topValue');
+        const bottomValue = document.getElementById('bottomValue');
+        const leftValue = document.getElementById('leftValue');
+        const rightValue = document.getElementById('rightValue');
+
+        function updateMask() {
+            const top = topBlur.value;
+            const bottom = bottomBlur.value;
+            const left = leftBlur.value;
+            const right = rightBlur.value;
+
+            topValue.textContent = top + '%';
+            bottomValue.textContent = bottom + '%';
+            leftValue.textContent = left + '%';
+            rightValue.textContent = right + '%';
+
+            const maskImageValue = `
+                linear-gradient(to right, transparent, black ${left}%, black ${100-right}%, transparent),
+                linear-gradient(to bottom, transparent, black ${top}%, black ${100-bottom}%, transparent)
+            `;
+
+            img.style.webkitMaskImage = maskImageValue;
+            img.style.maskImage = maskImageValue;
+            img.style.webkitMaskComposite = 'source-in';
+            img.style.maskComposite = 'intersect';
+        }
+
+        topBlur.addEventListener('input', updateMask);
+        bottomBlur.addEventListener('input', updateMask);
+        leftBlur.addEventListener('input', updateMask);
+        rightBlur.addEventListener('input', updateMask);
+
+        function setPreset(preset) {
+            let values = { top: 15, bottom: 15, left: 15, right: 15 };
+            
+            switch(preset) {
+                case 'subtle':
+                    values = { top: 5, bottom: 5, left: 5, right: 5 };
+                    break;
+                case 'medium':
+                    values = { top: 15, bottom: 15, left: 15, right: 15 };
+                    break;
+                case 'strong':
+                    values = { top: 30, bottom: 30, left: 30, right: 30 };
+                    break;
+                case 'reset':
+                    values = { top: 15, bottom: 15, left: 15, right: 15 };
+                    break;
+            }
+            
+            topBlur.value = values.top;
+            bottomBlur.value = values.bottom;
+            leftBlur.value = values.left;
+            rightBlur.value = values.right;
+            
+            updateMask();
+        }
+
+        updateMask();
+    </script>
+</body>
+</html>
