@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://tw.hicdn.beanfun.com/beanfun/event/TWP/20251103C/assets/css/default.css">
+    <link rel="stylesheet" href="https://tw.hicdn.beanfun.com/beanfun/event/TWP/20251103C/assets/css/fix.css">
+    <script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <script>
+        function LBLevelUp() {
+	var config = {
+		addClass: "default lb-reward lb-m",
+		hasCloseBtn: true,
+		hasActionBtn: false,
+		afterClose: function () {
+		}
+	};
+	var HTML = `
+	<div class="lb-text-big"><div>恭喜您成為F2及守護者<br/>已獲得以下獎勵:</div></div>
+	<div class="lb-reward__item-group">
+		<div class="lb-reward__item-img" data-item="1"><img src="https://tw.hicdn.beanfun.com/beanfun/event/TWP/20251103C/assets/css/images/rank/1.png" alt="" /></div>
+		<div class="lb-reward__item-name lb-text">100萬金碧香</div>
+	</div>
+	`;
+	gbox.open(HTML, config);
+}
+LBLevelUp()
+    </script>
+</body>
+</html>

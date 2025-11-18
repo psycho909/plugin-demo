@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖層穿透效果</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+
+        .demo-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .example {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 2px solid #333;
+            background-image: url('./images/bg-top.jpg');
+            background-size: cover;
+        }
+
+        .example h3 {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* A 背景層 */
+        .bg-a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./images/bg-top.jpg');
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* B 圖層 - 不同混合模式 */
+        .layer-b {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 150px;
+            height: 150px;
+            background: #00213d;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .multiply { mix-blend-mode: multiply; }
+        .screen { mix-blend-mode: screen; }
+        .overlay { mix-blend-mode: overlay; }
+        .difference { mix-blend-mode: difference; }
+        .color-dodge { mix-blend-mode: color-dodge; }
+        .exclusion { mix-blend-mode: exclusion; }
+
+        .controls {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .controls label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .controls select {
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .interactive {
+            margin-top: 40px;
+        }
+
+        #customLayer {
+            transition: mix-blend-mode 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="interactive">
+        <div class="controls">
+            <label for="blendMode">選擇混合模式測試:</label>
+            <select id="blendMode">
+                <option value="normal">normal (正常)</option>
+                <option value="multiply">multiply (色彩增值)</option>
+                <option value="screen">screen (濾色)</option>
+                <option value="overlay">overlay (覆蓋)</option>
+                <option value="darken">darken (變暗)</option>
+                <option value="lighten">lighten (變亮)</option>
+                <option value="color-dodge">color-dodge (加亮顏色)</option>
+                <option value="color-burn">color-burn (加深顏色)</option>
+                <option value="hard-light">hard-light (實光)</option>
+                <option value="soft-light">soft-light (柔光)</option>
+                <option value="difference">difference (差異化)</option>
+                <option value="exclusion">exclusion (排除)</option>
+                <option value="hue">hue (色相)</option>
+                <option value="saturation">saturation (飽和度)</option>
+                <option value="color">color (顏色)</option>
+                <option value="luminosity">luminosity (明度)</option>
+            </select>
+        </div>
+
+        <div class="example">
+            <h3>互動測試區</h3>
+            <div class="bg-a">A 背景</div>
+            <div class="layer-b" id="customLayer">B 圖層</div>
+        </div>
+    </div>
+
+    <script>
+        const select = document.getElementById('blendMode');
+        const customLayer = document.getElementById('customLayer');
+
+        select.addEventListener('change', (e) => {
+            customLayer.style.mixBlendMode = e.target.value;
+        });
+    </script>
+</body>
+</html>

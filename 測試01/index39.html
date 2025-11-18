@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			html {
+				background-color: #233350;
+			}
+			@font-face {
+				font-family: "Noto Sans TC";
+				src: url("https://tw.hicdn.beanfun.com/fonts/NotoSansTC/NotoSansTC-VariableFont_wght.woff2") format("truetype");
+				font-style: normal;
+				font-display: swap;
+			}
+			@font-face {
+				font-family: "Noto Serif TC";
+				src: url("https://tw.hicdn.beanfun.com/fonts/NotoSansTC/noto-serif-tc-v32-chinese-traditional-regular.woff2") format("truetype");
+				font-style: normal;
+				font-display: swap;
+			}
+            body{
+                background-image: url('./images/bg-top.jpg');
+                background-position: top center;
+            }
+			.ch {
+				font-size: 46px;
+				font-family: "Noto Sans TC";
+				font-weight: bold;
+				transform: skewX(-12deg);
+				background-image: linear-gradient(to right, #fff 40%, #e6c268 100%);
+				background-clip: text;
+				color: transparent;
+				display: inline-block;
+				filter: drop-shadow(0 0 4px rgba(255, 156, 0, 0.48)) drop-shadow(0 0 4px rgba(255, 156, 0, 0.8));
+				position: relative;
+			}
+			.ch-big {
+				font-size: 70px;
+				font-family: "Noto Sans TC";
+				font-weight: bold;
+				transform: skewX(-12deg);
+				background-image: linear-gradient(to right, #fff 40%, #e6c268 100%);
+				background-clip: text;
+				color: transparent;
+				display: inline-block;
+				filter: drop-shadow(0 0 4px rgba(255, 156, 0, 0.48)) drop-shadow(0 0 4px rgba(255, 156, 0, 0.8));
+				position: relative;
+			}
+			.ch-big2 {
+				font-size: 70px;
+				font-family: "Noto Sans TC";
+				font-weight: bold;
+				transform: skewX(-12deg);
+				background-image: linear-gradient(to right, #fff 25%, #e6c268 100%);
+				background-clip: text;
+				color: transparent;
+				display: inline-block;
+				filter: drop-shadow(0 0 4px rgba(255, 156, 0, 0.48)) drop-shadow(0 0 4px rgba(255, 156, 0, 0.8));
+				position: relative;
+			}
+			.ch-big2:before {
+				content: attr(data-text);
+				position: absolute;
+				z-index: 1;
+				mix-blend-mode: color-burn;
+				-webkit-text-stroke: 1px #fff;
+			}
+			.ch-big2:after {
+				content: attr(data-text);
+				position: absolute;
+				z-index: 1;
+				mix-blend-mode: color-burn;
+				-webkit-text-stroke: 1px #fff;
+				top: 0;
+				left: 0;
+			}
+			.ch-big2:after {
+				content: attr(data-text);
+				position: absolute;
+				z-index: 1;
+				mix-blend-mode: color-burn;
+				-webkit-text-stroke: 1px #fff;
+			}
+			.text {
+				font-size: 256px;
+				font-family: "Noto Serif TC";
+				font-weight: bold;
+				background-image: linear-gradient(to right, #fff 40%, #e6c268 100%);
+				background-clip: text;
+				color: transparent;
+				display: inline-block;
+				filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 4px rgba(255, 156, 0, 0.48)) drop-shadow(0 0 4px rgba(255, 156, 0, 0.8));
+			}
+			.treasure {
+				width: 291px;
+				height: 78px;
+				position: relative;
+			}
+			.treasure:before {
+				content: "";
+				background-color: red;
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				mix-blend-mode: color-burn;
+                z-index: 1;
+			}
+            .treasure:after {
+				content: "";
+				background-image: url("./images/treasure-btn-bg.jpg");
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+            .treasure-content{
+                width: 1152px;
+                height: 697px;
+                background-color: #00213d;
+            }
+		</style>
+	</head>
+	<body>
+		<div class="ch" data-text="白銀寶箱">白銀寶箱</div>
+		<div class="ch-big" data-text="恭喜獲得">恭喜獲得</div>
+		<div class="ch-big2" data-text="恭喜獲得">恭喜獲得</div>
+		<div class="text" data-text="A">A</div>
+		<div class="treasure"></div>
+		<div class="treasure-content"></div>
+	</body>
+</html>
