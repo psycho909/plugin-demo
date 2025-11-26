@@ -21,6 +21,21 @@
 			<select class="lb-itg-event__select-control" id="mySelect1">
 				<option value="mySelect11">短髮水噹噹1</option>
 				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+				<option value="mySelect12">短髮水噹噹2</option>
 			</select>
 		</div>
 		<div class="lb-itg-event__select-box">
@@ -38,26 +53,66 @@
 		<div class="box"></div>
 		<script>
 			// --- 使用範例 ---
-			createCustomDropdown(document.getElementById("mySelect1"));
+			let mySelect=createCustomDropdown(document.getElementById("mySelect1"));
 			createCustomDropdown(document.getElementById("mySelect2"));
 			createCustomDropdown(document.getElementById("mySelect3"));
-
+document.getElementById("mySelect1").addEventListener("change", function(e) {
+    // 獲取 value (例如: "1")
+    console.log("選中的 Value:", this.value); 
+    
+    // 如果你也想獲取顯示的文字 (例如: "Option 1")
+    const selectedText = this.options[this.selectedIndex].text;
+    console.log("選中的文字:", selectedText);
+});
 			function LBLogin() {
 				var config = {
 					addClass: "default lb-login",
-					hasCloseBtn: false,
+					hasCloseBtn: true,
 					hasActionBtn: false,
 					afterClose: function () {
 						gbox.close();
 					},
 					afterOpen: function () {
-						const mySelect = document.querySelector(".lb-itg-event__select-control2");
-						createCustomDropdown(mySelect);
+						createCustomDropdown(document.querySelector(".lb-itg-event__select-control2"));
+						createCustomDropdown(document.querySelector(".lb-itg-event__select-control3"));
 					}
 				};
 
 				var HTML = `
                 <div class="lb-login-message">先登入才能進行活動喔！</div>
+				 <div class="lb-itg-event__select-box">
+                    <select class="lb-itg-event__select-control3">
+                        <option value="6277200">短髮水噹噹1</option>
+                        <option value="6277201">短髮水噹噹2</option>
+                        <option value="6277202">短髮水噹噹3</option>
+                        <option value="6277203">短髮水噹噹4</option>
+                        <option value="6277204">短髮水噹噹5</option>
+                        <option value="6277205">短髮水噹噹6</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                    </select>
+                </div>
                 <a href="/MileStone2025/login/beanfun" class="btn-style lb-login-btn">登入</a>
                 <br />
                 <div class="lb-login-message">先登入才能進行活動喔！</div>
@@ -85,12 +140,34 @@
                         <option value="6277204">短髮水噹噹5</option>
                         <option value="6277205">短髮水噹噹6</option>
                         <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                        <option value="6277206">短髮水噹噹7</option>
                     </select>
                 </div>
                 `;
 				gbox.open(HTML, config);
 			}
-			// LBLogin();
+			LBLogin();
 		</script>
 	</body>
 </html>
