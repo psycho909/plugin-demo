@@ -29,6 +29,10 @@
 				case el.classList.contains("g-share-line"):
 					el.href = `https://social-plugins.line.me/lineit/share?url=${customUrl}&text=${encodeURIComponent(customTitle)}`;
 					break;
+				case el.classList.contains("g-share-line-m"):
+					const textToShare = `${customTitle}\n${customUrl}`;
+					el.href = `https://line.me/R/share?text=${encodeURIComponent(textToShare)}`;
+					break;
 				case el.classList.contains("g-share-fb"):
 					el.href = `https://www.facebook.com/sharer/sharer.php?u=${customUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
 					break;
@@ -79,10 +83,11 @@
 			twitterHashtags = hashtags.join(",");
 			facebookHashtags = hashtags.map((tag) => `%23${encodeURIComponent(tag)}`).join(",");
 		}
-
+		const textToShare = `${title}\n${url}`;
 		// Generate share URLs
 		const shareUrls = {
 			line: `https://social-plugins.line.me/lineit/share?url=${encodedUrl}&text=${encodedTitle}`,
+			linem: `https://line.me/R/share?text=${encodeURIComponent(textToShare)}`,
 			facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : ""),
 			x: `https://x.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : ""),
 			native: {

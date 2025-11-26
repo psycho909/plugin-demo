@@ -6,8 +6,12 @@ class PaginationCore {
 		pageChange,
 		showFirst = true,
 		showLast = true,
+		displayFormat = "number", // 'number' 或 'fraction',
+		pageFormatter = null, // 新增：自訂格式化函式
+		jumpStep=10,
 		mode,
 		init,
+		initialPage = 1,
 		styles = {
 			active: {},
 			normal: {},
@@ -17,15 +21,19 @@ class PaginationCore {
 	}) {
 		this.totalPage = totalPage; // 總頁數
 		this.pageNumberLimit = pageNumberLimit; // 每次顯示的頁碼數量
-		this.currentPage = 1; // 當前頁碼
+		if (initialPage < 1) initialPage = 1;
+		if (initialPage > totalPage) initialPage = totalPage;
+		this.currentPage = initialPage; // 當前頁碼
+		this.displayFormat = displayFormat;
 		this.container = container || null; // 分頁容器的 DOM 節點
 		this._onPageChange = pageChange || (() => {}); // 頁面變化回調函數
 		this.showFirst = showFirst;
 		this.showLast = showLast;
+		this.jumpStep = jumpStep;
 		// 確保 mode 為 "normal" 或 "center"，預設為 "normal"
 		this.mode = mode && mode === "center" ? "center" : "normal";
 		this.styles = styles;
-
+		this.pageFormatter = pageFormatter; // 儲存自訂格式化函式
 		// 初始化事件監聽器容器
 		this._eventListeners = {
 			pageChange: [],
@@ -123,12 +131,17 @@ class PaginationCore {
 		}
 		const firstButton = this.showFirst ? `<li class="pagination-numbers__symbol pagination-first">First</li>` : "";
 		const lastButton = this.showLast ? `<li class="pagination-numbers__symbol pagination-last">Last</li>` : "";
+		// 新增跳頁按鈕 HTML (這裡用 << 和 >> 表示，您也可以用文字)
+		const jumpPrevButton = `<li class="pagination-numbers__symbol pagination-jump-prev" title="向前 ${this.jumpStep} 頁">&lt;&lt;</li>`;
+		const jumpNextButton = `<li class="pagination-numbers__symbol pagination-jump-next" title="向後 ${this.jumpStep} 頁">&gt;&gt;</li>`;
 		// 初始化靜態模板
 		this.container.innerHTML = `
             <ul class="pagination-numbers" style="display: flex; list-style: none; color: #fff;">
                 ${firstButton}
+				${jumpPrevButton}
                 <li class="pagination-numbers__symbol pagination-prev">Prev</li>
                 <li class="pagination-numbers__symbol pagination-next">Next</li>
+				${jumpNextButton}
                 ${lastButton}
             </ul>
         `;
@@ -153,10 +166,12 @@ class PaginationCore {
 				}
 			}
 
-			if (target.classList.contains("pagination-prev")) {
-				this.prevPage();
-			} else if (target.classList.contains("pagination-next")) {
-				this.nextPage();
+			if (target.classList.contains("pagination-prev")) this.prevPage();
+			else if (target.classList.contains("pagination-next")) this.nextPage();
+			else if (target.classList.contains("pagination-jump-prev")) {
+				this.setPage(Math.max(1, this.currentPage - this.jumpStep));
+			} else if (target.classList.contains("pagination-jump-next")) {
+				this.setPage(Math.min(this.totalPage, this.currentPage + this.jumpStep));
 			} else if (target.classList.contains("pagination-numbers__item")) {
 				this.setPage(Number(target.dataset.page));
 			}
@@ -173,27 +188,31 @@ class PaginationCore {
 
 		const nextButton = paginationNumbers.querySelector(".pagination-next");
 
-		if (this.mode === "center") {
-			const { pages, showLeftEllipsis, showRightEllipsis } = this.getCenterVisiblePages();
-
-			if (showLeftEllipsis) {
-				this.insertPageNumber(1, paginationNumbers, nextButton);
-				this.insertEllipsis(paginationNumbers, nextButton);
-			}
-
-			pages.forEach((page) => {
-				this.insertPageNumber(page, paginationNumbers, nextButton);
-			});
-
-			if (showRightEllipsis) {
-				this.insertEllipsis(paginationNumbers, nextButton);
-				this.insertPageNumber(this.totalPage, paginationNumbers, nextButton);
-			}
+		if (typeof this.pageFormatter === "function" || this.displayFormat === "fraction") {
+			this.insertPageNumber(this.currentPage, paginationNumbers, nextButton);
 		} else {
-			// 一般分頁邏輯
-			this.getVisiblePages().forEach((page) => {
-				this.insertPageNumber(page, paginationNumbers, nextButton);
-			});
+			if (this.mode === "center") {
+				const { pages, showLeftEllipsis, showRightEllipsis } = this.getCenterVisiblePages();
+
+				if (showLeftEllipsis) {
+					this.insertPageNumber(1, paginationNumbers, nextButton);
+					this.insertEllipsis(paginationNumbers, nextButton);
+				}
+
+				pages.forEach((page) => {
+					this.insertPageNumber(page, paginationNumbers, nextButton);
+				});
+
+				if (showRightEllipsis) {
+					this.insertEllipsis(paginationNumbers, nextButton);
+					this.insertPageNumber(this.totalPage, paginationNumbers, nextButton);
+				}
+			} else {
+				// 一般分頁邏輯
+				this.getVisiblePages().forEach((page) => {
+					this.insertPageNumber(page, paginationNumbers, nextButton);
+				});
+			}
 		}
 
 		// 更新按鈕狀態
@@ -249,6 +268,7 @@ class PaginationCore {
 				if (this.currentPage > this.totalPage) {
 					this.currentPage = this.totalPage;
 				}
+				console.log(newTotalPage);
 				this.updatePaginationUI();
 				resolve({
 					totalPage: this.totalPage,
@@ -301,7 +321,17 @@ class PaginationCore {
 	insertPageNumber(page, container, beforeElement) {
 		const pageItem = document.createElement("li");
 		pageItem.className = `pagination-numbers__item ${this.currentPage === page ? "active" : ""}`;
-		pageItem.textContent = page;
+		// 決定頁碼顯示文字
+		if (typeof this.pageFormatter === "function") {
+			// 使用自訂格式化函式
+			pageItem.innerHTML = this.pageFormatter(page, this.totalPage, this.currentPage);
+		} else if (this.displayFormat === "fraction") {
+			// 使用分數格式
+			pageItem.textContent = `${page}/${this.totalPage}`;
+		} else {
+			// 使用一般數字格式
+			pageItem.textContent = page;
+		}
 		pageItem.dataset.page = page;
 		container.insertBefore(pageItem, beforeElement);
 	}
@@ -323,7 +353,9 @@ class PaginationCore {
 		}
 		paginationNumbers.querySelector(".pagination-prev").classList.toggle("disabled", this.currentPage === 1);
 		paginationNumbers.querySelector(".pagination-next").classList.toggle("disabled", this.currentPage === this.totalPage);
+		const jumpPrev = paginationNumbers.querySelector(".pagination-jump-prev");
+        if(jumpPrev) jumpPrev.classList.toggle("disabled", this.currentPage === 1);
+		const jumpNext = paginationNumbers.querySelector(".pagination-jump-next");
+        if(jumpNext) jumpNext.classList.toggle("disabled", this.currentPage === this.totalPage);
 	}
 }
-
-export default PaginationCore;

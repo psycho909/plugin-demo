@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+		<style>
+			/* --- 移除全域 select 隱藏樣式，改由 JS 控制 --- */
+
+			/* 外層容器 */
+			.custom-dropdown {
+				position: relative;
+				display: inline-block;
+				width: 200px; /* 可自訂寬度 */
+				font-family: Arial, sans-serif;
+				user-select: none;
+				box-sizing: border-box;
+			}
+
+			/* 讓所有內層元素也遵循 border-box，避免跑版 */
+			.custom-dropdown * {
+				box-sizing: border-box;
+			}
+
+			/* 按鈕本體 */
+			.dropdown-selected {
+				background-color: #fff;
+				color: #333;
+				padding: 10px 15px;
+				border: 1px solid #ced4da;
+				border-radius: 4px;
+				cursor: pointer;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.dropdown-selected:after {
+				content: "";
+				border: 5px solid transparent;
+				border-top-color: #333;
+				margin-left: 10px;
+			}
+
+			/* 下拉選單列表 */
+			.dropdown-items {
+				position: absolute;
+				background-color: #fff;
+				border: 1px solid #ced4da;
+				border-radius: 4px;
+				top: 100%;
+				left: 0;
+				right: 0;
+				z-index: 1000;
+				display: none;
+
+				/* 超過 5 個選項 (約 200px) 顯示滾動軸 */
+				max-height: 200px;
+				overflow-y: auto;
+
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				margin-top: 5px;
+			}
+
+			/* 往上展開樣式 */
+			.dropdown-items.open-up {
+				top: auto;
+				bottom: 100%;
+				margin-top: 0;
+				margin-bottom: 5px;
+				box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+			}
+
+			/* 選項樣式 */
+			.dropdown-item {
+				padding: 10px 15px;
+				cursor: pointer;
+				transition: background-color 0.2s;
+				border-bottom: 1px solid #f1f1f1;
+			}
+			.dropdown-item:last-child {
+				border-bottom: none;
+			}
+			.dropdown-item:hover {
+				background-color: #e9ecef;
+			}
+			.dropdown-item.same-as-selected {
+				background-color: #0d6efd;
+				color: #fff;
+			}
+			.dropdown-item.disabled {
+				color: #999;
+				cursor: not-allowed;
+				background-color: #f8f9fa;
+			}
+
+			/* 顯示開關 */
+			.dropdown-show {
+				display: block;
+			}
+
+			/* 滾動軸美化 (選用) */
+			.dropdown-items::-webkit-scrollbar {
+				width: 6px;
+			}
+			.dropdown-items::-webkit-scrollbar-track {
+				background: #f1f1f1;
+			}
+			.dropdown-items::-webkit-scrollbar-thumb {
+				background: #ccc;
+				border-radius: 4px;
+			}
+			.dropdown-items::-webkit-scrollbar-thumb:hover {
+				background: #aaa;
+			}
+			.box {
+				height: 600px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box"></div>
+		<div class="lb-itg-event__select-box">
+			<select class="lb-itg-event__select-control" id="mySelect1">
+				<option value="mySelect11">短髮水噹噹1</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+			</select>
+		</div>
+        <div class="lb-itg-event__select-box">
+			<select class="lb-itg-event__select-control" id="mySelect2">
+				<option value="mySelect21">短髮水噹噹21</option>
+				<option value="mySelect22">短髮水噹噹22</option>
+			</select>
+		</div>
+        <div class="lb-itg-event__select-box">
+			<select class="lb-itg-event__select-control" id="mySelect3">
+				<option value="mySelect31">短髮水噹噹31</option>
+				<option value="mySelect32">短髮水噹噹32</option>
+			</select>
+		</div>
+		<div class="box"></div>
+		<script>
+			/* --- 全域變數與輔助函式 --- */
+			let isDropdownGlobalEventSet = false;
+
+			function closeAllCustomDropdowns(exceptElement) {
+				const items = document.querySelectorAll(".dropdown-items");
+				const selectedDivs = document.querySelectorAll(".dropdown-selected");
+
+				items.forEach((item, index) => {
+					// 如果當前點擊的是這個選單的按鈕，則跳過 (交給 toggle 處理)
+					if (exceptElement === selectedDivs[index]) return;
+
+					item.classList.remove("dropdown-show");
+					item.classList.remove("open-up");
+
+					// --- 新增：關閉時移除 active 樣式 ---
+					selectedDivs[index].classList.remove("active");
+				});
+			}
+
+			/* --- 主函式 --- */
+			function createCustomDropdown(selectElement) {
+				if (!selectElement) return;
+
+				// 1. 初始化全域監聽
+				if (!isDropdownGlobalEventSet) {
+					document.addEventListener("click", function (e) {
+						closeAllCustomDropdowns(e.target);
+					});
+					isDropdownGlobalEventSet = true;
+				}
+
+				// 2. 建立 DOM
+				const wrapper = document.createElement("div");
+				wrapper.className = "custom-dropdown";
+				// 如果想要繼承原本 select 的 class，可以加這行：
+				// wrapper.className = "custom-dropdown " + selectElement.className;
+
+				const selectedDiv = document.createElement("div");
+				selectedDiv.className = "dropdown-selected";
+
+				const selectedOption = selectElement.options[selectElement.selectedIndex];
+				selectedDiv.innerHTML = selectedOption ? selectedOption.innerHTML : "&nbsp;";
+
+				const optionsDiv = document.createElement("div");
+				optionsDiv.className = "dropdown-items";
+
+				// 3. 複製選項
+				Array.from(selectElement.options).forEach((option, index) => {
+					const itemDiv = document.createElement("div");
+					itemDiv.className = "dropdown-item";
+					itemDiv.innerHTML = option.innerHTML;
+
+					if (option.disabled) itemDiv.classList.add("disabled");
+					if (index === selectElement.selectedIndex) itemDiv.classList.add("same-as-selected");
+
+					itemDiv.addEventListener("click", function (e) {
+						if (option.disabled) return;
+
+						selectedDiv.innerHTML = this.innerHTML;
+						selectElement.selectedIndex = index;
+						selectElement.dispatchEvent(new Event("change"));
+
+						const siblings = optionsDiv.querySelectorAll(".dropdown-item");
+						siblings.forEach((el) => el.classList.remove("same-as-selected"));
+						this.classList.add("same-as-selected");
+
+						closeAllCustomDropdowns(); // 這會自動移除 active
+					});
+
+					optionsDiv.appendChild(itemDiv);
+				});
+
+				wrapper.appendChild(selectedDiv);
+				wrapper.appendChild(optionsDiv);
+
+				if (selectElement.parentNode) {
+					selectElement.parentNode.insertBefore(wrapper, selectElement.nextSibling);
+					selectElement.style.display = "none";
+				}
+
+				// 4. 按鈕點擊事件
+				selectedDiv.addEventListener("click", function (e) {
+					e.stopPropagation();
+
+					closeAllCustomDropdowns(this);
+
+					// --- 修改處：同步切換 active class ---
+					optionsDiv.classList.toggle("dropdown-show");
+					this.classList.toggle("active");
+
+					if (optionsDiv.classList.contains("dropdown-show")) {
+						// 計算位置與空間
+						const prevDisplay = optionsDiv.style.display;
+						optionsDiv.style.display = "block";
+
+						const dropdownHeight = optionsDiv.offsetHeight;
+						const rect = selectedDiv.getBoundingClientRect();
+						const spaceBelow = window.innerHeight - rect.bottom;
+
+						optionsDiv.style.display = prevDisplay;
+
+						if (spaceBelow < dropdownHeight && spaceBelow < 300) {
+							optionsDiv.classList.add("open-up");
+						} else {
+							optionsDiv.classList.remove("open-up");
+						}
+
+						// 滾動定位
+						const activeItem = optionsDiv.querySelector(".same-as-selected");
+						if (activeItem) {
+							optionsDiv.scrollTop = activeItem.offsetTop;
+						}
+					}
+				});
+			}
+			// --- 使用範例 ---
+			createCustomDropdown(document.getElementById("mySelect1"));
+			createCustomDropdown(document.getElementById("mySelect2"));
+			createCustomDropdown(document.getElementById("mySelect3"));
+
+			function LBLogin() {
+				var config = {
+					addClass: "default lb-login",
+					hasCloseBtn: false,
+					hasActionBtn: false,
+					afterClose: function () {
+						gbox.close();
+					},
+					afterOpen: function () {
+						const mySelect = document.querySelector(".lb-itg-event__select-control2");
+						createCustomDropdown(mySelect);
+					}
+				};
+
+				var HTML = `
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <a href="/MileStone2025/login/beanfun" class="btn-style lb-login-btn">登入</a>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                 <br />
+                 <br />
+                 <br />
+                 <br />
+                 <br />
+                <div class="lb-itg-event__select-box">
+                    <select class="lb-itg-event__select-control2">
+                        <option value="6277200">短髮水噹噹1</option>
+                        <option value="6277201">短髮水噹噹2</option>
+                        <option value="6277202">短髮水噹噹3</option>
+                        <option value="6277203">短髮水噹噹4</option>
+                        <option value="6277204">短髮水噹噹5</option>
+                        <option value="6277205">短髮水噹噹6</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                    </select>
+                </div>
+                `;
+				gbox.open(HTML, config);
+			}
+			// LBLogin();
+		</script>
+	</body>
+</html>

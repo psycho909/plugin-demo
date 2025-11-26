@@ -1,0 +1,106 @@
+﻿/* 外層容器 */
+.custom-dropdown {
+	position: relative;
+	display: inline-block;
+	width: 200px; /* 可自訂寬度 */
+	font-family: Arial, sans-serif;
+	user-select: none;
+	box-sizing: border-box;
+}
+
+/* 讓所有內層元素也遵循 border-box，避免跑版 */
+.custom-dropdown * {
+	box-sizing: border-box;
+}
+
+/* 按鈕本體 */
+.dropdown-selected {
+	background-color: #fff;
+	color: #333;
+	padding: 10px 15px;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.dropdown-selected:after {
+	content: "";
+	border: 5px solid transparent;
+	border-top-color: #333;
+	margin-left: 10px;
+}
+
+/* 下拉選單列表 */
+.dropdown-items {
+	position: absolute;
+	background-color: #fff;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	display: none;
+
+	/* 超過 5 個選項 (約 200px) 顯示滾動軸 */
+	max-height: 200px;
+	overflow-y: auto;
+
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-top: 5px;
+}
+
+/* 往上展開樣式 */
+.dropdown-items.open-up {
+	top: auto;
+	bottom: 100%;
+	margin-top: 0;
+	margin-bottom: 5px;
+	box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 選項樣式 */
+.dropdown-item {
+	padding: 10px 15px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	border-bottom: 1px solid #f1f1f1;
+}
+.dropdown-item:last-child {
+	border-bottom: none;
+}
+.dropdown-item:hover {
+	background-color: #e9ecef;
+}
+.dropdown-item.same-as-selected {
+	background-color: #0d6efd;
+	color: #fff;
+}
+.dropdown-item.disabled {
+	color: #999;
+	cursor: not-allowed;
+	background-color: #f8f9fa;
+}
+
+/* 顯示開關 */
+.dropdown-show {
+	display: block;
+}
+
+/* 滾動軸美化 (選用) */
+.dropdown-items::-webkit-scrollbar {
+	width: 6px;
+}
+.dropdown-items::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+.dropdown-items::-webkit-scrollbar-thumb {
+	background: #ccc;
+	border-radius: 4px;
+}
+.dropdown-items::-webkit-scrollbar-thumb:hover {
+	background: #aaa;
+}

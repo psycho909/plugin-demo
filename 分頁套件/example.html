@@ -109,15 +109,15 @@
 				<button data-action="updateTotal">更新總頁數</button>
 			</div>
 		</section>
-
+		<script src="./js/PaginationCore.js"></script>
 		<script type="module">
-			import PaginationCore from "./js/PaginationCore.js";
-
 			// 普通分頁實例
 			const normalPagination = new PaginationCore({
 				container: document.querySelector("#normalPagination"),
-				totalPage: 100,
-				pageNumberLimit: 5
+				totalPage: 12,
+				jumpStep:5,
+				initialPage:2,
+				pageNumberLimit: 10
 			});
 
 			normalPagination.on("init", (page) => {
@@ -184,10 +184,10 @@
 
 				switch (action) {
 					case "backward":
-						pagination.goBackward(2);
+						pagination.goBackward(10);
 						break;
 					case "forward":
-						pagination.goForward(2);
+						pagination.goForward(10);
 						break;
 					case "reset":
 						pagination.reset();

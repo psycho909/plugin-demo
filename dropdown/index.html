@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+        <link rel="stylesheet" href="./style.css">
+        <script src="./dropdown.js"></script>
+		<style>
+			/* --- 移除全域 select 隱藏樣式，改由 JS 控制 --- */
+
+			.box {
+				height: 600px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box"></div>
+		<div class="lb-itg-event__select-box">
+			<select class="lb-itg-event__select-control" id="mySelect1">
+				<option value="mySelect11">短髮水噹噹1</option>
+				<option value="mySelect12">短髮水噹噹2</option>
+			</select>
+		</div>
+		<div class="lb-itg-event__select-box">
+			<select class="lb-itg-event__select-control" id="mySelect2">
+				<option value="mySelect21">短髮水噹噹21</option>
+				<option value="mySelect22">短髮水噹噹22</option>
+			</select>
+		</div>
+		<div class="lb-itg-event__select-box">
+			<select class="lb-itg-event__select-control" id="mySelect3">
+				<option value="mySelect31">短髮水噹噹31</option>
+				<option value="mySelect32">短髮水噹噹32</option>
+			</select>
+		</div>
+		<div class="box"></div>
+		<script>
+			// --- 使用範例 ---
+			createCustomDropdown(document.getElementById("mySelect1"));
+			createCustomDropdown(document.getElementById("mySelect2"));
+			createCustomDropdown(document.getElementById("mySelect3"));
+
+			function LBLogin() {
+				var config = {
+					addClass: "default lb-login",
+					hasCloseBtn: false,
+					hasActionBtn: false,
+					afterClose: function () {
+						gbox.close();
+					},
+					afterOpen: function () {
+						const mySelect = document.querySelector(".lb-itg-event__select-control2");
+						createCustomDropdown(mySelect);
+					}
+				};
+
+				var HTML = `
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <a href="/MileStone2025/login/beanfun" class="btn-style lb-login-btn">登入</a>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                <br />
+                <div class="lb-login-message">先登入才能進行活動喔！</div>
+                 <br />
+                 <br />
+                 <br />
+                 <br />
+                 <br />
+                <div class="lb-itg-event__select-box">
+                    <select class="lb-itg-event__select-control2">
+                        <option value="6277200">短髮水噹噹1</option>
+                        <option value="6277201">短髮水噹噹2</option>
+                        <option value="6277202">短髮水噹噹3</option>
+                        <option value="6277203">短髮水噹噹4</option>
+                        <option value="6277204">短髮水噹噹5</option>
+                        <option value="6277205">短髮水噹噹6</option>
+                        <option value="6277206">短髮水噹噹7</option>
+                    </select>
+                </div>
+                `;
+				gbox.open(HTML, config);
+			}
+			// LBLogin();
+		</script>
+	</body>
+</html>

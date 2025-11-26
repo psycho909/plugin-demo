@@ -16,12 +16,13 @@ $design-base: 16; // root font-size 基準
 * {
 	padding: 0;
 	margin: 0;
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 /* 內容最大寬度 1200px */
 .container {
 	max-width: rem(1200);
 	margin: 0 auto;
+	margin-top: rem(40);
 	// padding: rem(20);
 }
 
@@ -51,7 +52,7 @@ $design-base: 16; // root font-size 基準
 		height: rem(300);
 		background: #fafafa;
 		padding: rem(10);
-		border: 1px solid #ddd;
+		border: rem(1) solid #ddd;
 		border-radius: rem(8);
 		display: flex;
 		flex-direction: column;
@@ -65,7 +66,7 @@ $design-base: 16; // root font-size 基準
 		}
 
 		.buy-btn {
-			width: rem(342);
+			width: 100%;
 			height: rem(66);
 			line-height: rem(66);
 			font-size: rem(20);
@@ -80,7 +81,23 @@ $design-base: 16; // root font-size 基準
 		}
 	}
 }
-
+.slider {
+	width: 100%;
+	height: rem(600);
+}
+.topbar {
+	width: 100%;
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	column-gap: rem(6);
+	top: 0;
+	div {
+		width: rem(100);
+		height: rem(40);
+		background-color: gray;
+	}
+}
 /* -----------------------------
    Mobile 版本 media <= 768px
 -------------------------------- */
