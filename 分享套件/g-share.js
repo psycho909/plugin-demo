@@ -25,13 +25,17 @@
 				twitterHashtags = tagsArray.join(",");
 				facebookHashtags = tagsArray.map((tag) => `%23${tag}`).join(",");
 			}
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 			switch (true) {
 				case el.classList.contains("g-share-line"):
-					el.href = `https://social-plugins.line.me/lineit/share?url=${customUrl}&text=${encodeURIComponent(customTitle)}`;
-					break;
-				case el.classList.contains("g-share-line-m"):
-					const textToShare = `${customTitle}\n${customUrl}`;
-					el.href = `https://line.me/R/share?text=${encodeURIComponent(textToShare)}`;
+					if (isMobile) {
+						// 手機/平板邏輯
+						const textToShare = `${customTitle}\n${customUrl}`;
+						el.href = `https://line.me/R/share?text=${encodeURIComponent(textToShare)}`;
+					} else {
+						// 電腦邏輯
+						el.href = `https://social-plugins.line.me/lineit/share?url=${encodedUrl}&text=${encodedTitle}`;
+					}
 					break;
 				case el.classList.contains("g-share-fb"):
 					el.href = `https://www.facebook.com/sharer/sharer.php?u=${customUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
