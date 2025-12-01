@@ -90,8 +90,8 @@
 		const textToShare = `${title}\n${url}`;
 		// Generate share URLs
 		const shareUrls = {
-			line: `https://social-plugins.line.me/lineit/share?url=${encodedUrl}&text=${encodedTitle}`,
-			linem: `https://line.me/R/share?text=${encodeURIComponent(textToShare)}`,
+			line: `https://social-plugins.line.me/lineit/share?openExternalBrowser=1&url=${encodedUrl}&text=${encodedTitle}`,
+			linem: `https://line.me/R/share?openExternalBrowser=1&text=${encodeURIComponent(textToShare)}`,
 			facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : ""),
 			x: `https://x.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : ""),
 			native: {

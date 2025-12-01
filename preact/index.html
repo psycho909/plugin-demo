@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "preact": "./preact/preact.module.js",
+            "preact/hooks": "./preact/hooks.module.js",
+            "htm": "./preact/htm.module.js",
+            "@preact/signals": "./preact/signals.module.js",
+            "@preact/signals-core": "./preact/signals-core.module.js",
+            "main":"./main.js"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="module">
+        import 'main';
+    </script>
+</body>
+</html>
