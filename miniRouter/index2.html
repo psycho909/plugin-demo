@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊戲活動頁 - MiniRouter 範例</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <style>
+        /* 簡單的樣式，不用理會 */
+        body { font-family: sans-serif; background: #1a1a1a; color: white; text-align: center; margin: 0; }
+        nav { background: #333; padding: 15px; position: sticky; top: 0; }
+        nav a { margin: 0 10px; color: #aaa; cursor: pointer; text-decoration: none; font-weight: bold; font-size: 18px; }
+        nav a:hover { color: white; }
+        nav a.active { color: #42b983; border-bottom: 2px solid #42b983; }
+        
+        .page-container { padding: 40px 20px; border: 1px solid #444; margin: 20px auto; max-width: 600px; border-radius: 10px; background: #222; }
+        .btn { background: #42b983; border: none; padding: 8px 16px; color: white; cursor: pointer; border-radius: 4px; margin: 5px; }
+        .btn:hover { opacity: 0.8; }
+        .tag { background: #555; padding: 2px 6px; font-size: 12px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <nav>
+        <a @click.prevent="$router.go('home')" :class="{ active: $router.currentPage === 'home' }">🏠 首頁</a>
+        <a @click.prevent="$router.go('chars')" :class="{ active: $router.currentPage === 'chars' }">⚔️ 角色介紹</a>
+        <a @click.prevent="$router.go('rewards')" :class="{ active: $router.currentPage === 'rewards' }">🎁 預約獎勵</a>
+    </nav>
+
+    <div class="page-container">
+        <mini-view></mini-view>
+    </div>
+
+    <div style="margin-top: 50px; color: #666; font-size: 12px;">
+        <p>Current Page: {{ $router.currentPage }}</p>
+        <p>Current Query: {{ $router.query }}</p>
+        <p>Full Path: {{ $router.path }}</p>
+    </div>
+</div>
+ <script src="js/miniRouter2.js"></script>
+<script>
+    const { createApp, ref, computed } = Vue;
+
+    // --- 組件 A: 首頁 ---
+    const HomePage = {
+        template: `
+            <div>
+                <h1>🔥 事前預約火熱進行中</h1>
+                <p>立即預約獲得限定SSR！</p>
+                <button class="btn" @click="$router.go('rewards')">查看獎勵清單</button>
+            </div>
+        `
+    };
+
+    // --- 組件 B: 角色介紹 (展示讀取參數功能) ---
+    const CharPage = {
+        setup() {
+            // 定義角色資料
+            const chars = {
+                '1': { name: '亞瑟王', job: 'Saber', desc: '傳說中的騎士王' },
+                '2': { name: '梅林', job: 'Caster', desc: '花之魔術師' },
+                '3': { name: '庫夫林', job: 'Lancer', desc: '光之子' }
+            };
+
+            return { chars };
+        },
+        computed: {
+            // 從 router.query 讀取當前 id，預設為 1
+            currentId() {
+                return this.$router.query.id || '1';
+            },
+            currentChar() {
+                return this.chars[this.currentId];
+            }
+        },
+        methods: {
+            // 切換角色 = 更新 URL 參數
+            selectChar(id) {
+                this.$router.push({ id: id }); 
+            }
+        },
+        template: `
+            <div>
+                <h2>角色介紹</h2>
+                <div style="margin-bottom: 20px;">
+                    <button class="btn" @click="selectChar('1')">亞瑟</button>
+                    <button class="btn" @click="selectChar('2')">梅林</button>
+                    <button class="btn" @click="selectChar('3')">庫夫林</button>
+                </div>
+
+                <div v-if="currentChar" style="background:#333; padding:20px; border-radius:8px;">
+                    <h3>{{ currentChar.name }} <span class="tag">{{ currentChar.job }}</span></h3>
+                    <p>{{ currentChar.desc }}</p>
+                    <small style="color:#888;">對應網址: ?page=chars&id={{ currentId }}</small>
+                </div>
+            </div>
+        `
+    };
+
+    // --- 組件 C: 獎勵頁 ---
+    const RewardPage = {
+        template: `
+            <div>
+                <h2>🎁 預約達成獎勵</h2>
+                <ul style="text-align:left; display:inline-block;">
+                    <li>✅ 10,000 人：金幣 x 5000</li>
+                    <li>✅ 50,000 人：鑽石 x 100</li>
+                    <li>⬜ 100,000 人：SSR 角色自選</li>
+                </ul>
+                <br><br>
+                <button class="btn" @click="$router.go('home')">返回首頁</button>
+            </div>
+        `
+    };
+
+    // --- 初始化 Vue ---
+    const app = createApp({
+        setup() {
+            return {};
+        }
+    });
+
+    // 使用 MiniRouter 並設定路由表
+    app.use(MiniRouter, {
+        routes: {
+            'home': HomePage,
+            'chars': CharPage,
+            'rewards': RewardPage,
+            '404': { template: '<h1>404 找不到頁面</h1>' }
+        }
+    });
+
+    app.mount('#app');
+</script>
+
+</body>
+</html>
