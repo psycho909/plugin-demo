@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<!-- 開發用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<!-- <script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script> -->
+	</head>
+	<body>
+		<div id="app">
+			<notice></notice>
+		</div>
+		<script>
+			let notice = {
+				name: "notice",
+				setup() {
+					let items = Vue.ref([]);
+					let itemsList = Vue.computed(() => {
+						return items.filter((i) => i.seq % 2);
+					});
+
+					return {
+						itemsList
+					};
+				},
+				template: `
+            <div>
+                <ul>
+                    <li v-for="item in itemsList">{{ item.name }}</li>    
+                </ul>    
+            </div>
+            `
+			};
+			let app = Vue.createApp({
+				components: {
+					notice
+				},
+				setup() {}
+			});
+			app.config.errorHandler = (err, instance, info) => {
+				console.group("%c 🚨 Vue 錯誤攔截 ", "background:red; color:white; padding:2px 5px; border-radius:2px;");
+
+				// 1. 打印錯誤訊息
+				console.log("錯誤訊息:", err);
+
+				// 2. 打印報錯的組件實例 (關鍵!)
+				console.log("報錯組件:", instance);
+
+				// 3. 嘗試獲取組件名字 (如果有設定 name)
+				if (instance && instance.$options && instance.$options.name) {
+					console.log("組件名稱:", instance.$options.name);
+				} else {
+					console.log("組件名稱: 未命名 (Anonymous)");
+					console.log('建議點擊上方的 "報錯組件" 查看詳細內容');
+				}
+
+				// 4. 錯誤類型資訊 (例如是在 mounted 還是 v-on handler 發生)
+				console.log("錯誤資訊:", info);
+
+				console.groupEnd();
+			};
+			app.mount("#app");
+		</script>
+	</body>
+</html>

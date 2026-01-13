@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Query + Fixed Position Demo</title>
+    <style>
+        /* --- 基礎重置 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+
+        /* --- 1. 控制按鈕區 --- */
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        button.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        /* --- 2. 模擬裝置外殼 (The Shell) --- */
+        .device-shell {
+            /* 預設為電腦版寬度 (100% - margin) */
+            width: 100%;
+            max-width: 1000px; 
+            height: 600px; /* 必須設定固定高度來模擬螢幕 */
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: width 0.3s ease, box-shadow 0.3s ease;
+            
+            /* ★★★ 關鍵魔法 1：定義 Container Query ★★★ */
+            container-type: inline-size;
+            container-name: preview;
+
+            /* ★★★ 關鍵魔法 2：鎖住 Fixed 定位 ★★★ */
+            /* 這會建立一個新的 Containing Block，讓內部的 fixed 元素相對於此 div 定位 */
+            contain: strict; 
+            
+            /* 佈局設定：確保內部滾動層能正確運作 */
+            position: relative;
+            overflow: hidden; 
+        }
+
+        /* 手機模式的樣式 (透過 JS 切換這個 class) */
+        .device-shell.mobile-mode {
+            width: 375px; /* 常見手機寬度 */
+            border-width: 10px; /* 模擬手機邊框 */
+            border-color: #333;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        /* --- 3. 內容滾動層 (The Scroll View) --- */
+        /* 我們不讓 .device-shell 滾動，而是讓這個子元素滾動。
+           這樣 fixed header 就可以保持不動。
+        */
+        .app-scroll-view {
+            height: 100%;
+            overflow-y: auto; /* 內容過長時出現滾動條 */
+            overflow-x: hidden;
+            position: relative;
+            z-index: 1; /* 確保內容在背景之上 */
+            padding-top: 60px; /* ★ 重要：預留空間給 Fixed Header，避免內容被遮住 */
+        }
+
+        /* --- 4. 固定 Header (The Fixed Element) --- */
+        .app-header {
+            /* 這裡寫 fixed，但在 contain: strict 的父元素內，它會相對於父元素固定 */
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%; /* 寬度會自動跟隨父容器 (375px 或 1000px) */
+            height: 60px;
+            background: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100; /* 確保在內容之上 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .logo { font-weight: bold; font-size: 1.2rem; }
+        .menu { display: flex; gap: 15px; }
+
+        /* --- 5. 響應式內容樣式 (Container Queries) --- */
+        
+        /* 預設 (電腦版) 樣式 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 三欄排版 */
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        /* ★★★ 使用 @container 取代 @media ★★★ */
+        /* 當容器小於 500px 時 (即手機模式) */
+        @container preview (max-width: 500px) {
+            
+            /* Header 樣式改變 */
+            .app-header {
+                background: #007bff; /* 手機版變藍色 */
+                height: 50px;
+            }
+            
+            /* Logo 變小 */
+            .logo { font-size: 1rem; }
+            
+            /* 選單隱藏，只顯示漢堡圖示 (模擬) */
+            .menu span { display: none; }
+            .menu::after { content: "☰"; font-size: 1.5rem; cursor: pointer; }
+
+            /* 內容佈局變成單欄 */
+            .content-grid {
+                grid-template-columns: 1fr; /* 變成單欄 */
+            }
+
+            /* 調整 Scroll View 的 padding 配合 Header 高度變化 */
+            .app-scroll-view {
+                padding-top: 50px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button id="btn-desktop" class="active" onclick="setMode('desktop')">💻 電腦預覽</button>
+        <button id="btn-mobile" onclick="setMode('mobile')">📱 手機預覽</button>
+    </div>
+
+    <div id="device" class="device-shell">
+        
+        <header class="app-header">
+            <div class="logo">MyBrand</div>
+            <div class="menu">
+                <span>首頁</span>
+                <span>產品</span>
+                <span>關於</span>
+            </div>
+        </header>
+
+        <div class="app-scroll-view">
+            <div class="content-grid">
+                <div class="card">
+                    <h3>區塊 1</h3>
+                    <p>這是一個內容區塊。在電腦版是三欄並排，切換到手機預覽後會變成單欄垂直排列。</p>
+                </div>
+                <div class="card"><h3>區塊 2</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 3</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 4</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 5</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 6</h3><p>嘗試滾動一下，你會發現 Header 依然固定在頂部！</p></div>
+                <div class="card"><h3>區塊 7</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 8</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+                <div class="card"><h3>區塊 9</h3><p>內容測試...</p></div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // 簡單的 JS 切換 Class
+        function setMode(mode) {
+            const device = document.getElementById('device');
+            const btnDesktop = document.getElementById('btn-desktop');
+            const btnMobile = document.getElementById('btn-mobile');
+
+            if (mode === 'mobile') {
+                device.classList.add('mobile-mode');
+                btnMobile.classList.add('active');
+                btnDesktop.classList.remove('active');
+            } else {
+                device.classList.remove('mobile-mode');
+                btnDesktop.classList.add('active');
+                btnMobile.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
