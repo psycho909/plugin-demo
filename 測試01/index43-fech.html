@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script src="https://frontend.beanfun.com/plugins/Fech/1.1.0/Fech.js"></script>
+		<script>
+			const GetInitData = () => {
+				return fech.fetchData({
+                    method:"GET",
+					url: `https://625935fa43fda1299a0a38fd.mockapi.io/data`
+				});
+			};
+			function time(ms) {
+				// 正確：使用 new Promise
+				return new Promise((resolve) => {
+					setTimeout(resolve, ms);
+				});
+			}
+			async function Init() {
+				await time(1000);
+				let data=await GetInitData();
+                console.log(data)
+			}
+            Init()
+		</script>
+	</body>
+</html>

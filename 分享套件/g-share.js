@@ -1,13 +1,9 @@
-// Social Share Buttons Script
-
 (function (exports) {
-	// Function to update sharing links
 	function updateShareLinks(container = document) {
 		const defaultUrl = window.location.href;
 		const defaultTitle = document.title;
 		const defaultDesc = document.querySelector('meta[name="description"]')?.getAttribute("content") || "";
 		const defaultCopyText = "連結已複製!";
-		// Update each share link
 		container.querySelectorAll(".g-share *").forEach((el) => {
 			// 找到當前元素的最近的 .g-share 父元素
 			const parentShare = el.closest(".g-share");
@@ -16,7 +12,7 @@
 			const customDesc = el.getAttribute("data-desc") || (parentShare ? parentShare.getAttribute("data-desc") : null) || defaultDesc;
 			const customHashtag = el.getAttribute("data-hashtag") || (parentShare ? parentShare.getAttribute("data-hashtag") : null);
 			const customCopyText = el.getAttribute("data-copy-text") || (parentShare ? parentShare.getAttribute("data-copy-text") : null) || defaultCopyText;
-			// Process hashtags
+
 			let twitterHashtags = "";
 			let facebookHashtags = "";
 			if (customHashtag) {
@@ -29,25 +25,23 @@
 			switch (true) {
 				case el.classList.contains("g-share-line"):
 					if (isMobile) {
-						// 手機/平板邏輯
 						const textToShare = `${customTitle}\n${customUrl}`;
 						el.href = `https://line.me/R/share?text=${encodeURIComponent(textToShare)}`;
 					} else {
-						// 電腦邏輯
-						el.href = `https://social-plugins.line.me/lineit/share?url=${encodedUrl}&text=${encodedTitle}`;
+						el.href = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(customUrl)}&text=${encodeURIComponent(customTitle)}`;
 					}
 					break;
 				case el.classList.contains("g-share-fb"):
-					el.href = `https://www.facebook.com/sharer/sharer.php?u=${customUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
+					el.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(customUrl)}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
 					break;
 				case el.classList.contains("g-share-meta"):
-					el.href = `https://www.facebook.com/sharer/sharer.php?u=${customUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
+					el.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(customUrl)}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : "");
 					break;
 				case el.classList.contains("g-share-twitter"):
-					el.href = `https://x.com/intent/tweet?text=${encodeURIComponent(customTitle)}&url=${customUrl}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : "");
+					el.href = `https://x.com/intent/tweet?text=${encodeURIComponent(customTitle)}&url=${encodeURIComponent(customUrl)}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : "");
 					break;
 				case el.classList.contains("g-share-x"):
-					el.href = `https://x.com/intent/tweet?text=${encodeURIComponent(customTitle)}&url=${customUrl}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : "");
+					el.href = `https://x.com/intent/tweet?text=${encodeURIComponent(customTitle)}&url=${encodeURIComponent(customUrl)}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : "");
 					break;
 				case el.classList.contains("g-share-native"):
 					el.onclick = () => {
@@ -73,14 +67,12 @@
 	 * @returns {Object} 回傳分享連結
 	 */
 	exports.generateSocialShareUrls = function ({ url = "", title = "", description = "", hashtags = [] } = {}) {
-		// Encode the common parameters
 		const defaultUrl = window.location.origin + window.location.pathname;
 		const finalUrl = url || defaultUrl;
 		const encodedUrl = encodeURIComponent(finalUrl);
 		const encodedTitle = encodeURIComponent(title);
 		const encodedDescription = encodeURIComponent(description);
 
-		// Process hashtags for Twitter and Facebook
 		let twitterHashtags = "";
 		let facebookHashtags = "";
 		if (hashtags && hashtags.length > 0) {
@@ -88,10 +80,9 @@
 			facebookHashtags = hashtags.map((tag) => `%23${encodeURIComponent(tag)}`).join(",");
 		}
 		const textToShare = `${title}\n${url}`;
-		// Generate share URLs
 		const shareUrls = {
 			line: `https://social-plugins.line.me/lineit/share?openExternalBrowser=1&url=${encodedUrl}&text=${encodedTitle}`,
-			linem: `https://line.me/R/share?openExternalBrowser=1&text=${encodeURIComponent(textToShare)}`,
+			linem: `https://line.me/R/share?openExternalBrowser=1&text=${encodedTitle}`,
 			facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` + (facebookHashtags ? `&hashtag=${facebookHashtags}` : ""),
 			x: `https://x.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}` + (twitterHashtags ? `&hashtags=${twitterHashtags}` : ""),
 			native: {

@@ -114,7 +114,7 @@
 			// 普通分頁實例
 			const normalPagination = new PaginationCore({
 				container: document.querySelector("#normalPagination"),
-				totalPage: 12,
+				totalPage: 1,
 				jumpStep:5,
 				initialPage:2,
 				pageNumberLimit: 10
@@ -161,7 +161,7 @@
 
 			// 更新總頁數功能
 			async function updateTotalPage(pagination, type) {
-				const newTotalPage = Math.floor(Math.random() * 30) + 10; // 隨機生成10-40的數字
+				const newTotalPage = Math.floor(Math.random() * 15) ; // 隨機生成10-40的數字
 				try {
 					const result = await pagination.updateTotalPage(newTotalPage);
 					console.log(`${type}分頁更新成功 - 總頁數：${result.totalPage}，當前頁碼：${result.currentPage}`);

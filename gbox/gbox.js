@@ -24,7 +24,7 @@
 				closeBtn: "\u00D7",
 				clickBgClose: false,
 				hasActionBtn: true,
-				allowMultiple: false,
+				multi: false,
 				closeSelectors: [],
 				actionBtns: [{ text: "確定", click: (instance) => instance.close() }],
 				afterClose: null,
@@ -153,13 +153,13 @@
 
 	const gbox = {
 		open: function (content, options) {
-			const settings = { ...{ allowMultiple: false }, ...options };
+			const settings = { ...{ multi: false }, ...options };
 			if (settings.id && document.getElementById(settings.id)) {
 				console.warn(`gbox Warning: An element with id "${settings.id}" already exists. Closing the existing one.`);
 				gbox.closeById(settings.id);
 			}
-			if (!settings.allowMultiple) {
-				gbox.closeAll((instance) => !instance.settings.allowMultiple);
+			if (!settings.multi) {
+				gbox.closeAll((instance) => !instance.settings.multi);
 			}
 			try {
 				return new GBox(content, options);

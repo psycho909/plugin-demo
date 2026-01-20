@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+ <html>
+   <head>
+     <title>Page Title</title>
+     <style>
+       .container {
+         container-name: cardcontainer;
+         --data-stock: attr(data-stock type(<integer>));
+       }
+
+       .product {
+         border: 1px solid gray;
+       }
+
+       /* 库存少于 10 时 */
+       @container cardcontainer style(attr(data-stock type(<integer>)) < 10) {
+         .product {
+           border: 2px solid orange;
+           background-color: if(
+             style(--data-stock < 4): orange;
+             style(--data-stock < 8): yellow;
+             else: white
+           );
+         }
+
+         [data-label="stock"] {
+           color: #ff6b35;
+           font-weight: bold;
+         }
+       }
+
+       /* 库存少于 5 时显示提示 */
+       @container cardcontainer style(attr(data-stock type(<integer>)) < 5) {
+         [data-label="stock"]::after {
+           content: " — Hurry!";
+         }
+       }
+     </style>
+   </head>
+   <body>
+     <div class="container" data-stock="1">
+       <div class="product">
+         <h3>Awesome Widget</h3>
+         <p data-label="stock">9 in stock</p>
+       </div>
+     </div>
+   </body>
+ </html>
