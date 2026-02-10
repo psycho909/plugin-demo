@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>即時黃金價格計算機 Pro</title>
+    <style>
+        :root {
+            --primary: #d4af37; /* 黃金色 */
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+        }
+        body { font-family: "Microsoft JhengHei", "Segoe UI", sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: var(--text); }
+        
+        .container { background: var(--card-bg); width: 90%; max-width: 450px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        h1 { text-align: center; color: var(--primary); margin-bottom: 5px; font-size: 1.8rem; }
+        .subtitle { text-align: center; color: #777; font-size: 0.9rem; margin-bottom: 25px; }
+
+        /* 儀表板區域 */
+        .dashboard { display: flex; justify-content: space-between; background: #fff8e1; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #ffe082; }
+        .dash-item { text-align: center; width: 48%; }
+        .dash-label { font-size: 0.8rem; color: #666; margin-bottom: 5px; }
+        .dash-value { font-size: 1.2rem; font-weight: bold; color: #333; }
+        .dash-sub { font-size: 0.8rem; color: #888; }
+
+        /* 輸入區域 */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.95rem; }
+        
+        .input-wrapper { display: flex; gap: 10px; }
+        input, select { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+        
+        /* 特別針對重量輸入的佈局 */
+        .weight-input-container { display: flex; gap: 10px; }
+        #weightInput { flex: 2; }
+        #unitSelect { flex: 1.5; }
+
+        /* 結果顯示 */
+        .result-area { background: #333; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-top: 25px; position: relative; overflow: hidden; }
+        .result-area::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent); transform: rotate(45deg); animation: shine 3s infinite; }
+        
+        .result-label { font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px; }
+        .result-price { font-size: 2.2rem; font-weight: bold; color: var(--primary); }
+
+        /* 按鈕 */
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-update { background-color: var(--primary); color: white; }
+        .btn-update:hover { background-color: #b8962e; }
+        .btn-settings { background-color: #e0e0e0; color: #333; }
+
+        /* API 設定面板 (預設隱藏) */
+        #apiPanel { display: none; margin-top: 15px; padding: 15px; background: #f1f1f1; border-radius: 8px; font-size: 0.9rem; }
+        .api-note { margin-bottom: 10px; color: #555; }
+        
+        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🪙 黃金價格換算器</h1>
+    <div class="subtitle">即時行情 • 多單位換算</div>
+
+    <div class="dashboard">
+        <div class="dash-item">
+            <div class="dash-label">國際金價 (XAU/USD)</div>
+            <div class="dash-value" id="spotPriceDisplay">Loading...</div>
+            <div class="dash-sub">每盎司美元</div>
+        </div>
+        <div class="dash-item">
+            <div class="dash-label">美元匯率 (USD/TWD)</div>
+            <div class="dash-value" id="rateDisplay">---</div>
+            <div class="dash-sub">手動/預設</div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>輸入黃金重量 & 單位</label>
+        <div class="weight-input-container">
+            <input type="number" id="weightInput" value="1" min="0" step="0.01" placeholder="輸入重量">
+            <select id="unitSelect">
+                <option value="tael">台兩 (Tael)</option>
+                <option value="mace">台錢 (Mace)</option>
+                <option value="g">公克 (Gram)</option>
+                <option value="kg">公斤 (Kg)</option>
+                <option value="oz">盎司 (Oz)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>美元匯率 (USD to TWD)</label>
+        <div class="input-wrapper">
+            <input type="number" id="exchangeRateInput" value="32.50" step="0.01">
+        </div>
+    </div>
+
+    <div class="result-area">
+        <div class="result-label">換算總價值 (TWD)</div>
+        <div class="result-price" id="finalPrice">0</div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-settings" onclick="toggleApiPanel()">⚙️ 設定</button>
+        <button class="btn-update" onclick="fetchLivePrice()">🔄 更新報價</button>
+    </div>
+
+    <div id="apiPanel">
+        <div class="api-note">
+            若要獲取真實價格，請至 <a href="https://www.goldapi.io/" target="_blank">GoldAPI.io</a> 申請免費 API Key 並填入下方：
+            <br>(若留空，系統將使用模擬數據)
+        </div>
+        <input type="text" id="apiKey" placeholder="輸入 API Key (例如: goldapi-xxxx-token)" value="goldapi-93smlg2ob0d-io" style="width: 100%;">
+    </div>
+</div>
+
+<script>
+    // --- 參數設定 ---
+    // 1 盎司 (Troy Ounce) = 31.1034768 公克
+    const OZ_TO_GRAM = 31.1034768; 
+    
+    // 各單位轉為「公克」的係數 (以公克為中間標準)
+    const UNIT_TO_GRAM = {
+        'oz': OZ_TO_GRAM,           // 1 oz = 31.1035 g
+        'g': 1,                     // 1 g = 1 g
+        'kg': 1000,                 // 1 kg = 1000 g
+        'tael': 37.5,               // 1 台兩 = 37.5 g
+        'mace': 3.75                // 1 台錢 = 3.75 g
+    };
+
+    let currentSpotPriceUSD = 0; // 當前國際金價 (USD/oz)
+
+    // --- 初始化 ---
+    window.onload = function() {
+        // 先用模擬數據初始化，避免畫面空白
+        // simulateData();
+        fetchLivePrice()
+        
+        // 綁定輸入事件，即時計算
+        const inputs = [
+            document.getElementById('weightInput'),
+            document.getElementById('unitSelect'),
+            document.getElementById('exchangeRateInput')
+        ];
+        inputs.forEach(el => el.addEventListener('input', calculateTotal));
+    };
+
+    function toggleApiPanel() {
+        const panel = document.getElementById('apiPanel');
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // --- 核心計算邏輯 ---
+    function calculateTotal() {
+        if (currentSpotPriceUSD === 0) return;
+
+        // 1. 取得使用者輸入
+        const weight = parseFloat(document.getElementById('weightInput').value) || 0;
+        const unit = document.getElementById('unitSelect').value;
+        const exchangeRate = parseFloat(document.getElementById('exchangeRateInput').value) || 0;
+
+        // 2. 更新儀表板上的匯率顯示
+        document.getElementById('rateDisplay').innerText = exchangeRate.toFixed(2);
+
+        // 3. 計算步驟：
+        // A. 先算出「每公克黃金」的美元價格
+        //    (國際金價 / 31.1035)
+        const pricePerGramUSD = currentSpotPriceUSD / OZ_TO_GRAM;
+
+        // B. 將使用者的重量，全部換算成「公克」
+        const userWeightInGrams = weight * UNIT_TO_GRAM[unit];
+
+        // C. 算出總美元價值
+        const totalValueUSD = pricePerGramUSD * userWeightInGrams;
+
+        // D. 換算成台幣
+        const totalValueTWD = totalValueUSD * exchangeRate;
+
+        // 4. 更新 UI
+        // 使用 toLocaleString 加上千分位逗號
+        document.getElementById('finalPrice').innerText = 
+            "NT$ " + Math.round(totalValueTWD).toLocaleString();
+    }
+
+    // --- 獲取數據 (真實 API 或 模擬) ---
+    async function fetchLivePrice() {
+        const apiKey = "goldapi-93smlg2ob0d-io";
+        const btn = document.querySelector('.btn-update');
+        const display = document.getElementById('spotPriceDisplay');
+
+        btn.innerText = "更新中...";
+        btn.disabled = true;
+
+        if (!apiKey) {
+            // 如果沒有 Key，使用模擬模式
+            setTimeout(() => {
+                simulateData();
+                btn.innerText = "🔄 更新報價";
+                btn.disabled = false;
+                alert("未輸入 API Key，目前顯示為模擬數據。");
+            }, 800);
+            return;
+        }
+
+        // 使用 GoldAPI.io 獲取真實價格
+        try {
+            const myHeaders = new Headers();
+            myHeaders.append("x-access-token", apiKey);
+            myHeaders.append("Content-Type", "application/json");
+
+            const requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            // 請求 XAU (黃金) / USD
+            const response = await fetch("https://www.goldapi.io/api/XAU/USD", requestOptions);
+            
+            if (!response.ok) throw new Error("API 請求失敗 (可能是 Key 錯誤或額度用完)");
+            
+            const result = await response.json();
+            
+            // 更新全域變數
+            currentSpotPriceUSD = result.price;
+            
+            // 更新畫面
+            display.innerText = `$${currentSpotPriceUSD.toFixed(2)}`;
+            display.style.color = "#d4af37"; // 恢復顏色
+            
+            // 觸發重新計算
+            calculateTotal();
+            
+            alert(`更新成功！最新金價：$${currentSpotPriceUSD}`);
+
+        } catch (error) {
+            console.error(error);
+            alert("獲取失敗，將切換回模擬數據。\n錯誤原因：" + error.message);
+            simulateData();
+        } finally {
+            btn.innerText = "🔄 更新報價";
+            btn.disabled = false;
+        }
+    }
+
+    // --- 模擬數據模式 (Fallback) ---
+    function simulateData() {
+        // 產生一個 2000~2100 之間的隨機數
+        const mockPrice = 2500 + (Math.random() * 50 - 25);
+        currentSpotPriceUSD = mockPrice;
+        
+        document.getElementById('spotPriceDisplay').innerText = `$${mockPrice.toFixed(2)} (模擬)`;
+        document.getElementById('spotPriceDisplay').style.color = "#888"; // 灰色代表模擬
+        calculateTotal();
+    }
+</script>
+
+</body>
+</html>

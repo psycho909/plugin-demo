@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script type="importmap">
-    {
-        "imports": {
-            "preact": "./preact/preact.module.js",
-            "preact/hooks": "./preact/hooks.module.js",
-            "htm": "./preact/htm.module.js",
-            "@preact/signals": "./preact/signals.module.js",
-            "@preact/signals-core": "./preact/signals-core.module.js",
-            "main":"./main.js"
-        }
-    }
-    </script>
+		<script type="importmap">
+			{
+				"imports": {
+					"preact": "https://unpkg.com/preact@10.28.3/dist/preact.module.js",
+					"preact/hooks": "https://unpkg.com/preact@10.28.3/hooks/dist/hooks.module.js",
+					"preact/devtools": "https://unpkg.com/preact@10.28.3/devtools/dist/devtools.module.js",
+					"htm": "https://unpkg.com/htm@3.1.1/dist/htm.module.js",
+					"@preact/signals": "https://unpkg.com/@preact/signals@1.2.2/dist/signals.module.js",
+					"@preact/signals-core": "https://unpkg.com/@preact/signals-core@1.5.1/dist/signals-core.module.js",
+					"main": "./main.js"
+				}
+			}
+		</script>
 </head>
 <body>
     <div id="app"></div>

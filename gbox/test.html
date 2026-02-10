@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>gbox 獨立模式測試 - 重構版本</title>
+		<title>gbox v1.1 範例</title>
 		<style>
 			body {
 				font-family: Arial, sans-serif;
@@ -53,9 +53,7 @@
 		</style>
 	</head>
 	<body>
-		<h1>gbox 獨立模式測試 - 重構版本</h1>
-
-		<div class="status" id="status">狀態：準備就緒</div>
+		<h1>gbox v1.1 範例</h1>
 
 		<div class="test-section">
 			<h3>基本測試</h3>
@@ -99,13 +97,6 @@
 		<script>
 			let gboxAId = null;
 
-			function updateStatus() {
-				// 由於我們沒有 getInstances 方法，我們需要手動追蹤
-				const gboxElements = document.querySelectorAll(".gbox");
-				const status = document.getElementById("status");
-				status.textContent = `狀態：目前有 ${gboxElements.length} 個 gbox 實例`;
-			}
-
 			// 基本測試
 			document.getElementById("normalBtn").addEventListener("click", function () {
 				gbox.open("<h2>普通 gbox</h2><p>這個 gbox 會被其他普通 gbox 影響而關閉。</p>", {
@@ -133,20 +124,16 @@
 					titleBar: "獨立 gbox",
 					hasCloseBtn: true,
 					clickBgClose: true,
-					multi: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					multi: true
 				});
 			});
 
 			document.getElementById("closeBtn").addEventListener("click", function () {
 				gbox.close();
-				setTimeout(updateStatus, 100);
 			});
 
 			document.getElementById("closeAllBtn").addEventListener("click", function () {
 				gbox.closeAll();
-				setTimeout(updateStatus, 100);
 			});
 
 			// 問題修正測試
@@ -163,9 +150,7 @@
 							const lastGbox = gboxElements[gboxElements.length - 1];
 							gboxAId = parseInt(lastGbox.getAttribute("data-gbox-id"));
 						}
-						updateStatus();
 					},
-					afterClose: updateStatus
 				});
 			});
 
@@ -175,8 +160,6 @@
 					hasCloseBtn: true,
 					clickBgClose: true,
 					multi: false,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
 				});
 			});
 
@@ -185,7 +168,6 @@
 					gbox.closeById(gboxAId);
 					gboxAId = null;
 				}
-				setTimeout(updateStatus, 100);
 			});
 
 			// 多重獨立模式測試
@@ -194,9 +176,7 @@
 					titleBar: "獨立 gbox 1",
 					hasCloseBtn: true,
 					clickBgClose: true,
-					multi: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					multi: true
 				});
 			});
 
@@ -205,9 +185,7 @@
 					titleBar: "獨立 gbox 2",
 					hasCloseBtn: true,
 					clickBgClose: true,
-					multi: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					multi: true
 				});
 			});
 
@@ -216,9 +194,7 @@
 					titleBar: "獨立 gbox 3",
 					hasCloseBtn: true,
 					clickBgClose: true,
-					multi: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					multi: true
 				});
 			});
 
@@ -227,9 +203,7 @@
 				gbox.open("<h2>普通 gbox 1</h2><p>我是普通模式，會關閉其他普通模式的 gbox。</p>", {
 					titleBar: "普通 gbox 1",
 					hasCloseBtn: true,
-					clickBgClose: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					clickBgClose: true
 				});
 			});
 
@@ -237,9 +211,7 @@
 				gbox.open("<h2>普通 gbox 2</h2><p>我是普通模式，會關閉前一個普通 gbox。</p>", {
 					titleBar: "普通 gbox 2",
 					hasCloseBtn: true,
-					clickBgClose: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					clickBgClose: true
 				});
 			});
 
@@ -248,14 +220,9 @@
 					titleBar: "獨立 gbox (混合)",
 					hasCloseBtn: true,
 					clickBgClose: true,
-					multi: true,
-					afterOpen: updateStatus,
-					afterClose: updateStatus
+					multi: true
 				});
 			});
-
-			// 初始化狀態顯示
-			updateStatus();
 		</script>
 	</body>
 </html>

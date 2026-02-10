@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漸層文字範例</title>
+<style>
+  /* 基本頁面設定，只是為了讓展示好看一點 */
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #222; /* 深色背景更能凸顯漸層 */
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
+    gap: 30px;
+  }
+
+  /* --- 漸層文字的通用類別 --- */
+  .gradient-text {
+    /* 設定字體大小和粗細，大一點效果比較明顯 */
+    font-size: 80px;
+    font-weight: 900;
+    margin: 0;
+    
+    /* --- 核心程式碼開始 --- */
+    
+    /* 必備：將背景裁剪到文字上 (為了相容性，兩個都要寫) */
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    /* 必備：讓文字透明 */
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    
+    /* 選用：加上一點文字陰影增加立體感 (注意陰影不能太大，否則會蓋掉漸層) */
+    /* text-shadow: 2px 2px 4px rgba(0,0,0,0.3); */
+    
+    /* --- 核心程式碼結束 --- */
+  }
+
+
+  /* --- 風格 1：科技藍綠 (對角線漸層) --- */
+  .style-tech {
+    /* 定義漸層方向和顏色 */
+    background-image: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+  }
+
+  /* --- 風格 2：熱情夕陽 (水平多色漸層) --- */
+  .style-sunset {
+    background-image: linear-gradient(to right, #ff0844 0%, #ffb199 100%);
+  }
+  
+  /* --- 風格 3：黃金質感 (金屬光澤) --- */
+  .style-gold {
+     /* 使用多個色點來模擬金屬反光 */
+    background-image: linear-gradient(to bottom, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+  }
+
+</style>
+</head>
+<body>
+
+  <h1 class="gradient-text style-tech">官網</h1>
+
+  <h2 class="gradient-text style-sunset">官網</h2>
+
+  <h3 class="gradient-text style-gold">官網</h3>
+
+</body>
+</html>

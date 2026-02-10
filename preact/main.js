@@ -1,4 +1,4 @@
-﻿
+﻿import "preact/devtools";
 import { html, render } from './deps.js';
 import { Header } from './components/Header.js';
 import { Counter } from './components/Counter.js';

@@ -1,23 +1,17 @@
-﻿# gbox
+﻿﻿# gbox
 ## 引入方式
-> 需再引入`jquery`
+> 不需再引入`jquery`
 ```html
-<script src="https://tw.hicdn.beanfun.com/jquery/jquery.min.js"></script>
-<script src="https://tw.hicdn.beanfun.com/jquery/jquery-migrate.min.js"></script>
-<script src="https://frontend.beanfun.com/plugins/gbox/gbox.js"></script>
+<script src="https://frontend.beanfun.com/plugins/gbox/1.1/gbox.js"></script>
 ```
 ## 使用方式
-### Element被點擊後開啟
-```js
-$('element').gbox('<div>輸入資訊</div>');
-```
 ### 直接開啟
 ```js
-$.gbox.open('單純輸入資訊'); 
+gbox.open('單純輸入資訊'); 
 ```
 ### 直接關閉
 ```js
-$.gbox.close(); 
+gbox.close(); 
 ```
 
 ### 參數
@@ -35,7 +29,7 @@ $.gbox.close();
 | actionBtns  |  | Array<br>Object | 按鈕列預設一顆「確定」按鈕，功能為關閉Lightbox<br>陣列內可加入多組含有text、id、click屬性物件。<br>text:(String)-按鈕文字。<br>id:(String)-按鈕ID<br>class:(String)-按鈕 Class<br>target: (Boolean)- 是否另開頁面(另開後會關閉gbox)<br>必須與click輸入網址同時使用<br>click:(String、Function)-按下按鈕後功能。<br>輸入網址為轉導亦可輸入function |
 
 ### afterClose 關閉後觸發
-> `$.gbox.close()`執行後觸發
+> `gbox.close()`執行後觸發
 ```js
 let msg = "gbox內容";
 let config = {
@@ -44,11 +38,11 @@ let config = {
         console.log("關閉gbox");
     }
 };
-$.gbox.open(msg, config);
+gbox.open(msg, config);
 ```
 
 ### afterOpen 開啟後觸發
-> `$.gbox.open()`執行後觸發
+> `gbox.open()`執行後觸發
 ```js
 let msg = "gbox內容";
 let config = {
@@ -57,7 +51,7 @@ let config = {
         console.log("開啟gbox");
     }
 };
-$.gbox.open(msg, config);
+gbox.open(msg, config);
 ```
 
 ### actionBtns
@@ -83,7 +77,7 @@ let config = {
         }
     ]
 };
-$.gbox.open(msg, config);
+gbox.open(msg, config);
 ```
 ### actionBtns 用法2(Function)
 ```js
@@ -101,7 +95,7 @@ let config = {
         }
     ]
 };
-$.gbox.open(msg, config);
+gbox.open(msg, config);
 ```
 
 ### example
@@ -122,7 +116,7 @@ let config = {
             class: "success",
             click: function(){
                 console.log("確認後關閉")
-                $.gbox.close()
+                gbox.close()
             }
         },
         {
@@ -131,10 +125,26 @@ let config = {
             class: "close",
             click: function(){
                 // 關閉觸發afterClose
-                $.gbox.close()
+                gbox.close()
             }
         },
     ]
 };
-$.gbox.open(msg, config);
+gbox.open(msg, config);
+```
+
+## gbox v1.1 新增功能
+### multi屬性:開啟多個gbox模式
+> multi:false 預設為false,true時可以開啟多個gbox
+```js
+gbox.open("<h2>獨立 gbox</h2><p>這個 gbox 不會被其他 gbox 影響而關閉，只有使用者手動關閉才會關閉。</p>", {
+    titleBar: "獨立 gbox",
+    hasCloseBtn: true,
+    clickBgClose: true,
+    multi: true
+});
+```
+### gbox.closeAll(); 可以同時關閉所有的gbox
+```js
+gbox.closeAll();
 ```

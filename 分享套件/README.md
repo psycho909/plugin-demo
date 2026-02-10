@@ -120,3 +120,7 @@ FB分享問題:
 -   native.share:webview 不能使用
 
 **使用`.g-share-native`加上`target="_blank"`IOS safari會挑出報錯誤訊息**
+
+## v1.1 新增功能
+### Line分享功能調整
+> 在手機使用Line分享時網址會會變成`https://line.me/R/share`手機板使用，直接開啟Line APP進行分享
