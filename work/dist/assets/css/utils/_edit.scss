@@ -1,0 +1,102 @@
+$edit-font-title-color:#3a0000;
+$edit-font-color:#333333;
+$edit-font-line-height:1.5;
+$edit-font-size:30px;
+$edit-a-color:#a1491d;
+$edit-b-color:#ff668c;
+$edit-table-border-color:#fff;
+
+$edit-class:noticepage;
+$edit-subclass:__content;
+
+.#{$edit-class} {
+    &#{$edit-subclass} {
+        text-align: left;
+        color: $edit-font-color !important;
+        font-size: $edit-font-size !important;
+        line-height: 1.5 !important;
+
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+            color: $edit-font-color !important;
+            font-size: $edit-font-size !important;
+            line-height: $edit-font-line-height !important;
+            font-weight: normal !important;
+            clear: both !important;
+            background: none !important;
+            word-break: break-all !important;
+        }
+
+        >*:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0 0 16px 0 !important;
+            color: $edit-font-color !important;
+            font-weight: bold !important;
+            display: block !important;
+        }
+        strong,
+        em,
+        b {
+            color: $edit-b-color !important;
+        }
+
+        p {
+            margin: 0 0 14px 0 !important;
+            display: block !important;
+        }
+
+        a {
+            color: $edit-a-color !important;
+        }
+
+        img {
+            margin: 0px auto !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+
+        table {
+            width: auto !important;
+            border: 1px solid $edit-table-border-color !important;
+            border-collapse: collapse;
+
+        }
+
+        table th,
+        table td,
+        table p {
+            width: auto !important;
+        }
+
+        th,
+        td {
+            border: 1px solid $edit-table-border-color !important;
+        }
+        h1 > *{
+            font-size: 42px !important;
+            color: #3a0000 !important;
+            text-align: center !important;
+            font-weight: bold !important;
+        }
+    }
+}
+
+@media screen and (max-width:750px){
+    .#{$edit-class}{
+        &#{$edit-subclass}{
+            img{
+                max-width: 100% !important;
+            }
+        }
+    }
+}
