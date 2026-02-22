@@ -1,35 +1,51 @@
 %default {
 	.gbox-wrap {
-		max-width: 898px;
+		max-width: vw2(716px);
 		width: 100%;
-		padding: 0px;
-		margin-top: 80px;
-		margin-bottom: 80px;
-		background-color: transparent;
+		padding: vw2(72px) 0;
+		margin-top: vw2(80px);
+		margin-bottom: vw2(80px);
+		background-color: rgba(#2d2b23, 0.8);
 		color: #fff;
 		background-size: cover;
-		padding-bottom: 48px;
-		@include media{
+		@include media {
 			margin-top: vw(80);
 			margin-bottom: vw(80);
-		}
-	}
-	.gbox-title {
-		margin: 0;
-		padding: 0;
-		font-size: 0;
-		width: 100%;
-		height: 76px;
-		background-position: center center;
-		background-repeat: no-repeat;
-		@include media {
-			height: vw(60);
+			max-width: vw(716);
+			padding: vw(72px) 0;
 		}
 	}
 	.gbox-content {
 		position: relative;
-		padding: 0px;
+		padding: vw2(64px) vw2(32px);
 		width: 100%;
+		font-size: vw2(28px);
+		color: #fff;
+		&:before,
+		&:after {
+			content: "";
+			width: vw2(693px);
+			height: vw2(8px);
+			background-size: cover;
+			background-image: url("./images/lb-desc.png");
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			@include media {
+				width: vw(693);
+				height: vw(8);
+			}
+		}
+		&:before {
+			top: 0;
+		}
+		&:after {
+			bottom: 0;
+		}
+		@include media {
+			padding: vw(64px) vw(32px);
+			font-size: vw(30);
+		}
 	}
 }
 %btn {
@@ -38,8 +54,6 @@
 		position: relative;
 		padding: 0;
 		font-size: 0;
-		@include media {
-		}
 	}
 	.gbox-btn {
 		width: 310px;
@@ -66,18 +80,42 @@
 }
 %close {
 	.gbox-close {
-		width: 35px;
-		height: 35px;
+		width: vw2(40px);
+		height: vw2(40px);
 		font-size: 0;
-		top: 22px;
-		right: 20px;
-		background-image: url("./img/btn-close.png");
-		background-size: cover;
+		top: vw2(22px);
+		right: vw2(22px);
+		&:before {
+			content: "";
+			width: 100%;
+			height: vw2(4);
+			background-color: #fff;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%) rotate(45deg);
+			@include media {
+				height: vw(4);
+			}
+		}
+		&:after {
+			content: "";
+			width: 100%;
+			height: vw2(4);
+			background-color: #fff;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%) rotate(135deg);
+			@include media {
+				height: vw(4);
+			}
+		}
 		@include media {
-			width: vw(35);
-			height: vw(35);
-			right: vw(18);
-			top: vw(12);
+			width: vw(40);
+			height: vw(40);
+			right: vw(22);
+			top: vw(22);
 		}
 	}
 }

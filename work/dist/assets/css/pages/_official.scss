@@ -1,1 +1,146 @@
-﻿
+﻿// 官方攻略
+.offical-guide {
+}
+// 官方
+.offical-art {
+}
+
+.offical {
+	position: relative;
+	&-head {
+		display: flex;
+		margin-bottom: 42px;
+		@include media {
+			margin-bottom: vw(60);
+			flex-direction: column;
+			align-items: center;
+		}
+	}
+	&-title {
+		background-size: cover;
+		font-size: 0;
+		margin-right: auto;
+		@include media {
+			margin-right: 0;
+			margin-bottom: vw(30);
+		}
+		&[data-type="guide"] {
+			width: 187px;
+			height: 46px;
+			background-image: url("./images/official-title-guide.png");
+			@include media {
+				width: vw(258);
+				height: vw(63);
+			}
+		}
+		&[data-type="art"] {
+			width: 231px;
+			height: 47px;
+			background-image: url("./images/official-title-art.png");
+			@include media {
+				width: vw(321);
+				height: vw(65);
+			}
+		}
+		&[data-type="bgm"] {
+			width: 196px;
+			height: 46px;
+			background-image: url("./images/official-title-bgm.png");
+			@include media {
+				width: vw(270);
+				height: vw(63);
+			}
+		}
+	}
+	&-bgm-download {
+		width: vw2(48);
+		height: vw2(48);
+		background-size: 22px 26px;
+		background-image: url("./images/offical-bgm-arrow.png");
+		background-repeat: no-repeat;
+		background-position: center;
+		background-color: rgba(#453b19, 0.7);
+		border-radius: 50%;
+		border: 1px solid #fbdb3b;
+		box-shadow: 3px 3px 3px rgba(#453b19, 0.4);
+		@include hover {
+			background-color: rgba(#453b19, 1);
+		}
+		@include media {
+			background-size: vw(28) vw(33);
+			width: vw(60);
+			height: vw(60);
+		}
+	}
+	&-bgm-player {
+		background-size: 44px 44px;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-image: url("./images/offical-bgm-player.png");
+		@include media {
+			background-size: vw(57) vw(57);
+		}
+	}
+	&-section {
+		width: 1200px;
+		margin: 0 auto;
+		padding: 0 60px;
+		@include media {
+            width: 100%;
+            padding: 0 vw(82);
+		}
+	}
+	&-content {
+		display: grid;
+		grid-template-columns: repeat(4, 229px);
+		column-gap: 56px;
+		row-gap: 56px;
+		@include media {
+			grid-template-columns: repeat(2, 294px);
+			column-gap: vw(36);
+			row-gap: vw(36);
+		}
+	}
+	&-item {
+		width: 229px;
+		height: 229px;
+		display: flex;
+		flex-direction: column;
+		background-color: #000;
+		position: relative;
+		@include media {
+			width: vw(294px);
+			height: vw(294);
+		}
+		@include hover {
+			&:before {
+				content: "";
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				background-color: rgba(#eaf4f4, 3);
+			}
+			.offical-item__info {
+				color: #f0d13a;
+			}
+		}
+		&__info {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			height: 84px;
+			background-color: rgba(#333, 0.7);
+			font-size: 24px;
+			font-weight: bold;
+			color: #fff;
+			@include media {
+				height: vw(107);
+				font-size: vw(32);
+			}
+		}
+	}
+}

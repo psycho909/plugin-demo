@@ -9,6 +9,12 @@
 	--scroll-bar-color: #ddd;
 	--scroll-bar-thumb: #000;
 }
+$annou-colors: (
+  "event":   #ff4757, // 活動 (紅色)
+  "system":  #2f3542, // 系統 (深色)
+  "update":  #2ed573, // 更新 (綠色)
+  "important":     #ffa502  // 預留以後可能有的：熱門
+);
 @supports (bottom: env(safe-area-inset-top)) {
 	:root {
 		--safe-area-left: env(safe-area-inset-left);

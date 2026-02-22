@@ -2,6 +2,7 @@ import { MessageLB } from "./lightbox.js";
 import { setCookie, getCookie, deleteCookie, loadingShow, loadingHide } from "./tool.js";
 import useEventStore from "./store.js";
 import {} from "./api.js";
+// MessageLB("目前尚未開放登入，敬請期待後續精彩內容")
 // 阻止瀏覽器預設scroll
 if (history.scrollRestoration) {
 	history.scrollRestoration = "manual";
@@ -31,7 +32,21 @@ let app = Vue.createApp({
 			}
 		});
 		return {};
-	},
+	}
 });
 app.use(pinia);
 app.mount("#app");
+
+var swiperAd = new Swiper(".main-ad__swiper", {
+	navigation: {
+		nextEl: ".main-ad__swiper-next",
+		prevEl: ".main-ad__swiper-prev"
+	}
+});
+
+var swiperMall = new Swiper(".main-mall__swiper", {
+	navigation: {
+		nextEl: ".main-mall__swiper-next",
+		prevEl: ".main-mall__swiper-prev"
+	}
+});

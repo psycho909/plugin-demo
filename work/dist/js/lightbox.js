@@ -1,36 +1,13 @@
 import useEventStore from "./store.js";
 
 export function MessageLB(msg, url, callback) {
-	$.gbox.open(msg, {
+	gbox.open(msg, {
 		addClass: "default",
 		hasCloseBtn: true,
-		hasActionBtn: true,
+		hasActionBtn: false,
 		afterClose: function () {
 			if (url) window.location.href = url;
 		},
-		actionBtns: [
-			{
-				text: "確定",
-				class: "btn-confirm",
-				target: false,
-				click: function () {
-					if (url) window.location.href = url;
-					else {
-						$.gbox.close();
-						if (callback) {
-							callback();
-						}
-					}
-				},
-			},
-			{
-				text: "取消",
-				class: "btn-cancel",
-				click: function () {
-					$.gbox.close();
-				},
-			},
-		],
 	});
 }
 
@@ -40,26 +17,26 @@ export function LB(msg, url, callback) {
 		hasCloseBtn: true,
 		hasActionBtn: true,
 		afterClose: function () {
-			$.gbox.close();
+			gbox.close();
 		},
 		actionBtns: [
 			{
 				text: "text1",
 				class: "btn",
 				click: function () {
-					$.gbox.close();
+					gbox.close();
 				},
 			},
 			{
 				text: "text2",
 				class: "btn",
 				click: function () {
-					$.gbox.close();
+					gbox.close();
 				},
 			},
 		],
 	};
 
 	var HTML = "";
-	$.gbox.open(HTML, config);
+	gbox.open(HTML, config);
 }
