@@ -50,3 +50,38 @@ var swiperMall = new Swiper(".main-mall__swiper", {
 		prevEl: ".main-mall__swiper-prev"
 	}
 });
+
+if (typeof createCustomDropdown == "function") {
+	createCustomDropdown(document.getElementById("mySelect1"));
+	createCustomDropdown(document.getElementById("mySelect2"));
+	createCustomDropdown(document.getElementById("mySelect3"));
+}
+
+if (isMobile.any) {
+	let pg = new PaginationCore({
+		container: document.querySelector("#pager-container"),
+		totalPage: 20,
+		initialPage: 1,
+		pageNumberLimit: 10,
+		mode: "select",
+		labels: {
+			first: "第一頁",
+			last: "最後一頁",
+			prev: "上一頁",
+			next: "下一頁"
+		}
+	});
+} else {
+	let pg = new PaginationCore({
+		container: document.querySelector("#pager-container"),
+		totalPage: 20,
+		initialPage: 1,
+		pageNumberLimit: 10,
+		labels: {
+			first: "第一頁",
+			last: "最後一頁",
+			prev: "上一頁",
+			next: "下一頁"
+		}
+	});
+}

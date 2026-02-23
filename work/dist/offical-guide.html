@@ -1,0 +1,280 @@
+﻿<!doctype html>
+<html lang="zh-Hant-TW">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- <meta name="viewport" content="width=1200" /> -->
+		<!-- <meta name="viewport" content="width=750,user-scalable=0"> -->
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta http-equiv="PRAGMA" content="NO-CACHE" />
+		<meta http-equiv="EXPIRES" content="0" />
+		<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+		<meta name="description" content="{{description}}" />
+		<!-- 除了H5活動頁以外都要加上 -->
+		<meta name="open-default-browser" content="true" />
+
+		<!-- fb meta -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="{{title}}" />
+		<meta property="og:description" content="{{description}}" />
+		<!-- Safari 數字過常會變成可撥打電話 -->
+		<meta name="format-detection" content="telephone=no" />
+		<!-- 1200x628 -->
+		<meta property="og:image" content="{{url}}/assets/images/og-image.jpg" />
+
+		<title>{{title}}</title>
+		<!-- CSS -->
+		<link rel="stylesheet" href="https://tw.hicdn.beanfun.com/plugins/swiper/11.1.9/swiper-bundle.min.css" />
+		<link rel="stylesheet" href="./assets/css/default.css" />
+
+		<!-- JS -->
+		<!-- jQuery -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/isMobile/isMobile.min.js"></script>
+		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/swiper/11.1.9/swiper-bundle.min.js"></script>
+		<script src="./js/PaginationCore.js"></script>
+		<script src="./js/dropdown.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
+		<!-- 正式用 -->
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/vue-demi/0.14.7/index.iife.js"></script>
+		<script src="https://tw.hicdn.beanfun.com/plugins/pinia/2.1.7/pinia.iife.js"></script>
+		<!-- 如果有載入topBar.js則不需要，因為topBar.js已自帶GA_CodeNew.js -->
+		<script language="javascript" src="https://tw.beanfun.com/js/GA_CodeNew.js"></script>
+	</head>
+
+	<body>
+		<script src="https://frontend.beanfun.com/plugins/Fech/1.1.0/Fech.js"></script>
+		<div id="app" class="official">
+			<div class="side-left">
+				<a href="javascript:;" class="side-left__start"></a>
+				<div class="side-left__box">
+					<div class="side-left__list">
+						<a href="javascript:;" class="side-left__list-item" data-type="account">帳號申請</a>
+						<a href="javascript:;" class="side-left__list-item" data-type="download">遊戲下載</a>
+						<a href="javascript:;" class="side-left__list-item" data-type="payment">儲值中心</a>
+						<a href="javascript:;" class="side-left__list-item" data-type="protection">帳號防護</a>
+						<a href="javascript:;" class="side-left__list-item" data-type="help">疑難排解</a>
+						<div class="side-left__social">
+							<a href="javascript:;" class="side-left__social-item" data-type="f"></a>
+							<a href="javascript:;" class="side-left__social-item" data-type="dc"></a>
+							<a href="javascript:;" class="side-left__social-item" data-type="bh"></a>
+						</div>
+					</div>
+					<div class="side-player">
+						<div class="side-player__list"></div>
+						<div class="side-player__title">網站正在播放的BGMBGM</div>
+						<div class="side-player__controls">
+							<a href="javascript:;" class="side-player__btn-prev"></a>
+							<a href="javascript:;" class="side-player__btn-play" data-type="play"></a>
+							<a href="javascript:;" class="side-player__btn-next"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="side-right">
+				<div class="side-right__top"></div>
+				<a href="javascript:;" class="side-right__support">
+					<span></span>
+					<span>客服小幫手</span>
+				</a>
+			</div>
+			<div class="nav">
+				<div class="nav-logo-box">
+					<a href="javascript:;" class="nav-logo"></a>
+					<a href="javascript:;" class="nav-switch"></a>
+				</div>
+				<div class="nav-wrap">
+					<a href="javascript:;" class="nav-open"><span></span><span></span><span></span></a>
+					<div class="nav-box">
+						<ul class="nav-list">
+							<li class="nav-li">
+								<a href="javascript:;" class="nav-li__item active" data-nav="1" id="1"><span>最新消息</span></a>
+								<ul class="nav-list2">
+									<li class="nav-li2">
+										<a href="/News" class="nav-li2__item" data-nav="1-1" id="1-1" target="_self"><span>全部公告</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="/News?kind=566" class="nav-li2__item" data-nav="1-2" id="1-2" target="_self"><span>最新活動</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="/News?kind=568" class="nav-li2__item" data-nav="1-5" id="1-5" target="_self"><span>重大消息</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="/News?kind=569" class="nav-li2__item" data-nav="1-3" id="1-3" target="_self"><span>遊戲更新</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="/News?kind=567" class="nav-li2__item" data-nav="1-4" id="1-4" target="_self"><span>系統通知</span></a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-li">
+								<a href="javascript:;" class="nav-li__item active" data-nav="2" id="2"><span>遊戲介紹</span></a>
+								<ul class="nav-list2">
+									<li class="nav-li2">
+										<a href="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/lineagenew/feature/index.html" class="nav-li2__item" data-nav="2-1" id="2-1" target="_self"><span>遊戲介紹</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/lineagenew/feature/index.html#sec7" class="nav-li2__item" data-nav="2-2" id="2-2" target="_self"><span>職業介紹</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://gama-event.beanfun.com/index?Url=8F7B06C2C5E05EB1A880389F428B61A7&amp;Id=1038&amp;pageTypeSeq=1" class="nav-li2__item" data-nav="2-3" id="2-3" target="_self"><span>新手教學</span></a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-li">
+								<a href="javascript:;" class="nav-li__item" data-nav="3" id="3"><span>排行榜</span></a>
+								<ul class="nav-list2">
+									<li class="nav-li2">
+										<a href="https://tw-event.beanfun.com/LineageNew/ReceiveAwards/Index.aspx?tab=1" class="nav-li2__item" data-nav="3-1" id="3-1" target="_blank" rel="noopener noreferrer"><span>領獎平台</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagenew-event.beanfun.com/eventad/eventad?eventadid=4085" class="nav-li2__item" data-nav="3-2" id="3-2" target="_blank" rel="noopener noreferrer"><span>封印服務</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagenew-event.beanfun.com/eventad/eventad?eventadid=4087" class="nav-li2__item" data-nav="3-3" id="3-3" target="_blank" rel="noopener noreferrer"><span>倉庫密碼</span></a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-li">
+								<a href="javascript:;" class="nav-li__item" data-nav="4" id="4"><span>新手教學</span></a>
+								<ul class="nav-list2">
+									<li class="nav-li2">
+										<a href="https://tw-event.beanfun.com/lineagenew/AdenserviceNew/Agree.aspx" class="nav-li2__item" data-nav="4-1" id="4-1" target="_self"><span>奇岩商城</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagenew-event.beanfun.com/eventad/eventad?eventadid=4055" class="nav-li2__item" data-nav="4-2" id="4-2" target="_blank" rel="noopener noreferrer"><span>點數商城</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagenew-event.beanfun.com/eventad/eventad?eventadid=4086" class="nav-li2__item" data-nav="4-3" id="4-3" target="_blank" rel="noopener noreferrer"><span>商城說明</span></a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-li">
+								<a href="javascript:;" class="nav-li__item" data-nav="5" id="5"><span>帳號專區</span></a>
+								<ul class="nav-list2">
+									<li class="nav-li2">
+										<a href="javascript:void(0);" class="nav-li2__item" data-nav="member5-1" id="member5-1" target="_self"><span>遊戲帳號申請</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://csp.beanfun.com/" class="nav-li2__item" data-nav="5-2" id="5-2" target="_self"><span>客服中心</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagefree-event.beanfun.com/eventad/eventad?eventadid=10758" class="nav-li2__item" data-nav="5-4" id="5-4" target="_blank" rel="noopener noreferrer"><span>遊戲規章</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://tw-event.beanfun.com/Lineagenew/EventAD/EventAD.aspx?EventADID=10760" class="nav-li2__item" data-nav="5-5" id="5-5" target="_blank" rel="noopener noreferrer"><span>Code of Conduct</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://tw-event.beanfun.com/Lineagenew/EventAD/EventAD.aspx?EventADID=10765" class="nav-li2__item" data-nav="5-6" id="5-6" target="_blank" rel="noopener noreferrer"><span>服務合約書</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://tw-event.beanfun.com/Lineagenew/EventAD/EventAD.aspx?EventADID=10206" class="nav-li2__item" data-nav="5-7" id="5-7" target="_blank" rel="noopener noreferrer"><span>隱私權政策</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagenew-event.beanfun.com/eventad/eventad?eventadid=14262" class="nav-li2__item" data-nav="5-8" id="5-8" target="_blank" rel="noopener noreferrer"><span>資訊公開</span></a>
+									</li>
+								</ul>
+							</li>
+							<li class="nav-li">
+								<a href="javascript:;" class="nav-li__item" data-nav="6" id="6"><span>服務中心</span></a>
+								<ul class="nav-list2">
+									<li class="nav-li2">
+										<a href="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/lineagenew/remastered/download/index.html" class="nav-li2__item" data-nav="6-1" id="6-1" target="_self"><span>遊戲主程式下載</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://lineagenew-event.beanfun.com/eventad/eventad?eventadid=5794" class="nav-li2__item" data-nav="6-2" id="6-2" target="_blank" rel="noopener noreferrer"><span>安裝說明</span></a>
+									</li>
+									<li class="nav-li2">
+										<a href="https://tw.hicdn.beanfun.com/beanfun/GamaWWW/lineagenew/feature/index.html#sec9" class="nav-li2__item" data-nav="6-3" id="6-3" target="_self"><span>影音分享</span></a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="official-section">
+				<div class="official-head">
+					<div class="official-title" data-type="art">官方美術區</div>
+					<div class="official-filters">
+						<div class="official-filter">
+							<select id="mySelect1" class="official-filter__select">
+								<option value="">主視覺</option>
+								<option value="1">官方主視覺</option>
+								<option value="2">活動限定</option>
+								<option value="3">創作聯名</option>
+								<option value="4">週年慶祝</option>
+							</select>
+						</div>
+						<div class="official-filter">
+							<select id="mySelect2" class="official-filter__select">
+								<option value="">場警</option>
+								<option value="1">官方主視覺</option>
+								<option value="2">活動限定</option>
+								<option value="3">創作聯名</option>
+								<option value="4">週年慶祝</option>
+							</select>
+						</div>
+						<div class="official-filter">
+							<select id="mySelect3" class="official-filter__select">
+								<option value="">人物</option>
+								<option value="1">官方主視覺</option>
+								<option value="2">活動限定</option>
+								<option value="3">創作聯名</option>
+								<option value="4">週年慶祝</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="official-content">
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+				</div>
+
+				<div id="pager-container" class="pagination-container"></div>
+			</div>
+		</div>
+
+		<!-- footer -->
+		<script type="text/javascript" src="https://frontend.beanfun.com/plugins/game-footer/game-footer.js" id="game-footer" prod="天堂國際服" theme="dark"></script>
+		<script src="~/MileStone2025/js/import-map.js?v=@DateTime.Now.Ticks"></script>
+		<script type="module">
+			import "./js/default.js";
+		</script>
+	</body>
+</html>

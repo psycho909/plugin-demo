@@ -10,6 +10,12 @@ class PaginationCore {
 		pageFormatter = null, // 新增：自訂格式化函式
 		mode,
 		init,
+		labels = {
+			first: "First",
+			last: "Last",
+			prev: "Prev",
+			next: "Next"
+		},
 		styles = {
 			active: {},
 			normal: {},
@@ -25,10 +31,15 @@ class PaginationCore {
 		this._onPageChange = pageChange || (() => {}); // 頁面變化回調函數
 		this.showFirst = showFirst;
 		this.showLast = showLast;
-		// 確保 mode 為 "normal" 或 "center"，預設為 "normal"
-		this.mode = mode && mode === "center" ? "center" : "normal";
+		this.mode = ["normal", "center", "select"].includes(mode) ? mode : "normal";
 		this.styles = styles;
 		this.pageFormatter = pageFormatter; // 儲存自訂格式化函式
+		this.labels = {
+			first: labels.first || "First",
+			last: labels.last || "Last",
+			prev: labels.prev || "Prev",
+			next: labels.next || "Next"
+		};
 		// 初始化事件監聽器容器
 		this._eventListeners = {
 			pageChange: [],
@@ -124,17 +135,42 @@ class PaginationCore {
 		if (!this.container) {
 			throw new Error("未提供容器元素");
 		}
-		const firstButton = this.showFirst ? `<li class="pagination-numbers__symbol pagination-first">First</li>` : "";
-		const lastButton = this.showLast ? `<li class="pagination-numbers__symbol pagination-last">Last</li>` : "";
+		const firstButton = this.showFirst ? `<li class="pagination-numbers__symbol pagination-first">${this.labels.first}</li>` : "";
+		const lastButton = this.showLast ? `<li class="pagination-numbers__symbol pagination-last">${this.labels.last}</li>` : "";
+		const prevButton = `<li class="pagination-numbers__symbol pagination-prev">${this.labels.prev}</li>`;
+		const nextButton = `<li class="pagination-numbers__symbol pagination-next">${this.labels.next}</li>`;
 		// 初始化靜態模板
-		this.container.innerHTML = `
-            <ul class="pagination-numbers" style="display: flex; list-style: none; color: #fff;">
+		if (this.mode === "select") {
+			// Select 模式的 HTML 結構
+			this.container.innerHTML = `
+            <ul class="pagination-numbers page-select-wrapper" style="display: flex; list-style: none;">
                 ${firstButton}
-                <li class="pagination-numbers__symbol pagination-prev">Prev</li>
-                <li class="pagination-numbers__symbol pagination-next">Next</li>
+                ${prevButton}
+                <li>
+                    <select class="pagination-select"></select>
+                </li>
+                ${nextButton}
                 ${lastButton}
             </ul>
         `;
+
+			// 專門給 select 用的 change 事件監聽
+			this.container.addEventListener("change", (event) => {
+				if (event.target.classList.contains("pagination-select")) {
+					this.setPage(Number(event.target.value));
+				}
+			});
+		} else {
+			// 原本的數字按鈕模式 HTML 結構
+			this.container.innerHTML = `
+            <ul class="pagination-numbers" style="display: flex; list-style: none;">
+                ${firstButton}
+                ${prevButton}
+                ${nextButton}
+                ${lastButton}
+            </ul>
+        `;
+		}
 
 		// 添加事件委派
 		this.container.addEventListener("click", (event) => {
@@ -171,15 +207,42 @@ class PaginationCore {
 		if (!this.container) return;
 
 		const paginationNumbers = this.container.querySelector(".pagination-numbers");
-		const items = paginationNumbers.querySelectorAll(".pagination-numbers__item");
-		items.forEach((item) => item.remove());
 
-		const nextButton = paginationNumbers.querySelector(".pagination-next");
+		// ==========================================
+		// 1. Select 下拉選單模式
+		// ==========================================
+		if (this.mode === "select") {
+			const selectEl = paginationNumbers.querySelector(".pagination-select");
+			if (!selectEl) return; // 防呆安全檢查
 
-		if (typeof this.pageFormatter === "function" || this.displayFormat === "fraction") {
-			this.insertPageNumber(this.currentPage, paginationNumbers, nextButton);
-		} else {
-			if (this.mode === "center") {
+			// 只有當 option 數量不等於總頁數時才重新渲染 (提升效能)
+			if (selectEl.options.length !== this.totalPage) {
+				selectEl.innerHTML = Array.from({ length: this.totalPage }, (_, i) => {
+					const pageNum = i + 1;
+
+					// 優化：讓自訂格式化函式 (pageFormatter) 也能作用在下拉選項上！
+					const optionText = typeof this.pageFormatter === "function" ? this.pageFormatter(pageNum, this.totalPage) : `${pageNum}`; // 預設文字
+
+					return `<option value="${pageNum}">${optionText}</option>`;
+				}).join("");
+			}
+
+			// 將下拉選單的值設為當前頁碼
+			selectEl.value = this.currentPage;
+		}
+		// ==========================================
+		// 2. 數字按鈕模式 (包含 fraction, center, normal)
+		// ==========================================
+		else {
+			// 先清空舊的頁碼元素 (只有按鈕模式需要清空，select 模式不需要)
+			const items = paginationNumbers.querySelectorAll(".pagination-numbers__item");
+			items.forEach((item) => item.remove());
+
+			const nextButton = paginationNumbers.querySelector(".pagination-next");
+
+			if (typeof this.pageFormatter === "function" || this.displayFormat === "fraction") {
+				this.insertPageNumber(this.currentPage, paginationNumbers, nextButton);
+			} else if (this.mode === "center") {
 				const { pages, showLeftEllipsis, showRightEllipsis } = this.getCenterVisiblePages();
 
 				if (showLeftEllipsis) {
@@ -203,7 +266,9 @@ class PaginationCore {
 			}
 		}
 
-		// 更新按鈕狀態
+		// ==========================================
+		// 3. 更新外圍按鈕 (First/Prev/Next/Last) 狀態
+		// ==========================================
 		this.updateButtonStates(paginationNumbers);
 	}
 
