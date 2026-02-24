@@ -190,13 +190,13 @@
 			width: 100%;
 			background-color: #f2eee1;
 			margin-top: vw2(12);
+			flex:1;
 			@include media {
 				margin-top: vw(20);
 			}
 		}
 		&__list {
 			padding: vw2(22px) vw2(30px);
-			list-style: none;
 			@include media {
 				padding: vw(44) vw(44);
 			}
@@ -205,6 +205,7 @@
 			display: flex;
 			align-items: center;
 			margin-bottom: vw2(26px);
+			text-decoration: none;
 			@include media {
 				margin-bottom: vw(48);
 			}

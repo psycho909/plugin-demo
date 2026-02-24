@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant-TW">
 	<head>
 		<meta charset="UTF-8" />
@@ -33,6 +33,7 @@
 		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
 		<script src="https://tw.hicdn.beanfun.com/plugins/swiper/11.1.9/swiper-bundle.min.js"></script>
 		<script src="./js/PaginationCore.js"></script>
+		<script src="./js/dropdown.js"></script>
 		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
 		<!-- 正式用 -->
 		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
@@ -44,7 +45,7 @@
 
 	<body>
 		<script src="https://frontend.beanfun.com/plugins/Fech/1.1.0/Fech.js"></script>
-		<div id="app">
+		<div id="app" class="common">
 			<div class="side-left">
 				<a href="javascript:;" class="side-left__start"></a>
 				<div class="side-left__box">
@@ -193,119 +194,177 @@
 					</div>
 				</div>
 			</div>
-			<div class="main-banner">
-				<div class="main-banner__inner"><img src="./assets/css/images/main-banner.jpg" /></div>
+			<div class="download-section" data-section="1">
+				<div class="download-head">
+					<div class="download-head__title" data-title="1">主程式下載</div>
+					<a href="javascript:;" class="download-head__link" target="_blank">下載安裝教學</a>
+				</div>
+				<div class="download-content">
+					<table class="download-table">
+						<thead class="download-table-head">
+							<tr>
+								<td>項目</td>
+								<td>更新日期</td>
+								<td>檔案大小</td>
+								<td>下載區</td>
+							</tr>
+						</thead>
+						<tbody class="download-table-body">
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div class="main-content">
-				<div class="main-section main-section--1">
-					<div class="main-ad">
-						<div class="main-ad__content main-ad__swiper swiper">
-							<div class="swiper-wrapper">
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-ad01.jpg" />
-										<img src="./assets/css/images/ad01.jpg" alt="" />
-									</picture>
-								</div>
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-ad01.jpg" />
-										<img src="./assets/css/images/ad01.jpg" alt="" />
-									</picture>
-								</div>
-							</div>
-						</div>
-						<div class="main-ad__swiper-prev main-ad__swiper-btn"></div>
-						<div class="main-ad__swiper-next main-ad__swiper-btn"></div>
-					</div>
-					<div class="main-annou">
-						<div class="main-annou__head">
-							<div class="main-annou__tabs">
-								<a href="javascript:;" class="main-annou__tabs-item">綜合</a>
-								<a href="javascript:;" class="main-annou__tabs-item">活動</a>
-								<a href="javascript:;" class="main-annou__tabs-item">系統</a>
-								<a href="javascript:;" class="main-annou__tabs-item">更新</a>
-							</div>
-							<a href="javascript:;" class="main-annou__tabs-more"></a>
-						</div>
-						<div class="main-annou__content">
-							<div class="main-annou__list">
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="event">活動</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="system">系統</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="important">重大</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="update">更新</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="system">系統</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="important">重大</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="update">更新</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-							</div>
-						</div>
-					</div>
+			<div class="download-section" data-section="2">
+				<div class="download-head">
+					<div class="download-head__title" data-title="2">主程式下載</div>
 				</div>
-				<div class="main-section main-section--2">
-					<div class="main-dc">
-						<div class="main-dc__title">
-							<div class="main-dc__title-text">官方Discord</div>
-							<a href="javascript:;" class="main-dc__title-link">加入官方DC</a>
-						</div>
-						<div class="main-dc__content"></div>
-					</div>
-					<div class="main-mall">
-						<div class="main-mall__title">
-							<div class="main-mall__title-text">商城預覽</div>
-						</div>
-						<div class="main-mall__content main-mall__swiper swiper">
-							<div class="swiper-wrapper">
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-mall01.jpg" />
-										<img src="./assets/css/images/mall01.jpg" alt="" />
-									</picture>
-								</div>
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-mall01.jpg" />
-										<img src="./assets/css/images/mall01.jpg" alt="" />
-									</picture>
-								</div>
-							</div>
-							<div class="main-mall__swiper-prev main-mall__swiper-btn"></div>
-							<div class="main-mall__swiper-next main-mall__swiper-btn"></div>
-						</div>
-					</div>
+				<div class="download-content">
+					<table class="download-table">
+						<thead class="download-table-head">
+							<tr>
+								<td>項目</td>
+								<td>更新日期</td>
+								<td>檔案大小</td>
+								<td>下載區</td>
+							</tr>
+						</thead>
+						<tbody class="download-table-body">
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(1/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(2/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(3/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(4/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(5/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(6/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(7/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(8/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+							<tr>
+								<td>新龍之谷Ver. 1704－完整安裝檔(9/9)</td>
+								<td>2025/12/16</td>
+								<td>14.3 GB</td>
+								<td><a href="javascript:;" class="download-btn"></a></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-				<div class="main-section main-official">
-					<a href="javascript:;" class="main-official__item" data-type="video"><span>官方影片區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="guide"><span>官方攻略區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="art"><span>官方美術區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="bgm"><span>官方BGM</span></a>
+			</div>
+			<div class="download-section" data-section="3">
+				<div class="download-head">
+					<div class="download-head__title" data-title="3">系統需求</div>
+				</div>
+				<div class="download-content">
+					<div class="download-grid-1">
+						<div class="download-grid-row">
+							<div class="download-grid-head">項目</div>
+							<div class="download-grid-head">更新日期</div>
+							<div class="download-grid-head">建議配備</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">作業系統</div>
+							<div class="download-grid-content">Windows 10</div>
+							<div class="download-grid-content">Windows 10</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">CPU</div>
+							<div class="download-grid-content">Intel(R) Pentium Core i3 530 以上</div>
+							<div class="download-grid-content">Intel(R) Pentium Core i3 4670 以上</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">記憶體</div>
+							<div class="download-grid-content">4GB</div>
+							<div class="download-grid-content">8GB</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">顯示卡</div>
+							<div class="download-grid-content">Nvidia GeForce GTS 250</div>
+							<div class="download-grid-content">Nvidia GeForce GTX 750</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">DirectX</div>
+							<div class="download-grid-content">Direct X 9.0c 以上</div>
+							<div class="download-grid-content">Direct X 9.0c 以上</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">硬碟空間</div>
+							<div class="download-grid-content">12GB</div>
+							<div class="download-grid-content">18GB</div>
+						</div>
+					</div>
+					<div class="download-grid-2">
+						<div class="download-grid-row">
+							<div class="download-grid-head">項目</div>
+							<div class="download-grid-head">建議配備</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">作業系統</div>
+							<div class="download-grid-content">Windows 10</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">CPU</div>
+							<div class="download-grid-content">Intel(R) Pentium Core i3 4670 以上</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">記憶體</div>
+							<div class="download-grid-content">8GB</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">顯示卡</div>
+							<div class="download-grid-content">Nvidia GeForce GTX 750</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">DirectX</div>
+							<div class="download-grid-content">Direct X 9.0c 以上</div>
+						</div>
+						<div class="download-grid-row">
+							<div class="download-grid-head">硬碟空間</div>
+							<div class="download-grid-content">18GB</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

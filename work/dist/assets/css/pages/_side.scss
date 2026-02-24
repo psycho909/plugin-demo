@@ -10,30 +10,30 @@
 		display: none;
 	}
 	&__start {
-		width: 202px;
-		height: 202px;
+		width: vw2(202px);
+		height: vw2(202px);
 		background-size: cover;
 		background-image: url("./images/btn-gamestart.png");
-        filter: drop-shadow(0px 0px 6px black);
+        filter: drop-shadow(0px 0px vw2(6px) black);
 	}
 	&__box {
-		width: 196px;
+		width: vw2(196px);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		background-color: rgba(#e5dec0, 0.74);
-            box-shadow: 0 0 12px rgba(#000,.7);
+            box-shadow: 0 0 vw2(12px) rgba(#000,.7);
 	}
 	&__list {
 		display: flex;
 		flex-direction: column;
-		font-size: 22px;
-		padding: 20px 0;
+		font-size: vw2(22px);
+		padding: vw2(20px) 0;
 		&-item {
 			color: #827c55;
 			display: flex;
 			text-decoration: none;
-			padding: 8px 0;
+			padding: vw2(8px) 0;
 			position: relative;
 			@include hover {
 				color: #ba8f00;
@@ -48,14 +48,14 @@
 				content: "";
 				display: block;
 				background-size: cover;
-				width: 28px;
-				height: 27px;
-				margin-right: 12px;
+				width: vw2(28px);
+				height: vw2(27px);
+				margin-right: vw2(12px);
 			}
 			&:after {
 				content: none;
 				width: 100%;
-				height: 1px;
+				height: vw2(1px);
 				position: absolute;
 				bottom: 0;
 				left: 50%;
@@ -69,8 +69,8 @@
 			}
 			&[data-type="download"] {
 				&:before {
-					width: 27px;
-					height: 27px;
+					width: vw2(27px);
+					height: vw2(27px);
 					background-image: url("./images/icon-download.png");
 				}
 			}
@@ -94,10 +94,10 @@
 	&__social {
 		display: flex;
 		justify-content: space-between;
-        margin-top: 6px;
+        margin-top: vw2(6px);
 		&-item {
-			width: 27px;
-			height: 27px;
+			width: vw2(27px);
+			height: vw2(27px);
 			background-size: cover;
 			&[data-type="f"] {
 				background-image: url("./images/icon-f.png");
@@ -112,26 +112,26 @@
 	}
 }
 .side-player {
-	width: 180px;
-	height: 109px;
+	width: vw2(180px);
+	height: vw2(109px);
 	background-size: cover;
 	background-image: url("./images/music-border.png");
-	margin-bottom: 12px;
+	margin-bottom: vw2(12px);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
-	padding: 12px;
+	padding: vw2(12px);
 	&__list {
-		width: 14px;
-		height: 11px;
+		width: vw2(14px);
+		height: vw2(11px);
 		background-size: cover;
 		background-image: url("./images/music-list.png");
 		align-self: flex-end;
 	}
 	&__title {
-		width: 130px;
-		font-size: 12px;
+		width: vw2(130px);
+		font-size: vw2(12px);
 		position: relative;
 		overflow: hidden;
 		white-space: nowrap;
@@ -139,11 +139,11 @@
 		line-height: 1;
 		&:before {
 			content: "";
-			width: 15px;
-			height: 15px;
+			width: vw2(15);
+			height: vw2(15);
 			background-size: cover;
 			background-image: url("./images/music-name.png");
-			margin-right: 6px;
+			margin-right: vw2(6px);
 			display: inline-block;
 			vertical-align: middle;
 		}
@@ -152,24 +152,24 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		column-gap: 15px;
+		column-gap: vw2(15px);
 	}
 	&__btn {
 		&-prev {
-			width: 11px;
-			height: 14px;
+			width: vw2(11px);
+			height: vw2(14px);
 			background-size: cover;
 			background-image: url("./images/music-prev.png");
 		}
 		&-next {
-			width: 11px;
-			height: 14px;
+			width: vw2(11px);
+			height: vw2(14px);
 			background-size: cover;
 			background-image: url("./images/music-next.png");
 		}
 		&-play {
-			width: 27px;
-			height: 27px;
+			width: vw2(27px);
+			height: vw2(27px);
 			background-size: cover;
 			background-image: url(".images/music-play.png");
 			&[data-type="play"] {

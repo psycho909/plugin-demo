@@ -1,1 +1,187 @@
-﻿
+﻿.annoc {
+	&-section {
+		width: vw2(1200px);
+		margin: 0 auto;
+		padding: 0 vw2(60px);
+		@include media {
+			width: 100%;
+			padding: 0 vw(2);
+		}
+	}
+	&-head {
+		display: flex;
+        align-items: center;
+		margin-bottom: 22px;
+		@include media {
+			margin-bottom: vw(48);
+		}
+	}
+	&-tabs {
+		width: 825px;
+		height: 86px;
+		background-size: cover;
+		background-image: url("./images/annoc-bg.png");
+		display: flex;
+		filter: drop-shadow(0 4px 8px rgba(#010404, 0.4));
+		justify-content: center;
+		align-items: center;
+		@include media {
+			background-image: url("./images/m-annoc-bg.png");
+			width: vw(764);
+			height: vw(75);
+            filter: drop-shadow(0 vw(4) vw)8 rgba(#010404, 0.4));
+		}
+		&__item {
+			font-size: 28px;
+			font-weight: bold;
+			color: #595757;
+			width: 169px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+            cursor: pointer;
+			@include media {
+				font-size: vw(28);
+                width: vw(187);
+			}
+			&.active {
+				color: #fff;
+				width: 169px;
+				height: 57px;
+				background-size: cover;
+				background-image: url("./images/annoc-item-bg.png");
+				@include media {
+					width: vw(187);
+					height: vw(59);
+					background-image: url("./images/m-annoc-item-bg.png");
+				}
+			}
+		}
+	}
+	&-search {
+		position: relative;
+        width: 223px;
+        margin-left: auto;
+        @include media {
+            width: vw(270);
+        }
+		&__input {
+            width: 100%;
+            height: 53px;
+			background-color: #fff;
+			border-radius: 18px;
+			box-shadow: 0 0 6px rgba(#010404, 0.4);
+            border: none;
+            font-size: 30px;
+            color:#aaaaaa;
+            outline: none;
+            padding: 0 40px;
+            @include media {
+                font-size: vw(30);
+                border-radius: vw(24);
+                box-shadow: 0 0 vw(6) rgba(#010404, 0.4);
+                height: vw(60);
+            }
+		}
+		&__btn {
+			width: 36px;
+			height: 36px;
+			background-size: cover;
+			background-image: url("./images/search-btn.png");
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+			@include media {
+				width: vw(42);
+				height: vw(42);
+			}
+		}
+	}
+	&-content {
+	}
+	&-list {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		border: 1px solid #dbc47d;
+		background-color: rgba(#f2eee1, 0.4);
+		margin-bottom: 46px;
+		@include media {
+			margin-bottom: vw(58);
+			padding: vw(18);
+			border-width: vw(2);
+		}
+	}
+	&-item {
+		display: grid;
+		grid-template-columns: 79px 766px 1fr;
+		align-items: center;
+		text-decoration: none;
+		position: relative;
+		column-gap: 26px;
+		border-bottom: 1px solid #dbc47d;
+		padding: 20px;
+		@include media {
+			padding: vw(44);
+			column-gap: vw(36);
+			grid-template-columns: vw(113) vw(384) 1fr;
+		}
+		&:last-child {
+			border-bottom: none;
+		}
+		&.new {
+			.annoc-item__title {
+				&:before {
+					content: "New!";
+				}
+			}
+		}
+		&__tag {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			// width: vw2(79);
+			width: 100%;
+			height: vw2(46);
+			border-radius: vw2(8px);
+			color: #fff;
+			margin-right: vw2(26);
+			font-size: vw2(24);
+			font-weight: bold;
+			@each $name, $color in $annou-colors {
+				&[data-type="#{$name}"] {
+					background-color: $color;
+				}
+			}
+			@include media {
+				// width: vw(113);
+				height: vw(60);
+				border-radius: vw(10);
+				margin-right: vw(36);
+				font-size: vw(32);
+			}
+		}
+		&__title {
+			font-size: vw2(32);
+			font-weight: bold;
+			color: #333;
+			// width: vw2(766);
+			width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			@include media {
+				font-size: vw(30);
+				// width: vw(384);
+			}
+		}
+		&__date {
+			color: #777;
+			font-size: vw2(22);
+			@include media {
+				font-size: vw(30);
+			}
+		}
+	}
+}

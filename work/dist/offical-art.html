@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant-TW">
 	<head>
 		<meta charset="UTF-8" />
@@ -33,6 +33,7 @@
 		<script src="https://frontend.beanfun.com/plugins/gbox/1.0/gbox.js"></script>
 		<script src="https://tw.hicdn.beanfun.com/plugins/swiper/11.1.9/swiper-bundle.min.js"></script>
 		<script src="./js/PaginationCore.js"></script>
+		<script src="./js/dropdown.js"></script>
 		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.min.js"></script>
 		<!-- 正式用 -->
 		<script src="https://tw.hicdn.beanfun.com/plugins/vue/3.4.19/vue.global.prod.min.js"></script>
@@ -44,7 +45,7 @@
 
 	<body>
 		<script src="https://frontend.beanfun.com/plugins/Fech/1.1.0/Fech.js"></script>
-		<div id="app">
+		<div id="app" class="official">
 			<div class="side-left">
 				<a href="javascript:;" class="side-left__start"></a>
 				<div class="side-left__box">
@@ -193,120 +194,79 @@
 					</div>
 				</div>
 			</div>
-			<div class="main-banner">
-				<div class="main-banner__inner"><img src="./assets/css/images/main-banner.jpg" /></div>
-			</div>
-			<div class="main-content">
-				<div class="main-section main-section--1">
-					<div class="main-ad">
-						<div class="main-ad__content main-ad__swiper swiper">
-							<div class="swiper-wrapper">
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-ad01.jpg" />
-										<img src="./assets/css/images/ad01.jpg" alt="" />
-									</picture>
-								</div>
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-ad01.jpg" />
-										<img src="./assets/css/images/ad01.jpg" alt="" />
-									</picture>
-								</div>
-							</div>
+			<div class="official-section">
+				<div class="official-head">
+					<div class="official-title" data-type="art">官方美術區</div>
+					<div class="official-filters">
+						<div class="official-filter">
+							<select id="mySelect1" class="official-filter__select">
+								<option value="">主視覺</option>
+								<option value="1">官方主視覺</option>
+								<option value="2">活動限定</option>
+								<option value="3">創作聯名</option>
+								<option value="4">週年慶祝</option>
+							</select>
 						</div>
-						<div class="main-ad__swiper-prev main-ad__swiper-btn"></div>
-						<div class="main-ad__swiper-next main-ad__swiper-btn"></div>
-					</div>
-					<div class="main-annou">
-						<div class="main-annou__head">
-							<div class="main-annou__tabs">
-								<a href="javascript:;" class="main-annou__tabs-item">綜合</a>
-								<a href="javascript:;" class="main-annou__tabs-item">活動</a>
-								<a href="javascript:;" class="main-annou__tabs-item">系統</a>
-								<a href="javascript:;" class="main-annou__tabs-item">更新</a>
-							</div>
-							<a href="javascript:;" class="main-annou__tabs-more"></a>
+						<div class="official-filter">
+							<select id="mySelect2" class="official-filter__select">
+								<option value="">場警</option>
+								<option value="1">官方主視覺</option>
+								<option value="2">活動限定</option>
+								<option value="3">創作聯名</option>
+								<option value="4">週年慶祝</option>
+							</select>
 						</div>
-						<div class="main-annou__content">
-							<div class="main-annou__list">
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="event">活動</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="system">系統</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="important">重大</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="update">更新</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="system">系統</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="important">重大</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="update">更新</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-							</div>
+						<div class="official-filter">
+							<select id="mySelect3" class="official-filter__select">
+								<option value="">人物</option>
+								<option value="1">官方主視覺</option>
+								<option value="2">活動限定</option>
+								<option value="3">創作聯名</option>
+								<option value="4">週年慶祝</option>
+							</select>
 						</div>
 					</div>
 				</div>
-				<div class="main-section main-section--2">
-					<div class="main-dc">
-						<div class="main-dc__title">
-							<div class="main-dc__title-text">官方Discord</div>
-							<a href="javascript:;" class="main-dc__title-link">加入官方DC</a>
-						</div>
-						<div class="main-dc__content"></div>
+				<div class="official-content">
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
 					</div>
-					<div class="main-mall">
-						<div class="main-mall__title">
-							<div class="main-mall__title-text">商城預覽</div>
-						</div>
-						<div class="main-mall__content main-mall__swiper swiper">
-							<div class="swiper-wrapper">
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-mall01.jpg" />
-										<img src="./assets/css/images/mall01.jpg" alt="" />
-									</picture>
-								</div>
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-mall01.jpg" />
-										<img src="./assets/css/images/mall01.jpg" alt="" />
-									</picture>
-								</div>
-							</div>
-							<div class="main-mall__swiper-prev main-mall__swiper-btn"></div>
-							<div class="main-mall__swiper-next main-mall__swiper-btn"></div>
-						</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
+					</div>
+					<div class="official-item">
+						<picture>
+							<source media="(max-width:768px )" srcset="./assets/css/images/official01.jpg" />
+							<img src="./assets/css/images/official01.jpg" alt="" />
+						</picture>
 					</div>
 				</div>
-				<div class="main-section main-official">
-					<a href="javascript:;" class="main-official__item" data-type="video"><span>官方影片區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="guide"><span>官方攻略區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="art"><span>官方美術區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="bgm"><span>官方BGM</span></a>
-				</div>
+
+				<div id="pager-container" class="pagination-container"></div>
 			</div>
 		</div>
 

@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant-TW">
 	<head>
 		<meta charset="UTF-8" />
@@ -44,7 +44,7 @@
 
 	<body>
 		<script src="https://frontend.beanfun.com/plugins/Fech/1.1.0/Fech.js"></script>
-		<div id="app">
+		<div id="app" class="common">
 			<div class="side-left">
 				<a href="javascript:;" class="side-left__start"></a>
 				<div class="side-left__box">
@@ -193,120 +193,42 @@
 					</div>
 				</div>
 			</div>
-			<div class="main-banner">
-				<div class="main-banner__inner"><img src="./assets/css/images/main-banner.jpg" /></div>
-			</div>
-			<div class="main-content">
-				<div class="main-section main-section--1">
-					<div class="main-ad">
-						<div class="main-ad__content main-ad__swiper swiper">
-							<div class="swiper-wrapper">
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-ad01.jpg" />
-										<img src="./assets/css/images/ad01.jpg" alt="" />
-									</picture>
-								</div>
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-ad01.jpg" />
-										<img src="./assets/css/images/ad01.jpg" alt="" />
-									</picture>
-								</div>
-							</div>
-						</div>
-						<div class="main-ad__swiper-prev main-ad__swiper-btn"></div>
-						<div class="main-ad__swiper-next main-ad__swiper-btn"></div>
+			<div class="annoc-section">
+				<div class="annoc-head">
+					<div class="annoc-tabs">
+						<div class="annoc-tabs__item active">綜合公告</div>
+						<div class="annoc-tabs__item">最新公告</div>
+						<div class="annoc-tabs__item">系統公告</div>
+						<div class="annoc-tabs__item">重大更新</div>
 					</div>
-					<div class="main-annou">
-						<div class="main-annou__head">
-							<div class="main-annou__tabs">
-								<a href="javascript:;" class="main-annou__tabs-item">綜合</a>
-								<a href="javascript:;" class="main-annou__tabs-item">活動</a>
-								<a href="javascript:;" class="main-annou__tabs-item">系統</a>
-								<a href="javascript:;" class="main-annou__tabs-item">更新</a>
-							</div>
-							<a href="javascript:;" class="main-annou__tabs-more"></a>
-						</div>
-						<div class="main-annou__content">
-							<div class="main-annou__list">
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="event">活動</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="system">系統</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="important">重大</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="update">更新</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="system">系統</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="important">重大</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-								<a href="javascript:;" class="main-annou__item">
-									<span class="main-annou__item-tag" data-type="update">更新</span>
-									<span class="main-annou__item-title">活動訊息大約十五個字最多活動活</span>
-									<span class="main-annou__item-date">12/24</span>
-								</a>
-							</div>
-						</div>
+					<div class="annoc-search">
+						<input type="text" class="annoc-search__input" />
+						<a href="javascript:;" class="annoc-search__btn"></a>
 					</div>
 				</div>
-				<div class="main-section main-section--2">
-					<div class="main-dc">
-						<div class="main-dc__title">
-							<div class="main-dc__title-text">官方Discord</div>
-							<a href="javascript:;" class="main-dc__title-link">加入官方DC</a>
-						</div>
-						<div class="main-dc__content"></div>
-					</div>
-					<div class="main-mall">
-						<div class="main-mall__title">
-							<div class="main-mall__title-text">商城預覽</div>
-						</div>
-						<div class="main-mall__content main-mall__swiper swiper">
-							<div class="swiper-wrapper">
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-mall01.jpg" />
-										<img src="./assets/css/images/mall01.jpg" alt="" />
-									</picture>
-								</div>
-								<div class="swiper-slide">
-									<picture>
-										<source media="(max-width:768px )" srcset="./assets/css/images/m-mall01.jpg" />
-										<img src="./assets/css/images/mall01.jpg" alt="" />
-									</picture>
-								</div>
-							</div>
-							<div class="main-mall__swiper-prev main-mall__swiper-btn"></div>
-							<div class="main-mall__swiper-next main-mall__swiper-btn"></div>
-						</div>
-					</div>
+				<div class="annoc-list">
+					<a href="javascript:;" class="annoc-item">
+						<span class="annoc-item__tag" data-type="event">活動</span>
+						<span class="annoc-item__title">一般的活動公告，識別色是藍色、公告標題文字長度字元共二字左右</span>
+						<span class="annoc-item__date">12/24</span>
+					</a>
+					<a href="javascript:;" class="annoc-item">
+						<span class="annoc-item__tag" data-type="event">活動</span>
+						<span class="annoc-item__title">一般的活動公告，識別色是藍色、公告標題文字長度字元共二字左右</span>
+						<span class="annoc-item__date">12/24</span>
+					</a>
+					<a href="javascript:;" class="annoc-item">
+						<span class="annoc-item__tag" data-type="event">活動</span>
+						<span class="annoc-item__title">一般的活動公告，識別色是藍色、公告標題文字長度字元共二字左右</span>
+						<span class="annoc-item__date">12/24</span>
+					</a>
+					<a href="javascript:;" class="annoc-item">
+						<span class="annoc-item__tag" data-type="event">活動</span>
+						<span class="annoc-item__title">一般的活動公告，識別色是藍色、公告標題文字長度字元共二字左右</span>
+						<span class="annoc-item__date">12/24</span>
+					</a>
 				</div>
-				<div class="main-section main-official">
-					<a href="javascript:;" class="main-official__item" data-type="video"><span>官方影片區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="guide"><span>官方攻略區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="art"><span>官方美術區</span></a>
-					<a href="javascript:;" class="main-official__item" data-type="bgm"><span>官方BGM</span></a>
-				</div>
+				<div id="pager-container" class="pagination-container"></div>
 			</div>
 		</div>
 
