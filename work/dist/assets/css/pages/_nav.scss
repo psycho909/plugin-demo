@@ -64,6 +64,21 @@
 				height: 1px;
 				background-color: #3f3b0f;
 			}
+			@include media {
+				color: #f3eedd;
+				&:before {
+					content: "";
+					width: vw(29);
+					height: vw(18);
+					background-size: cover;
+					background-image: url("./images/menu-arrow@2x.png");
+					position: absolute;
+					top: 50%;
+					right: 0;
+					left: unset;
+					transform: translateY(-50%) scale(-1);
+				}
+			}
 		}
 		.nav-li2 {
 			&:last-child {
@@ -86,8 +101,12 @@
 				left: 50%;
 				transform: translateX(-50%);
 				background-image: linear-gradient(to right, transparent 0%, #3f3b0f 30%, #3f3b0f 70%, transparent 100%);
-				@include media {
-					height: vw(2);
+			}
+			@include media {
+				color: #dac88c;
+				padding-left: vw(8);
+				&:before {
+					height: 0;
 				}
 			}
 		}

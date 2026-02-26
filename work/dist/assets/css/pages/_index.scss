@@ -45,6 +45,7 @@ body {
 	position: relative;
 	width: 100%;
 }
+
 .scroll-style {
 	&::-webkit-scrollbar {
 		width: var(--scroll-width, 5px);
@@ -56,6 +57,34 @@ body {
 	}
 }
 
+.common {
+	position: relative;
+	// background-image: url("./images/common-bg.jpg");
+	// background-position: center 0;
+	// background-size: cover;
+	padding-top: vw2(400px);
+	padding-bottom: vw2(148px);
+	&:before {
+		content: "";
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		background-image: url("./images/common-bg.jpg");
+		background-position: center 0;
+		background-size: vw2(1920) vw2(2494);
+		@include media {
+			background-image: url('./images/m-common-bg.jpg');
+			background-size: vw(768) vw(2648);
+		}
+	}
+	@include media {
+		padding-top: vw(150);
+		padding-bottom: vw(150);
+	}
+}
 #app {
 	width: 100%;
 	position: relative;

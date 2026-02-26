@@ -1,1 +1,119 @@
-﻿
+﻿.annou-page {
+	&-section {
+		min-height: 100vh;
+		width: vw2(1200px);
+		margin: 0 auto;
+		padding: 0 vw2(60px);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		position: relative;
+		@include media {
+			width: 100%;
+			padding: 0 vw(40);
+		}
+	}
+	&-container {
+		width: 100%;
+		background-color: rgba(#f2eee1, 0.61);
+		margin-bottom: vw2(52px);
+		border-bottom: vw2(2px) solid #ba8f00;
+		@include media {
+			margin-bottom: vw(52);
+			border-bottom: vw(2) solid #ba8f00;
+		}
+	}
+	&-head {
+		display: flex;
+		border-bottom: vw2(2px) solid #ba8f00;
+		padding: vw2(16px) vw2(40px);
+		align-items: center;
+		@include media {
+			border-bottom: vw(2) solid #ba8f00;
+			padding: vw(16px) vw(40px);
+		}
+		&__tag {
+			width: vw2(105px);
+			height: vw2(61px);
+			border-radius: vw2(10px);
+			font-size: vw2(32px);
+			color: #fff;
+			margin-right: vw2(36px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			@include media {
+				width: vw(105);
+				height: vw(61);
+				font-size: vw(32);
+				border-radius: vw(10);
+				margin-right: vw(36);
+			}
+			@each $name, $color in $annou-colors {
+				&[data-type="#{$name}"] {
+					background-color: $color;
+				}
+			}
+		}
+		&__title {
+			font-size: vw2(36px);
+			color: #595757;
+			@include media {
+				font-size: vw(36);
+			}
+		}
+	}
+	&-content {
+		padding: vw2(40px);
+		position: relative;
+		word-break: break-all;
+		@include media {
+			padding: vw(40);
+		}
+		* {
+			font-size: vw2(30);
+			@include media {
+				font-size: vw(30);
+			}
+		}
+		table {
+			width: auto !important;
+			border-collapse: collapse;
+			table-layout: auto;
+			overflow-x: auto;
+			@include media {
+				overflow-x: auto !important;
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: flex;
+				white-space: nowrap;
+			}
+			.colgroup {
+				display: none;
+			}
+			th,
+			td {
+				text-align: center;
+				word-break: normal;
+			}
+		}
+	}
+	&-back {
+		font-size: vw2(30px);
+		color: #e8c967;
+		border-radius: vw2(8px);
+		text-decoration: none;
+		background-color: rgba(#333333, 0.7);
+		padding: vw2(12px) vw2(58px);
+		box-shadow: vw2(5px) vw2(5px) vw2(2px) vw2(2px) rgba(35, 35, 35, 0.5);
+		@include hover {
+			background-color: rgba(#333333, 1);
+		}
+		@include media {
+			padding: vw(12px) vw(58px);
+			box-shadow: vw(5px) vw(5px) vw(2px) vw(2px) rgba(35, 35, 35, 0.5);
+			border-radius: vw(8px);
+			font-size: vw(30px);
+		}
+	}
+}

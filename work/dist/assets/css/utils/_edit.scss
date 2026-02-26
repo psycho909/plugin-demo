@@ -82,6 +82,27 @@ $edit-subclass:__content;
         td {
             border: 1px solid $edit-table-border-color !important;
         }
+        table {
+			width: auto !important;
+			border-collapse: collapse;
+			table-layout: auto;
+			overflow-x: auto;
+			@include media {
+				overflow-x: auto !important;
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: flex;
+				white-space: nowrap;
+			}
+			.colgroup {
+				display: none;
+			}
+			th,
+			td {
+				text-align: center;
+				word-break: normal;
+			}
+		}
         h1 > *{
             font-size: 42px !important;
             color: #3a0000 !important;

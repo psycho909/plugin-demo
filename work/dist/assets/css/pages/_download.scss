@@ -64,6 +64,7 @@
 		width: vw2(1200px);
 		margin: 0 auto;
 		padding: 0 vw2(60px);
+		position: relative;
 		&[data-section="1"],
 		&[data-section="2"] {
 			@include media {

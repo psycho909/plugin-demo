@@ -5,18 +5,6 @@
 .official-art {
 }
 
-.common {
-	position: relative;
-	background-image: url("./images/common-bg.jpg");
-	background-position: center 0;
-	background-size: cover;
-	padding-top: vw2(400px);
-	padding-bottom: vw2(148px);
-	@include media {
-		padding-top: vw(150);
-		padding-bottom: vw(150);
-	}
-}
 .official {
 	&-head {
 		display: flex;
@@ -154,6 +142,7 @@
 		width: vw2(1200px);
 		margin: 0 auto;
 		padding: 0 vw2(60px);
+		position: relative;
 		@include media {
 			width: 100%;
 			padding: 0 vw(82);
