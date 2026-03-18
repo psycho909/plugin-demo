@@ -1,6 +1,17 @@
 import { MessageLB } from "./lightbox.js";
 import { setCookie, getCookie, deleteCookie, loadingShow, loadingHide } from "./tool.js";
 import useEventStore from "./store.js";
+import navbar from "./components/navbar.js";
+import side from "./components/side.js";
+import main from "./components/main.js";
+import bgm from "./components/bgm.js";
+import update from "./components/update.js";
+import guide from "./components/guide.js";
+import art from "./components/art.js";
+import download from "./components/download.js";
+import annou from "./components/annou.js";
+import annouPage from "./components/annou-page.js";
+import eventAnnouPage from "./components/event-annou-page.js";
 import {} from "./api.js";
 // MessageLB("目前尚未開放登入，敬請期待後續精彩內容")
 // 阻止瀏覽器預設scroll
@@ -21,9 +32,11 @@ const pinia = Pinia.createPinia();
 const { storeToRefs } = Pinia;
 
 let app = Vue.createApp({
+	components: {
+		side,navbar,"main-page":main,bgm,update,guide,art,download,annou,annouPage,eventAnnouPage
+	},
 	setup() {
 		const store = useEventStore();
-		let token = Vue.ref("");
 		Vue.onMounted(async () => {
 			try {
 				await store.loadGameConfig();
@@ -36,52 +49,3 @@ let app = Vue.createApp({
 });
 app.use(pinia);
 app.mount("#app");
-
-var swiperAd = new Swiper(".main-ad__swiper", {
-	navigation: {
-		nextEl: ".main-ad__swiper-next",
-		prevEl: ".main-ad__swiper-prev"
-	}
-});
-
-var swiperMall = new Swiper(".main-mall__swiper", {
-	navigation: {
-		nextEl: ".main-mall__swiper-next",
-		prevEl: ".main-mall__swiper-prev"
-	}
-});
-
-if (typeof createCustomDropdown == "function") {
-	createCustomDropdown(document.getElementById("mySelect1"));
-	createCustomDropdown(document.getElementById("mySelect2"));
-	createCustomDropdown(document.getElementById("mySelect3"));
-}
-
-if (isMobile.any) {
-	let pg = new PaginationCore({
-		container: document.querySelector("#pager-container"),
-		totalPage: 20,
-		initialPage: 1,
-		pageNumberLimit: 10,
-		mode: "select",
-		labels: {
-			first: "第一頁",
-			last: "最後一頁",
-			prev: "上一頁",
-			next: "下一頁"
-		}
-	});
-} else {
-	let pg = new PaginationCore({
-		container: document.querySelector("#pager-container"),
-		totalPage: 20,
-		initialPage: 1,
-		pageNumberLimit: 10,
-		labels: {
-			first: "第一頁",
-			last: "最後一頁",
-			prev: "上一頁",
-			next: "下一頁"
-		}
-	});
-}

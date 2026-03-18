@@ -169,13 +169,19 @@
 		background-color: #000;
 		position: relative;
 		cursor: pointer;
-		overflow: hidden;
+		// overflow: hidden;
 		@include media {
 			width: vw(294px);
 			height: vw(294);
 		}
+		&__img {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
 		img {
 			max-width: 100%;
+			width: 100%;
 			object-fit: cover;
 		}
 		@include hover {
@@ -190,6 +196,13 @@
 			}
 			.official-item__info {
 				color: #f0d13a;
+			}
+		}
+		&__art {
+			@include hover {
+				&:before {
+					content: none;
+				}
 			}
 		}
 		&__info {
@@ -211,9 +224,35 @@
 				font-size: vw(32);
 			}
 		}
+		&__preview {
+			position: absolute;
+			top: 100%; /* 定位在下方 */
+			bottom: auto; /* 重置 bottom */
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 99;
+			width: vw2(300); /* 大圖寬度 */
+			margin-top: 10px; /* 往下推一點間距 */
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+			@include media {
+				width: vw(300);
+			}
+			&.is-top {
+				top: auto; /* 取消下方定位 */
+				bottom: 100%; /* 改定位在上方 */
+				margin-top: 0;
+				margin-bottom: 10px; /* 往上推一點間距 */
+			}
+			img {
+				width: 100%;
+				display: block;
+			}
+		}
 	}
 }
-
+.pagination-container {
+	position: relative;
+}
 .pagination-numbers {
 	font-size: vw2(28px);
 	color: #777777;
@@ -227,6 +266,9 @@
 	&__symbol {
 		cursor: pointer;
 		font-weight: bold;
+		@include hover {
+			color: #ba8f00;
+		}
 		&.disabled {
 			cursor: default;
 			color: #aaaaaa;
@@ -239,6 +281,7 @@
 		}
 		&.active {
 			color: #ba8f00;
+			text-decoration: underline;
 		}
 	}
 }
@@ -256,6 +299,8 @@
 	box-shadow: 0 vw2(4) vw2(6) vw2(2) rgba(126, 105, 35, 0.4);
 	justify-content: center;
 	padding: vw2(8) vw2(24);
+	position: relative;
+	z-index: 10;
 	&.active {
 		box-shadow: 0 vw2(4) vw2(6) vw2(2) rgba(126, 105, 35, 0.4);
 		border: none;
@@ -298,6 +343,9 @@
 .dropdown-items {
 	border-radius: vw2(18px);
 	background-color: #f2eee1;
+	margin-top: 0;
+	z-index: 8;
+	top: 0;
 	@include media {
 		border-radius: vw(25);
 	}
@@ -311,6 +359,9 @@
 	&.same-as-selected {
 		background-color: transparent;
 		color: #ba8f00;
+	}
+	&.disabled{
+		visibility: hidden !important;
 	}
 	@include hover {
 		background-color: transparent;
@@ -328,7 +379,7 @@
 		content: "";
 		width: 80%;
 		height: vw2(2);
-		background-image: linear-gradient(to right, transparent 0%, #3f3b0f 30%, #3f3b0f 70%, transparent 100%);
+		background-image: linear-gradient(to right, transparent 0%, #827c55 30%, #827c55 70%, transparent 100%);
 		position: absolute;
 		bottom: 0;
 		left: 50%;

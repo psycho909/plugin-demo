@@ -1,0 +1,851 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的網站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* 進場動畫 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* 滾動進場動畫類別 */
+        .animate-on-scroll {
+            opacity: 0;
+        }
+
+        .animate-on-scroll.animated {
+            animation-duration: 0.8s;
+            animation-fill-mode: both;
+        }
+
+        /* 導航欄樣式 */
+        nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        nav li {
+            animation: fadeInDown 0.8s ease-out backwards;
+        }
+
+        nav li:nth-child(1) { animation-delay: 0.1s; }
+        nav li:nth-child(2) { animation-delay: 0.2s; }
+        nav li:nth-child(3) { animation-delay: 0.3s; }
+        nav li:nth-child(4) { animation-delay: 0.4s; }
+        nav li:nth-child(5) { animation-delay: 0.5s; }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        nav a:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        nav a:hover::before {
+            left: 0;
+        }
+
+        nav a:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        /* 區塊通用樣式 */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #667eea;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: transform 0.6s ease;
+        }
+
+        section h2.animated::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        /* 最新消息 */
+        #news {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .news-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .news-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .news-card:hover h3 {
+            color: #764ba2;
+        }
+
+        .news-date {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 產品介紹 */
+        #products {
+            background: white;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.05) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .product-card:hover::before {
+            transform: scale(1);
+        }
+
+        .product-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover h3 {
+            transform: scale(1.1);
+        }
+
+        .product-card p {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 關於我們 */
+        #about {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .about-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            line-height: 2;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+        }
+
+        .about-content:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+
+        .about-content p {
+            transition: all 0.3s ease;
+        }
+
+        .about-content:hover p {
+            transform: translateX(5px);
+        }
+
+        /* 聯絡我們 */
+        #contact {
+            background: white;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: #f5f7fa;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #667eea;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left center;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px) scale(1.02);
+            animation: pulse 0.3s ease;
+        }
+
+        /* 常見問題 */
+        #faq {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            background: #667eea;
+            color: white;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .faq-question::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #764ba2;
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #764ba2;
+            padding-left: 2rem;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .faq-question:hover::before {
+            transform: scaleY(1);
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-question.active::after {
+            content: '−';
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 1.5rem;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            padding: 1.5rem;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            nav ul {
+                gap: 1rem;
+            }
+
+            nav a {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            section {
+                padding: 3rem 1rem;
+            }
+
+            section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav>
+        <ul>
+            <li><a href="#news">最新消息</a></li>
+            <li><a href="#products">產品介紹</a></li>
+            <li><a href="#about">關於我們</a></li>
+            <li><a href="#contact">聯絡我們</a></li>
+            <li><a href="#faq">常見問題</a></li>
+        </ul>
+    </nav>
+
+    <!-- 1. 最新消息 -->
+    <section id="news">
+        <h2>最新消息</h2>
+        <div class="news-grid">
+            <div class="news-card">
+                <div class="news-date">2024-03-01</div>
+                <h3>新產品發布會</h3>
+                <p>我們很高興宣布將於下個月舉辦新產品發布會，敬請期待我們最新的創新成果。</p>
+            </div>
+            <div class="news-card">
+                <div class="news-date">2024-02-25</div>
+                <h3>公司獲獎殊榮</h3>
+                <p>本公司榮獲年度最佳企業獎，感謝所有客戶與合作夥伴的支持。</p>
+            </div>
+            <div class="news-card">
+                <div class="news-date">2024-02-20</div>
+                <h3>服務升級通知</h3>
+                <p>為了提供更好的服務體驗，我們將進行系統升級，期間可能會有短暫的服務中斷。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. 產品介紹 -->
+    <section id="products">
+        <h2>產品介紹</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <h3>產品 A</h3>
+                <p>高品質、高性能的解決方案，適合各種商業需求。</p>
+            </div>
+            <div class="product-card">
+                <h3>產品 B</h3>
+                <p>創新設計、用戶友好的介面，讓工作更有效率。</p>
+            </div>
+            <div class="product-card">
+                <h3>產品 C</h3>
+                <p>專業級功能、企業級安全，值得信賴的選擇。</p>
+            </div>
+            <div class="product-card">
+                <h3>產品 D</h3>
+                <p>智能化服務、全天候支援，滿足您的所有需求。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 關於我們 -->
+    <section id="about">
+        <h2>關於我們</h2>
+        <div class="about-content">
+            <p>我們是一家致力於提供優質產品和服務的公司，成立於2010年。多年來，我們始終堅持以客戶為中心的理念，不斷創新和改進。</p>
+            <br>
+            <p>我們的團隊由一群充滿熱情和專業知識的人才組成，致力於為客戶創造最大價值。我們相信，通過持續的努力和創新，我們能夠為社會帶來積極的影響。</p>
+            <br>
+            <p>我們的使命是通過創新的解決方案，幫助客戶實現他們的目標，並建立長期的合作關係。</p>
+        </div>
+    </section>
+
+    <!-- 4. 聯絡我們 -->
+    <section id="contact">
+        <h2>聯絡我們</h2>
+        <div class="contact-form">
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">姓名</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">電子郵件</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">電話</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="message">訊息內容</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">送出訊息</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 5. 常見問題 -->
+    <section id="faq">
+        <h2>常見問題</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    如何購買您的產品？
+                </div>
+                <div class="faq-answer">
+                    您可以透過我們的網站直接下單，或是聯絡我們的客服團隊，我們會為您提供詳細的購買流程說明。
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    產品保固期有多長？
+                </div>
+                <div class="faq-answer">
+                    我們的產品提供一年的保固服務，在保固期內如有任何品質問題，我們將免費為您維修或更換。
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    可以退貨嗎？
+                </div>
+                <div class="faq-answer">
+                    購買後7天內，如產品未使用且保持完整包裝，可以申請退貨。詳細退貨政策請參考我們的服務條款。
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    配送需要多久時間？
+                </div>
+                <div class="faq-answer">
+                    一般配送時間為3-5個工作天，偏遠地區可能需要更長時間。我們會在出貨後提供追蹤號碼。
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    如何聯繫客服？
+                </div>
+                <div class="faq-answer">
+                    您可以透過電話、電子郵件或是填寫「聯絡我們」的表單與我們聯繫，我們的客服團隊會盡快回覆您。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 平滑滾動效果
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // 獲取當前的 zoom 縮放比例
+                const bodyElement = document.querySelector('body');
+                const zoomLevel = parseFloat(window.getComputedStyle(bodyElement).zoom) || 1;
+                
+                // 計算目標位置時要考慮 zoom 比例
+                const targetPosition = targetSection.offsetTop * zoomLevel;
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                const duration = 800; // 滾動持續時間（毫秒）
+                let start = null;
+
+                // 緩動函數（ease-in-out）
+                function easeInOutQuad(t) {
+                    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+                }
+
+                // 動畫函數
+                function animation(currentTime) {
+                    if (start === null) start = currentTime;
+                    const timeElapsed = currentTime - start;
+                    const progress = Math.min(timeElapsed / duration, 1);
+                    const ease = easeInOutQuad(progress);
+                    
+                    window.scrollTo(0, startPosition + distance * ease);
+                    
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(animation);
+                    }
+                }
+
+                requestAnimationFrame(animation);
+            });
+        });
+
+        // FAQ 展開/收合功能
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const answer = this.nextElementSibling;
+                answer.classList.toggle('active');
+            });
+        });
+
+        // 表單提交處理
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('感謝您的訊息！我們會盡快與您聯繫。');
+            this.reset();
+        });
+
+        // 滾動時導航欄高亮顯示當前區塊
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('nav a');
+            
+            // 獲取當前的 zoom 縮放比例
+            const bodyElement = document.querySelector('body');
+            const zoomLevel = parseFloat(window.getComputedStyle(bodyElement).zoom) || 1;
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop * zoomLevel;
+                const sectionHeight = section.clientHeight * zoomLevel;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.style.background = '';
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.style.background = 'rgba(255, 255, 255, 0.2)';
+                }
+            });
+        });
+
+        // 滾動觸發動畫
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.news-card, .product-card, .about-content, .faq-item, section h2');
+            
+            // 獲取當前的 zoom 縮放比例
+            const bodyElement = document.querySelector('body');
+            const zoomLevel = parseFloat(window.getComputedStyle(bodyElement).zoom) || 1;
+            
+            elements.forEach((element, index) => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementBottom = element.getBoundingClientRect().bottom;
+                const windowHeight = window.innerHeight;
+                
+                // 當元素進入視窗時觸發動畫
+                if (elementTop < windowHeight * 0.85 && elementBottom > 0) {
+                    // 根據不同元素類型設定不同動畫
+                    if (element.classList.contains('news-card')) {
+                        element.style.animation = `fadeInUp 0.8s ease forwards ${index * 0.1}s`;
+                    } else if (element.classList.contains('product-card')) {
+                        element.style.animation = `scaleIn 0.8s ease forwards ${index * 0.15}s`;
+                    } else if (element.classList.contains('about-content')) {
+                        element.style.animation = 'fadeInLeft 0.8s ease forwards';
+                    } else if (element.classList.contains('faq-item')) {
+                        element.style.animation = `fadeInRight 0.6s ease forwards ${index * 0.1}s`;
+                    } else if (element.tagName === 'H2') {
+                        element.classList.add('animated');
+                        element.style.animation = 'fadeInDown 0.8s ease forwards';
+                    }
+                    
+                    element.style.opacity = '1';
+                }
+            });
+        }
+
+        // 初始化時執行一次
+        handleScrollAnimation();
+        
+        // 監聽滾動事件
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(handleScrollAnimation, 50);
+        });
+
+        // 頁面載入完成後，為元素設定初始透明度
+        window.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.news-card, .product-card, .about-content, .faq-item');
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+            });
+        });
+        			function ZoomAdapter({ baseWidth = 1920, elementSelector = "body", debounceDelay = 100 } = {}) {
+				function adjustZoom() {
+					// 獲取要縮放的元素
+					const scaleElement = document.querySelector(elementSelector);
+
+					// 獲取當前視窗寬度
+					const windowWidth = document.documentElement.clientWidth;
+
+					// 計算縮放比例（基於baseWidth的寬度）
+					const scaleFactor = windowWidth / baseWidth;
+
+					// 獲取文檔根元素的最小寬度
+					const rootElement = document.documentElement;
+					const rootStyles = window.getComputedStyle(rootElement);
+					const minWidth = parseFloat(rootStyles.getPropertyValue("min-width"));
+
+					// 根據條件應用縮放
+					if (windowWidth <= baseWidth) {
+						// 當視窗寬度小於等於baseWidth時，按比例縮放
+						// scaleElement.style.transform = `scale(${scaleFactor})`;
+						scaleElement.style.zoom = scaleFactor;
+					} else if (windowWidth > baseWidth && windowWidth > minWidth) {
+						// 當視窗寬度大於baseWidth且大於最小寬度時，不縮放（比例為1）
+						// scaleElement.style.transform = "scale(1)";
+						scaleElement.style.zoom = 1;
+					}
+					// 隱含的else：如果窗口寬度小於等於最小寬度，不做任何處理
+				}
+
+				function debounce(func, delay) {
+					let timeout;
+					return () => {
+						clearTimeout(timeout);
+						timeout = setTimeout(func, delay);
+					};
+				}
+
+				// 初始化縮放
+				adjustZoom();
+
+				// 監聽視窗大小變化
+				window.addEventListener(
+					"resize",
+					debounce(() => adjustZoom(), debounceDelay)
+				);
+			}
+
+			// 直接使用
+			ZoomAdapter({ baseWidth: 1200, elementSelector: "body" });
+    </script>
+</body>
+</html>

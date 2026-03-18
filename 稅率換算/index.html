@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026年 台灣遺產稅極簡試算工具</title>
+    <meta name="description" content="2026年最新台灣遺產稅極簡試算工具，專為一般民眾設計，白話文好懂。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="container">
+        <header>
+            <h1>遺產稅試算器</h1>
+            <p>適用 2025/2026 最新標準｜白話文好懂版</p>
+        </header>
+
+        <div class="calculator-grid">
+            <!-- Left Column: Inputs -->
+            <div class="input-section glass-panel">
+                <form id="taxForm">
+                    <!-- Section 1: Assets -->
+                    <div class="form-group-section">
+                        <h2>
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            留下多少財產？
+                        </h2>
+                        
+                        <div class="form-control">
+                            <label for="realEstate">房地產現值 (房屋評定現值 + 土地公告現值)</label>
+                            <div class="input-wrapper">
+                                <span class="currency">NT$</span>
+                                <input type="number" id="realEstate" placeholder="0" min="0" step="10000">
+                            </div>
+                            <small>※非市價，通常遠低於市價，可看稅單或自然人憑證查詢。</small>
+                        </div>
+
+                        <div class="form-control">
+                            <label for="financialAssets">現金、存款、股票、基金等金融資產</label>
+                            <div class="input-wrapper">
+                                <span class="currency">NT$</span>
+                                <input type="number" id="financialAssets" placeholder="0" min="0" step="10000">
+                            </div>
+                        </div>
+
+                        <div class="form-control">
+                            <label for="otherAssets">其他資產 (車輛、保單等)</label>
+                            <div class="input-wrapper">
+                                <span class="currency">NT$</span>
+                                <input type="number" id="otherAssets" placeholder="0" min="0" step="10000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Deductions -->
+                    <div class="form-group-section mt-4">
+                        <h2>
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                            繼承人狀況？
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-control flex-1">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="hasSpouse">
+                                    <span class="custom-checkbox"></span>
+                                    過世長輩的配偶還健在嗎？ (可扣除 553萬)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-3 card-highlight">
+                            <div class="form-control flex-1 p-0">
+                                <label for="childrenCount" style="font-size: 1.1rem; color: #fff;">長輩總共有幾個「子女」？</label>
+                                <div class="number-input mt-2">
+                                    <button type="button" class="btn-minus" onclick="adjustValue('childrenCount', -1)">-</button>
+                                    <input type="number" id="childrenCount" value="1" min="0" max="20">
+                                    <button type="button" class="btn-plus" onclick="adjustValue('childrenCount', 1)">+</button>
+                                </div>
+                                <div class="tip-box mt-3">
+                                    <strong>
+                                        <svg style="display:inline;width:14px;height:14px;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                        代位繼承情境說明：
+                                    </strong><br>
+                                    如果您是「爸爸過世，代替爸爸繼承阿嬤財產」，子女數請填寫<strong>阿嬤原本的子女總數</strong>。<br>
+                                    <em>例如：阿嬤有 2位姑姑 + 1位已過世的爸爸，即使由您與弟弟代位繼承，這裡仍應填「3」。(代位繼承不增加扣除額)</em>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-3">
+                            <div class="form-control flex-1">
+                                <label for="disabledCount">繼承人中，有「重度以上」身心障礙手冊的人數？</label>
+                                <div class="number-input">
+                                    <button type="button" class="btn-minus" onclick="adjustValue('disabledCount', -1)">-</button>
+                                    <input type="number" id="disabledCount" value="0" min="0" max="10">
+                                    <button type="button" class="btn-plus" onclick="adjustValue('disabledCount', 1)">+</button>
+                                </div>
+                                <small>每人多扣 693 萬</small>
+                            </div>
+                        </div>
+
+                        <!-- 進階選項 -->
+                        <div class="advanced-section mt-4">
+                            <details>
+                                <summary>顯示進階選項（父母、兄弟姊妹、喪葬費等）</summary>
+                                <div class="details-content mt-3">
+                                    <div class="form-row">
+                                        <div class="form-control flex-1">
+                                            <label for="parentsCount">被繼承人的父母還健在嗎？</label>
+                                            <div class="number-input">
+                                                <button type="button" class="btn-minus" onclick="adjustValue('parentsCount', -1)">-</button>
+                                                <input type="number" id="parentsCount" value="0" min="0" max="2">
+                                                <button type="button" class="btn-plus" onclick="adjustValue('parentsCount', 1)">+</button>
+                                            </div>
+                                            <small>每人 138 萬</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-3">
+                                        <div class="form-control flex-1">
+                                            <label for="siblingCount">受被繼承人扶養的「兄弟姊妹或祖父母」人數？</label>
+                                            <div class="number-input">
+                                                <button type="button" class="btn-minus" onclick="adjustValue('siblingCount', -1)">-</button>
+                                                <input type="number" id="siblingCount" value="0" min="0" max="20">
+                                                <button type="button" class="btn-plus" onclick="adjustValue('siblingCount', 1)">+</button>
+                                            </div>
+                                            <small>每人 56 萬（僅限被繼承人生前確實扶養者）</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-3">
+                                        <div class="form-control flex-1">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" id="funeralExpense" checked>
+                                                <span class="custom-checkbox"></span>
+                                                扣除喪葬費 (預設扣除 138萬)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="result-section glass-panel highlight-panel">
+                <h2>試算結果</h2>
+                
+                <div class="result-card">
+                    <div class="result-row">
+                        <span class="label">遺產總額</span>
+                        <span class="value" id="resTotalEstate">NT$ 0</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="result-row">
+                        <span class="label">基本免稅額 (人人都有)</span>
+                        <span class="value subtract">- NT$ 13,330,000</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="label">身分扣除額總計</span>
+                        <span class="value subtract" id="resTotalDeductions">- NT$ 0</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="result-row net-estate">
+                        <span class="label">超過免稅標準的「課稅淨額」</span>
+                        <span class="value" id="resNetEstate">NT$ 0</span>
+                    </div>
+                </div>
+
+                <div class="tax-result-card mt-4">
+                    <div class="tax-rate-badge" id="taxRateBadge">稅率 0%</div>
+                    <h3>預估要繳的遺產稅</h3>
+                    <div class="final-tax-amount" id="resTaxPayable">NT$ 0</div>
+                    <p class="tax-formula" id="taxFormula">資產在免稅標準內，無需繳稅！</p>
+                </div>
+
+                <!-- 稅款分攤試算 -->
+                <div class="tax-split-card mt-4" id="taxSplitSection" style="display: none;">
+                    <h3>
+                        <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        稅款分攤試算
+                    </h3>
+                    
+                    <div class="split-controls">
+                        <div class="split-control-group">
+                            <label for="heirsCount">繼承人總數</label>
+                            <div class="number-input small">
+                                <button type="button" class="btn-minus" onclick="adjustValue('heirsCount', -1)">-</button>
+                                <input type="number" id="heirsCount" value="1" min="1" max="50">
+                                <button type="button" class="btn-plus" onclick="adjustValue('heirsCount', 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="split-control-group">
+                            <label for="ratioSlider">您的分配比例</label>
+                            <div class="range-slider-wrapper">
+                                <input type="range" id="ratioSlider" min="0" max="100" value="100" step="1" class="styled-slider">
+                                <span class="ratio-value" id="ratioValueDisplay">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="split-result mt-3">
+                        <div class="split-row">
+                            <span>若均分 (<span id="equalSplitRatio">100</span>%) 每人約繳</span>
+                            <span class="split-amount highlight" id="equalSplitAmount">NT$ 0</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="split-row">
+                            <span>依分配比例 (<span id="customSplitRatioDisplay">100</span>%) 應繳</span>
+                            <span class="split-amount highlight-secondary" id="customSplitAmount">NT$ 0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box mt-4">
+                    <h4>
+                        <svg style="width:16px;height:16px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        注意事項
+                    </h4>
+                    <p>此工具為初步試算，讓您心裡有個底。</p>
+                    <ul class="info-list">
+                        <li><strong>未成年子女加扣：</strong>若繼承人中有未成年者，可依距離成年（18歲）的<strong>年數 × 56萬</strong>額外扣除，請洽國稅局核算。</li>
+                        <li><strong>⚠️ 死亡前 2 年贈與：</strong>依財政部修正草案，被繼承人死亡前 2 年內贈與特定親屬之財產，<strong>須併入遺產總額課稅</strong>，請確認是否有此情形並加入財產總額。</li>
+                        <li><strong>配偶剩餘財產差額分配：</strong>生存配偶在計算遺產前，可先主張剩餘財產差額分配請求權，可能大幅降低課稅遺產總額，建議諮詢專業會計師或律師。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

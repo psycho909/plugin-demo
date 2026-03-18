@@ -1,5 +1,5 @@
-﻿import { navbarData, navLinkData } from "../config/navbarData.js";
-import { MessageLB, regionLB } from "../lightbox.js";
+﻿import { navbarData } from "../config/navbarData.js";
+// import { MessageLB } from "../lightbox.js";
 // 創建一個獨立的函數來處理 BF_divHeader
 function handleBFHeader() {
 	let originalSize = { width: 0, height: 0 };
@@ -67,12 +67,12 @@ let navbar = {
 		}
 	},
 	setup(props) {
-		const musicStatus = Vue.ref(false);
-		const audioRef = Vue.ref(null);
+		const navRef = Vue.ref(null);
 		const navWrapRef = Vue.ref(null);
 		const navBoxRef = Vue.ref(null);
 		const navListRef = Vue.ref(null);
 		const navToggle = Vue.ref(null);
+		const navItemId = Vue.ref(null);
 		const getTarget = (child) => {
 			if (child.target) {
 				return {
@@ -86,6 +86,7 @@ let navbar = {
 		const handleResize = Vue.ref(null);
 
 		const initNavigation = () => {
+			const nav = navRef.value;
 			const navBox = navBoxRef.value;
 			const navWrap = navWrapRef.value;
 			const navList = navListRef.value;
@@ -103,12 +104,14 @@ let navbar = {
 				};
 
 				navBox.addEventListener("mouseenter", () => {
+					nav.classList.add("-open");
 					navWrap.classList.add("-open");
 					document.querySelector(".nav-logo").classList.add("-open");
 					setNavHeight();
 				});
 
 				navBox.addEventListener("mouseleave", () => {
+					nav.classList.remove("-open");
 					navWrap.classList.remove("-open");
 					document.querySelector(".nav-logo").classList.remove("-open");
 					navWrap.style.height = `${navWrap.getAttribute("data-height")}px`;
@@ -151,15 +154,19 @@ let navbar = {
 		};
 
 		const handleOpen = () => {
-			navToggle.value = true;
-			document.querySelector("body").style.overflow = "hidden";
-			document.querySelector(".nav-logo").style.display = "none";
+			navToggle.value = !navToggle.value;
+			if (navToggle.value) {
+				document.querySelector("body").style.overflow = "hidden";
+			} else {
+				document.querySelector("body").style.overflow = "";
+			}
 		};
-
-		const handleClose = () => {
-			navToggle.value = false;
-			document.querySelector("body").style.overflow = "";
-			document.querySelector(".nav-logo").style.display = "";
+		const navItemClick = (index) => {
+			if (index == navItemId.value) {
+				navItemId.value = null;
+			} else {
+				navItemId.value = index;
+			}
 		};
 		// 初始化
 		Vue.onMounted(() => {
@@ -179,56 +186,37 @@ let navbar = {
 				window.removeEventListener("resize", handleResize.value);
 			}
 		});
-
-		// 播放音樂
-		const playMusic = () => {
-			if (musicStatus.value) {
-				audioRef.value.pause();
-				musicStatus.value = false;
-			} else {
-				audioRef.value.play();
-				musicStatus.value = true;
-			}
-		};
-		Vue.onMounted(() => {
-			// document.querySelector("#member5-1").addEventListener("click", () => {
-			// 	regionLB(2);
-			// });
-		});
+		Vue.onMounted(() => {});
 		return {
 			navbarData,
-			navLinkData,
-			musicStatus,
-			playMusic,
-			audioRef,
-			regionLB,
 			getTarget,
+			navRef,
 			navWrapRef,
 			navBoxRef,
 			navListRef,
 			navToggle,
 			handleOpen,
-			handleClose
+			navItemClick,
+			navItemId
 		};
 	},
 	template: `
-			<a href="/Main" class="nav-logo"></a>
-			<nav class="nav">
+			<nav class="nav" ref="navRef">
+				<div class="nav-logo-box">
+					<a href="javascript:;" class="nav-logo"></a>
+					<a href="javascript:;" class="nav-switch"></a>
+				</div>
 				<!-- -open -->
 				<div class="nav-wrap" ref="navWrapRef">
-					<a href="javascript:;" class="nav-open" @click="handleOpen">
+					<a href="javascript:;" class="nav-open" @click="handleOpen" :data-toggle="navToggle">
 						<span></span>
 						<span></span>
 						<span></span>
 					</a>
 					<div class="nav-box" :class="{ '-open': navToggle }" ref="navBoxRef">
-						<div class="nav-box-control">
-							<a href="javascript:;" class="nav-close" @click="handleClose"><span></span><span></span></a>
-							<a href="/Main" class="nav-logo-m"></a>
-						</div>
 						<ul class="nav-list" ref="navListRef">
 							<li v-for="(item, index) in navbarData" :key="index" class="nav-li">
-								<a href="javascript:;" class="nav-li__item" :data-nav="item.id" :id="item.id">
+								<a href="javascript:;" class="nav-li__item" :class="{ 'active':navItemId == index }" :data-nav="item.id" :id="item.id" @click="navItemClick(index)">
 									<span>{{ item.name }}</span>
 								</a>
 								<ul v-if="item.children" class="nav-list2">
@@ -240,18 +228,8 @@ let navbar = {
 								</ul>
 							</li>
 						</ul>
-						<a v-if="navLinkData.sign !== 'javascript:;'" :href="navLinkData.sign" class="nav-sign-m">申請帳號</a>
-						<a v-else href="javascript:;" class="nav-sign-m" @click="regionLB(2)">申請帳號</a>
 					</div>
-					<div class="nav-social">
-						<a :href="navLinkData.f" class="nav-social__item" data-type="f_b" target="_blank" rel="noopener noreferrer"></a>
-						<a :href="navLinkData.b" class="nav-social__item" data-type="baha" target="_blank" rel="noopener noreferrer"></a>
-						<a v-if="navLinkData.sign !== 'javascript:;'" :href="navLinkData.sign" class="nav-sign">申請帳號</a>
-						<a v-else href="javascript:;" class="nav-sign" @click="regionLB(2)">申請帳號</a>
-					</div>
-					<a href="javascript:;" :data-music="music" class="nav-music" :class="[musicStatus? 'on':'']" @click="playMusic"  v-if="music"></a>
 				</div>
-				<audio id="audio" :src="music" loop v-if="music != ''" ref="audioRef"></audio>
 			</nav>
     `
 };

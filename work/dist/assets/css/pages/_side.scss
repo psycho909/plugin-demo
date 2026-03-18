@@ -1,11 +1,12 @@
 ﻿.side-left {
 	display: flex;
 	position: fixed;
-	top: 0;
+	top: 50%;
 	left: 0;
 	z-index: 10;
 	flex-direction: column;
 	align-items: center;
+	transform: translateY(-50%);
 	@include media {
 		display: none;
 	}
@@ -14,7 +15,7 @@
 		height: vw2(202px);
 		background-size: cover;
 		background-image: url("./images/btn-gamestart.png");
-        filter: drop-shadow(0px 0px vw2(6px) black);
+		filter: drop-shadow(0px 0px vw2(6px) black);
 	}
 	&__box {
 		width: vw2(196px);
@@ -22,7 +23,7 @@
 		flex-direction: column;
 		align-items: center;
 		background-color: rgba(#e5dec0, 0.74);
-            box-shadow: 0 0 vw2(12px) rgba(#000,.7);
+		box-shadow: 0 0 vw2(12px) rgba(#000, 0.7);
 	}
 	&__list {
 		display: flex;
@@ -94,7 +95,7 @@
 	&__social {
 		display: flex;
 		justify-content: space-between;
-        margin-top: vw2(6px);
+		margin-top: vw2(6px);
 		&-item {
 			width: vw2(27px);
 			height: vw2(27px);
@@ -172,12 +173,13 @@
 			width: vw2(27px);
 			height: vw2(27px);
 			background-size: cover;
-			background-image: url(".images/music-play.png");
-			&[data-type="play"] {
-				background-image: url("./images/music-play.png");
+			background-image: url("./images/music-toggle.png");
+			background-size: 200%;
+			&.is-playing {
+				background-position-x: 100%;
 			}
-			&[data-type="pause"] {
-				background-image: url("./images/music-pause.png");
+			&.is-paused {
+				background-position-x: 0%;
 			}
 		}
 	}
@@ -249,11 +251,11 @@
 				font-size: vw2(22px);
 				color: #fff;
 				margin-top: vw2(12px);
-                text-shadow: 0 0 vw2(12) #000;
+				text-shadow: 0 0 vw2(12) #000;
 				@include media {
 					font-size: vw(30);
 					margin-top: vw(16);
-                    text-shadow: 0 0 vw(12) #000;
+					text-shadow: 0 0 vw(12) #000;
 				}
 			}
 		}

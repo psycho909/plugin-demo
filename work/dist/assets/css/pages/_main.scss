@@ -158,6 +158,9 @@
 				color: #000;
 				font-weight: bold;
 				text-decoration: none;
+				&.curr{
+					color: #d0b563;
+				}
 				@include hover {
 					color: #d0b563;
 				}

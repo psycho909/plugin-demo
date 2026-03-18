@@ -3,6 +3,7 @@
 		width: vw2(1200px);
 		margin: 0 auto;
 		padding: 0 vw2(60px);
+		position: relative;
 		@include media {
 			width: 100%;
 			padding: 0 vw(2);
@@ -46,7 +47,7 @@
 				font-size: vw(28);
 				width: vw(187);
 			}
-			&.active {
+			&.curr {
 				color: #fff;
 				width: vw2(169px);
 				height: vw2(57px);
@@ -82,13 +83,13 @@
 			font-size: vw2(30px);
 			color: #aaaaaa;
 			outline: none;
-			padding: 0 vw2(40px);
+			padding: 0 vw2(40px) 0 vw2(20);
 			@include media {
 				font-size: vw(30);
 				border-radius: vw(24);
 				box-shadow: 0 0 vw(6) rgba(#010404, 0.4);
 				height: vw(60);
-				padding: 0 vw(40);
+				padding: 0 vw(46) 0 vw(20);
 			}
 		}
 		&__btn {
@@ -107,7 +108,7 @@
 		}
 	}
 	&-list {
-		padding: vw2(20px);
+		padding: 0 vw2(20px);
 		display: flex;
 		flex-direction: column;
 		border: vw2(1px) solid #dbc47d;
@@ -115,7 +116,7 @@
 		margin-bottom: vw2(46px);
 		@include media {
 			margin-bottom: vw(58);
-			padding: vw(18);
+			padding:0 vw(18);
 			border-width: vw(2);
 		}
 	}
@@ -134,25 +135,14 @@
 			grid-template-columns: vw(113) vw(384) 1fr;
 			align-items: flex-start;
 			border-width: vw(2);
+			align-items: center;
 		}
 		&:last-child {
 			border-bottom: none;
 		}
 		&.new {
-			.annoc-item__title {
-				&:before {
-					content: "New!";
-					position: absolute;
-					top: 0;
-					right: 0;
-					color: #ee1111;
-					transform: rotate(24deg);
-					@include media {
-						font-size: vw(34);
-						top: vw(10px);
-						right: vw(-12px);
-					}
-				}
+			.new{
+				display: inline-block;
 			}
 		}
         &.top{
@@ -191,15 +181,26 @@
 			color: #333;
 			// width: vw2(766);
 			width: 100%;
-			overflow: hidden;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			word-break: break-all;
+			// overflow: hidden;
+			// white-space: nowrap;
+			// text-overflow: ellipsis;
+			// word-break: break-all;
+			position: relative;
 			@include media {
 				font-size: vw(30);
 				white-space: normal;
 				text-overflow: initial;
 				// width: vw(384);
+			}
+			.new{
+				font-size: vw2(32);
+				color: #ee1111;
+				font-weight: bold;
+				transform: rotate(24deg);
+				display: none;
+				@include media {
+						font-size: vw(28);
+					}
 			}
 		}
 		&__date {

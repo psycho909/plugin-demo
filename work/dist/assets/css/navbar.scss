@@ -1,4 +1,10 @@
-﻿.nav-logo-box {
+﻿@charset "UTF-8";
+/* 中文 */
+@import "./mixins/_mixins";
+@import "./base/_base";
+@import "./base/_normalize";
+@import "./base/_init";
+.nav-logo-box {
 	display: flex;
 	flex-direction: column;
 	margin-right: vw2(28);
@@ -42,6 +48,7 @@
 	z-index: 99;
 	overflow: hidden;
 	justify-content: center;
+	transition: all 0.3s;
 	@include media {
 		overflow: visible;
 		background-color: rgba(#fff, 0.6);
@@ -49,6 +56,68 @@
 		align-items: center;
 		height: vw(99);
 	}
+	// @include hover {
+	// 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.67) 80%, rgba(255, 255, 255, 0) 100%);
+	// 	.nav-li__item {
+	// 		background-color: rgba(58, 28, 16, 0);
+	// 		color: #685047;
+	// 		&:before {
+	// 			content: "";
+	// 			position: absolute;
+	// 			bottom: 0;
+	// 			left: 50%;
+	// 			transform: translateX(-50%);
+	// 			width: 110%;
+	// 			height: 1px;
+	// 			background-color: #3f3b0f;
+	// 		}
+	// 		@include media {
+	// 			color: #f3eedd;
+	// 			&:before {
+	// 				content: "";
+	// 				width: vw(29);
+	// 				height: vw(18);
+	// 				background-size: cover;
+	// 				background-image: url("./images/menu-arrow@2x.png");
+	// 				position: absolute;
+	// 				top: 50%;
+	// 				right: 0;
+	// 				left: unset;
+	// 				transform: translateY(-50%) scale(-1);
+	// 			}
+	// 		}
+	// 	}
+	// 	.nav-li2 {
+	// 		&:last-child {
+	// 			.nav-li2__item {
+	// 				&:before {
+	// 					content: none;
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+
+	// 	.nav-li2__item {
+	// 		color: #685047;
+	// 		&:before {
+	// 			content: "";
+	// 			width: 100%;
+	// 			height: vw2(2);
+	// 			position: absolute;
+	// 			bottom: 0;
+	// 			left: 50%;
+	// 			transform: translateX(-50%);
+	// 			background-image: linear-gradient(to right, transparent 0%, #3f3b0f 30%, #3f3b0f 70%, transparent 100%);
+	// 		}
+	// 		@include media {
+	// 			color: #dac88c;
+	// 			padding-left: vw(8);
+	// 			&:before {
+	// 				height: 0;
+	// 			}
+	// 		}
+	// 	}
+	// }
 	&.-open {
 		background: linear-gradient(180deg, rgba(255, 255, 255, 0.67) 80%, rgba(255, 255, 255, 0) 100%);
 		.nav-li__item {
@@ -95,7 +164,7 @@
 			&:before {
 				content: "";
 				width: 100%;
-				height: vw2(2);
+				height: vw2(1);
 				position: absolute;
 				bottom: 0;
 				left: 50%;
@@ -188,11 +257,13 @@
 			position: relative;
 			text-decoration: none;
 			background-color: rgba(#3a1c10, 0.7);
-			color: #b7a888;
+			color: #fff;
+			pointer-events: none;
 			@include media {
 				padding: 0;
 				background-color: transparent;
 				color: #f3eedd;
+				pointer-events: auto;
 				&:before {
 					content: "";
 					width: vw(29);
@@ -211,7 +282,6 @@
 			span {
 				display: block;
 				margin: 0 auto;
-				font-family: "Noto Serif TC", serif;
 				font-weight: bold;
 				font-size: vw2(24);
 				@include media {
@@ -255,7 +325,6 @@
 			span {
 				display: block;
 				margin: 0 auto;
-				font-family: "Noto Serif TC", serif;
 				font-weight: bold;
 				font-size: vw2(20);
 				@include media {
@@ -271,6 +340,29 @@
 			width: vw(50);
 			height: vw(50);
 			position: relative;
+			&[data-toggle="true"] {
+				&:before,
+				&:after {
+					content: "";
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					width: 100%;
+					height: vw(8);
+					background-color: #9c9768; 
+				}
+				&:before {
+					transform: translate(-50%, -50%) rotate(45deg);
+				}
+
+				/* 第二條線：逆時針旋轉 45 度 */
+				&:after {
+					transform: translate(-50%, -50%) rotate(-45deg);
+				}
+				span {
+					display: none;
+				}
+			}
 			span {
 				width: 100%;
 				height: vw(8);
