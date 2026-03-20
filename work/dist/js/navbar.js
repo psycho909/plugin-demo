@@ -1,7 +1,5 @@
-﻿// 1. 引入外部資料 (確保相對路徑與檔名正確)
-import { navbarData } from "./config/navbarData.js";
+﻿let navbarData = [];
 
-// 2. BF Header 縮放邏輯
 function handleBFHeader() {
     let originalSize = { width: 0, height: 0 };
     let headerInitialized = false;
@@ -11,7 +9,7 @@ function handleBFHeader() {
         if (!header) return;
 
         const windowWidth = window.innerWidth;
-        const baseWidth = 1920; // 基準寬度
+        const baseWidth = 1920; 
 
         if (windowWidth >= baseWidth) {
             header.style.zoom = "";
@@ -50,15 +48,13 @@ function handleBFHeader() {
     initHeader();
 }
 
-// 3. Navbar 渲染與邏輯組件
 const NavbarComponent = {
-    // 動態載入 CSS，並確保載入完成後才執行 callback
     injectCSS(callback) {
+        const timestamp = new Date().getTime();
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = './assets/css/navbar.css'; // 請確認此路徑是否正確對應你的 CSS
+        link.href = `./assets/css/navbar.css?v=${timestamp}`; 
         
-        // 確保 CSS 載入且套用後，再執行後續的高寬計算
         link.onload = () => {
             if (callback) callback();
         };
@@ -66,7 +62,6 @@ const NavbarComponent = {
         document.head.appendChild(link);
     },
 
-    // 建立 HTML 字串
     buildHTML() {
         let navItemsHTML = navbarData.map((item, index) => {
             let childrenHTML = '';
@@ -116,7 +111,6 @@ const NavbarComponent = {
         `;
     },
 
-    // 綁定事件與高度計算邏輯
     initLogic() {
         const nav = document.getElementById('navRef');
         const navWrap = document.getElementById('navWrapRef');
@@ -131,7 +125,6 @@ const NavbarComponent = {
         let navToggle = false;
         let navItemId = null;
 
-        // 手機版選單開關邏輯
         navToggleBtn.addEventListener('click', () => {
             navToggle = !navToggle;
             if (navToggle) {
@@ -143,7 +136,6 @@ const NavbarComponent = {
             }
         });
 
-        // 點擊主選單項目邏輯
         navMainItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 const index = item.getAttribute('data-index');
@@ -158,9 +150,7 @@ const NavbarComponent = {
             });
         });
 
-        // 電腦版滑鼠移入下拉與高度計算邏輯
         if (!isMobile && navBox && navWrap && navList) {
-            // 此時 CSS 已經確保載入，所以這裡抓取的高度會是精準的
             const style = window.getComputedStyle(navBox);
             const height = parseInt(style.height) || 0;
             const marginTop = parseInt(style.marginTop) || 0;
@@ -196,7 +186,6 @@ const NavbarComponent = {
                 });
             });
 
-            // 防抖函數 (處理螢幕縮放時的高度重置)
             const debounce = (func, wait) => {
                 let timeout;
                 return function (...args) {
@@ -220,25 +209,27 @@ const NavbarComponent = {
         }
     },
 
-    // 啟動程序
-    mount() {
-        // 1. 先把 HTML 塞入畫面
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = this.buildHTML();
-        document.body.prepend(wrapper.firstElementChild);
-
-        // 2. 注入 CSS，並在 CSS 載入完成後執行邏輯綁定
-        this.injectCSS(() => {
-            // 加上 requestAnimationFrame 確保瀏覽器已經完成畫面的實體繪製
-            requestAnimationFrame(() => {
-                this.initLogic();
-                handleBFHeader(); 
+    async mount() {
+        try {
+            const timestamp = new Date().getTime();
+            const module = await import(`./navbarData.js?v=${timestamp}`);
+            navbarData = module.navbarData;
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = this.buildHTML();
+            document.body.prepend(wrapper.firstElementChild);
+            this.injectCSS(() => {
+                requestAnimationFrame(() => {
+                    this.initLogic();
+                    handleBFHeader(); 
+                });
             });
-        });
+            
+        } catch (error) {
+            console.error("Navbar 資料載入失敗:", error);
+        }
     }
 };
 
-// 4. 等待 DOM 載入完成後自動掛載
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => NavbarComponent.mount());
 } else {

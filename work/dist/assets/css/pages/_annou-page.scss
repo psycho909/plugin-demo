@@ -31,6 +31,7 @@
 		@include media {
 			border-bottom: vw(2) solid #ba8f00;
 			padding: vw(16px) vw(40px);
+			align-items: flex-start;
 		}
 		&__tag {
 			width: vw2(105px);
@@ -60,6 +61,7 @@
 			color: #595757;
 			@include media {
 				font-size: vw(36);
+				margin-top: vw(6);
 			}
 		}
 	}

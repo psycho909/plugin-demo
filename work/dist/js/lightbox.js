@@ -11,32 +11,21 @@ export function MessageLB(msg, url, callback) {
 	});
 }
 
-export function LB(msg, url, callback) {
+export function ArtLB(data) {
 	var config = {
-		addClass: "default",
+		addClass: "default lb-art",
 		hasCloseBtn: true,
-		hasActionBtn: true,
+		hasActionBtn: false,
 		afterClose: function () {
 			gbox.close();
 		},
-		actionBtns: [
-			{
-				text: "text1",
-				class: "btn",
-				click: function () {
-					gbox.close();
-				},
-			},
-			{
-				text: "text2",
-				class: "btn",
-				click: function () {
-					gbox.close();
-				},
-			},
-		],
 	};
 
-	var HTML = "";
+	var HTML = `
+		<div class="lb-art-content">
+			<img src="${data.img}" alt="" />
+			<a href="javascript:;" class="lb-art__btn-download official-bgm-download"></a>
+		</div>
+	`;
 	gbox.open(HTML, config);
 }

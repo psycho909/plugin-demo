@@ -1,4 +1,5 @@
 ﻿import useEventStore from "../store.js";
+import {MessageLB,ArtLB} from "../lightbox.js"
 const { ref, onMounted } = Vue;
 
 let art = {
@@ -53,16 +54,16 @@ let art = {
                 hoveredId.value = null;
             }, 150); 
         };
-		const handleClick=()=>{
+		const handleClick=(data)=>{
 			if (!isMobile.any) return; // 電腦版直接擋掉不執行
-
+            ArtLB(data)
             // 如果點擊的是已經打開的圖片，就關閉它
-            if (hoveredId.value === id) {
-                hoveredId.value = null;
-            } else {
-                // 打開新的圖片，並計算上下位置
-                hoveredId.value = id;
-            }
+            // if (hoveredId.value === id) {
+            //     hoveredId.value = null;
+            // } else {
+            //     // 打開新的圖片，並計算上下位置
+            //     hoveredId.value = id;
+            // }
 		}
         onMounted(() => {
             // ... (保持你原本的 Pagination 初始化邏輯不變) ...
@@ -135,7 +136,7 @@ let art = {
                  :key="item.id"
                  @mouseenter="handleMouseEnter(item.id, $event)"
                  @mouseleave="handleMouseLeave"
-                 @click="handleClick(item.id, $event)"
+                 @click="handleClick(item)"
             >
                 <div class="official-item__img">
                     <picture>

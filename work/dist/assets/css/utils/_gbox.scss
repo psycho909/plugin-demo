@@ -124,3 +124,36 @@
 	@extend %close;
 	@extend %btn;
 }
+.lb-art{
+	.gbox-wrap{
+		max-width:vw(698);
+		padding: 0;
+	}
+	.gbox-close{
+		width: vw(50);
+		height: vw(50);
+		top: vw(20);
+		right: vw(20);
+		filter: drop-shadow(vw(2) vw(2) vw(4) rgba(#000,.75));
+	}
+	.gbox-content{
+		padding: 0;
+		&:before,&:after{
+			content:none;
+		}
+	}
+	&-content{
+		img{
+			width: 100%;
+			max-width: 100%;
+			display: block;
+			object-fit: cover;
+		}
+	}
+	.official-bgm-download{
+		position: absolute;
+		top: unset;
+		right: vw(20);
+		bottom: vw(20);
+	}
+}

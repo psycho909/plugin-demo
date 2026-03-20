@@ -1,7 +1,7 @@
 import { MessageLB } from "./lightbox.js";
 import { setCookie, getCookie, deleteCookie, loadingShow, loadingHide } from "./tool.js";
 import useEventStore from "./store.js";
-import navbar from "./components/navbar.js";
+// import navbar from "./components/navbar.js";
 import side from "./components/side.js";
 import main from "./components/main.js";
 import bgm from "./components/bgm.js";
@@ -27,13 +27,13 @@ function loadCSS(url) {
 
 	document.head.appendChild(link); // 加入到 <head> 中
 }
-loadCSS("https://tw.hicdn.beanfun.com/beanfun/event/DragonNest/MileStone2025/assets/css/fix.css");
+// loadCSS("https://tw.hicdn.beanfun.com/beanfun/event/DragonNest/MileStone2025/assets/css/fix.css");
 const pinia = Pinia.createPinia();
 const { storeToRefs } = Pinia;
 
 let app = Vue.createApp({
 	components: {
-		side,navbar,"main-page":main,bgm,update,guide,art,download,annou,annouPage,eventAnnouPage
+		side,"main-page":main,bgm,update,guide,art,download,annou,annouPage,eventAnnouPage
 	},
 	setup() {
 		const store = useEventStore();
